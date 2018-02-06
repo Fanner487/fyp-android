@@ -1,16 +1,23 @@
 package com.example.user.attendr.network;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONArrayRequestListener;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.OkHttpResponseListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.example.user.attendr.callbacks.LoginCallback;
+import com.example.user.attendr.callbacks.RegisterCallback;
 import com.example.user.attendr.models.Event;
 import com.jacksonandroidnetworking.JacksonParserFactory;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,6 +121,52 @@ public class NetworkInterface {
                         callback.onFailure();
                     }
                 });
+    }
+
+    public void register(String username, String email, String password,
+                         String passwordConfirm, String firstName, String lastName, final RegisterCallback callback){
+
+        AndroidNetworking.post("http://46.101.13.145:8000/api/register/")
+                .addBodyParameter("username", username)
+                .addBodyParameter("email", email)
+                .addBodyParameter("password", password)
+                .addBodyParameter("password_confirm", passwordConfirm)
+                .addBodyParameter("first_name", firstName)
+                .addBodyParameter("last_name", lastName)
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        callback.onSuccess();
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        callback.onFailure(anError.getErrorBody().toString());
+                    }
+                });
+//                .getAsOkHttpResponse(new OkHttpResponseListener() {
+//                    @Override
+//                    public void onResponse(Response response) {
+//
+//                        if(response.code() == 201){
+//                            callback.onSuccess();
+//                        }
+//                        else{
+//
+//                            Log.d(TAG, response.body().toString());
+//                            callback.onFailure(response.body().toString());
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError(ANError anError) {
+//                        callback.onFailure(anError.getErrorBody().toString());
+//                    }
+//                });
+
     }
 
 

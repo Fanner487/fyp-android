@@ -10,5 +10,5 @@ public interface RegisterCallback {
 
     void onSuccess();
 
-    void onFailure();
+    void onFailure(String response);
 }
