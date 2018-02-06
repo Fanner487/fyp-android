@@ -1,6 +1,7 @@
 package com.example.user.attendr.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         btnSubmit = findViewById(R.id.btnSubmit);
 
+
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -41,6 +43,11 @@ public class LoginActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess() {
                                 Toast.makeText(LoginActivity.this, "Log in successful", Toast.LENGTH_SHORT).show();
+
+                                SharedPreferences userDetails = getApplicationContext().getSharedPreferences("", MODE_PRIVATE);
+                                SharedPreferences.Editor edit = userDetails.edit();
+                                edit.putString("username", etUsername.getText().toString());
+                                edit.apply();
 
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 getApplicationContext().startActivity(intent);

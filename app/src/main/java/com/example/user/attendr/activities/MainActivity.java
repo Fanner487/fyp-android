@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        List<Event> events = NetworkInterface.getInstance(this).getOrganisedEvents();
+        NetworkInterface.getInstance(this).getOrganisedEvents();
 
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -95,14 +95,20 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            Intent intent = new Intent(this, RegisterActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_gallery) {
 
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
+        } else if (id == R.id.nav_gallery) {
+
+
+            Intent intent = new Intent(this, RegisterActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_slideshow) {
+
+
+            Intent intent = new Intent(this, CreateEventActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_manage) {
 

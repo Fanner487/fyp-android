@@ -2,6 +2,7 @@ package com.example.user.attendr.network;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
@@ -57,8 +58,14 @@ public class NetworkInterface {
 
 
     public List<Event> getOrganisedEvents(){
+
+        SharedPreferences userDetails = context.getSharedPreferences("", Context.MODE_PRIVATE);
+        String sharedUsername = userDetails.getString("username", "");
+        Log.d(TAG, "Shared username: "+ sharedUsername);
+
+
         AndroidNetworking.get("http://46.101.13.145:8000/api/profile/{username}/{type}/{time}/")
-                .addPathParameter("username", "eamont22")
+                .addPathParameter("username", sharedUsername)
                 .addPathParameter("type", "organising")
                 .addPathParameter("time", "all")
                 .setPriority(Priority.MEDIUM)
