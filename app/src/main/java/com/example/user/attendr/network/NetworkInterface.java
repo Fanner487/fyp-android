@@ -6,13 +6,19 @@ import android.util.Log;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.OkHttpResponseListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+import com.example.user.attendr.callbacks.LoginCallback;
+import com.example.user.attendr.callbacks.OnTaskCompleted;
 import com.example.user.attendr.models.Event;
 import com.jacksonandroidnetworking.JacksonParserFactory;
 
 import java.net.ConnectException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import okhttp3.Response;
 
 /**
  * Created by Eamon on 06/02/2018.
@@ -24,7 +30,7 @@ public class NetworkInterface {
     private static NetworkInterface instance;
     private static Context context;
 
-    public ArrayList<Event> returnList = new ArrayList<Event>();
+    private static List<Event> returnList = new ArrayList<>();
 
     private NetworkInterface(Context context) {
 
@@ -46,7 +52,7 @@ public class NetworkInterface {
 //    RequestQueueInstance.getInstance(this).addToRequestQueue(loginRequest);
 
 
-    public ArrayList<Event> getOrganisedEvents(){
+    public List<Event> getOrganisedEvents(final OnTaskCompleted callback){
         AndroidNetworking.get("http://46.101.13.145:8000/api/profile/{username}/{type}/{time}/")
                 .addPathParameter("username", "eamont22")
                 .addPathParameter("type", "organising")
@@ -65,10 +71,12 @@ public class NetworkInterface {
                             Log.d(TAG, event.getFormattedFinishTime().toString());
                             Log.d(TAG, event.getFormattedSignInTime().toString());
 
-
                         }
 
-                        returnList = new ArrayList<Event>(events);
+                        callback.onTaskCompleted();
+                        returnList = events;
+//                        setEvents(events);
+
 
                     }
 
@@ -81,6 +89,43 @@ public class NetworkInterface {
                     }
                 });
 
+        Log.d(TAG, "returning");
+        Log.d(TAG, Integer.toString(returnList.size()));
         return returnList;
+    }
+
+
+    public void login(String username, String password, final LoginCallback callback){
+        AndroidNetworking.post("http://46.101.13.145:8000/api/login/")
+                .addBodyParameter("username", username)
+                .addBodyParameter("password", password)
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsOkHttpResponse(new OkHttpResponseListener() {
+                    @Override
+                    public void onResponse(Response response) {
+
+                        if(response.code() == 200){
+                            callback.onSuccess();
+                        }
+                        else{
+                            callback.onFailure();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        callback.onFailure();
+                    }
+                });
+    }
+
+
+    private void setEvents(List<Event> events){
+        this.returnList = events;
+    }
+
+    public List<Event> getEvents(){
+        return this.returnList;
     }
 }
