@@ -9,13 +9,10 @@ import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.OkHttpResponseListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.example.user.attendr.callbacks.LoginCallback;
-import com.example.user.attendr.callbacks.OnTaskCompleted;
 import com.example.user.attendr.models.Event;
 import com.jacksonandroidnetworking.JacksonParserFactory;
 
-import java.net.ConnectException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import okhttp3.Response;
@@ -52,7 +49,7 @@ public class NetworkInterface {
 //    RequestQueueInstance.getInstance(this).addToRequestQueue(loginRequest);
 
 
-    public List<Event> getOrganisedEvents(final OnTaskCompleted callback){
+    public List<Event> getOrganisedEvents(){
         AndroidNetworking.get("http://46.101.13.145:8000/api/profile/{username}/{type}/{time}/")
                 .addPathParameter("username", "eamont22")
                 .addPathParameter("type", "organising")
@@ -73,7 +70,6 @@ public class NetworkInterface {
 
                         }
 
-                        callback.onTaskCompleted();
                         returnList = events;
 //                        setEvents(events);
 

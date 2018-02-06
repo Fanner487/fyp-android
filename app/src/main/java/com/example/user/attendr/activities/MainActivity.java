@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,19 +13,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import com.androidnetworking.AndroidNetworking;
-import com.androidnetworking.common.Priority;
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.ParsedRequestListener;
 import com.example.user.attendr.R;
-import com.example.user.attendr.callbacks.OnTaskCompleted;
 import com.example.user.attendr.models.Event;
 import com.example.user.attendr.network.NetworkInterface;
-import com.jacksonandroidnetworking.JacksonParserFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -43,24 +34,8 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        List<Event> events = NetworkInterface.getInstance(this).getOrganisedEvents(new OnTaskCompleted() {
-            @Override
-            public void onTaskCompleted() {
-                Toast.makeText(getApplicationContext(), "Yo yo yo", Toast.LENGTH_LONG).show();
-            }
-        });
+        List<Event> events = NetworkInterface.getInstance(this).getOrganisedEvents();
 
-
-
-        Log.d(TAG, "Wad");
-        Log.d(TAG, Integer.toString(events.size()));
-//        Log.d(TAG, Integer.toString(events.size()));
-//        for(Event event : events){
-//            Log.d(TAG, event.getEventName());
-//            Log.d(TAG, event.getLocation());
-//            Log.d(TAG, event.getOrganiser());
-////            Log.d(TAG, event.getEventName());
-//        }
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
