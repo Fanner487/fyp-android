@@ -34,11 +34,13 @@ import okhttp3.Response;
 
 /**
  * Created by Eamon on 06/02/2018.
+ *
+ * Singleton class that is contains all API calls to the server
  */
 
 public class NetworkInterface {
 
-    final String TAG = NetworkInterface.class.getSimpleName();
+    private final String TAG = NetworkInterface.class.getSimpleName();
     private static NetworkInterface instance;
     private static Context context;
 

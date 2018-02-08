@@ -31,6 +31,14 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
+
+/**
+ * Created by Eamon on 08/02/2018.
+ *
+ * Activity for creating and updating Events
+ */
+
 
 public class CreateEventActivity extends AppCompatActivity {
 
@@ -68,7 +76,7 @@ public class CreateEventActivity extends AppCompatActivity {
         btnSubmit = findViewById(R.id.btnSubmit);
 
         switchAttendanceRequired = findViewById(R.id.switchAttendanceRequired);
-        
+
         btnStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -135,16 +143,18 @@ public class CreateEventActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
+    /*
+    * Pops up a DatePicker Dialog box and TimePicker Dialog box and gathers time/date gathered
+    * from user input to set the text view time for start/finish/sign in times
+    * Callbacks are implemented for asynchronous setting of the time variables from the user input
+    * */
     private void setTextViewTimeFromDateTimeDialog(final TextView textView){
+
         final DatePickerDialog datePickerDialog = new DatePickerDialog(CreateEventActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                Log.d(TAG, Integer.toString(i));
-                Log.d(TAG, Integer.toString(i1));
-                Log.d(TAG, Integer.toString(i2));
 
                 final int year = i;
                 final int month = i1;
@@ -153,6 +163,8 @@ public class CreateEventActivity extends AppCompatActivity {
                 getTimeFromDialog(new TimeSetCallback() {
                     @Override
                     public void onTimeSet(int hour, int minute) {
+
+                        // Assign new time from user input of datetime
                         Calendar time = new GregorianCalendar();
                         time.set(Calendar.YEAR, year);
                         time.set(Calendar.MONTH, month);
@@ -162,13 +174,10 @@ public class CreateEventActivity extends AppCompatActivity {
                         time.set(Calendar.SECOND, 0);
 
 
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.ENGLISH);
                         Date newTime = time.getTime();
                         Log.d(TAG, sdf.format(newTime));
                         textView.setText(sdf.format(newTime));
-
-
-
                     }
                 });
             }

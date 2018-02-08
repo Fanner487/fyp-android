@@ -11,6 +11,8 @@ import java.util.TimeZone;
 
 /**
  * Created by Eamon on 05/02/2018.
+ *
+ * Event model class for Jackson (JSON parsing) and ORMLite (DB ORM)
  */
 
 public class Event {

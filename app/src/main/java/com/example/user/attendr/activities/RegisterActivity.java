@@ -15,6 +15,12 @@ import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.RegisterCallback;
 import com.example.user.attendr.network.NetworkInterface;
 
+/**
+ * Created by Eamon on 06/02/2018.
+ *
+ * Activity Registering
+ */
+
 public class RegisterActivity extends AppCompatActivity {
 
     final String TAG = RegisterActivity.class.getSimpleName();
@@ -51,6 +57,8 @@ public class RegisterActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess() {
                                         Toast.makeText(RegisterActivity.this, "Account made", Toast.LENGTH_SHORT).show();
+
+                                        // Redirect to login screen
                                         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                                         getApplicationContext().startActivity(intent);
                                     }

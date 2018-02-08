@@ -15,6 +15,12 @@ import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.LoginCallback;
 import com.example.user.attendr.network.NetworkInterface;
 
+/**
+ * Created by Eamon on 06/02/2018.
+ *
+ * Activity for Login
+ */
+
 public class LoginActivity extends AppCompatActivity {
 
     final String TAG = LoginActivity.class.getSimpleName();
@@ -45,11 +51,13 @@ public class LoginActivity extends AppCompatActivity {
                             public void onSuccess() {
                                 Toast.makeText(LoginActivity.this, "Log in successful", Toast.LENGTH_SHORT).show();
 
+                                // Assign SharedPreferences username to the login
                                 SharedPreferences userDetails = getApplicationContext().getSharedPreferences("", MODE_PRIVATE);
                                 SharedPreferences.Editor edit = userDetails.edit();
                                 edit.putString("username", etUsername.getText().toString());
                                 edit.apply();
 
+                                // Redirect to MainActivity screen
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 getApplicationContext().startActivity(intent);
                             }

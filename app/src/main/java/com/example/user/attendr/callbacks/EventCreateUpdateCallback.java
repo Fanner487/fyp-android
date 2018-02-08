@@ -8,6 +8,8 @@ import okhttp3.Response;
 
 /**
  * Created by Eamon on 08/02/2018.
+ *
+ * Callback interface for API create and delete operations on Events
  */
 
 public interface EventCreateUpdateCallback {
