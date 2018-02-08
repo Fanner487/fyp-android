@@ -15,10 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.user.attendr.R;
-import com.example.user.attendr.models.Event;
+import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.network.NetworkInterface;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -34,7 +32,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        NetworkInterface.getInstance(this).getOrganisedEvents();
+        NetworkInterface.getInstance(this).getEvents(EventType.ORGANISE);
 
 
         FloatingActionButton fab = findViewById(R.id.fab);

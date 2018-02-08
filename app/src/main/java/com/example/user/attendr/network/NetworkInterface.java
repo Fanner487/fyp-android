@@ -16,6 +16,7 @@ import com.example.user.attendr.callbacks.EventCreateUpdateCallback;
 import com.example.user.attendr.callbacks.EventDeleteCallback;
 import com.example.user.attendr.callbacks.LoginCallback;
 import com.example.user.attendr.callbacks.RegisterCallback;
+import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.models.Event;
 import com.jacksonandroidnetworking.JacksonParserFactory;
 
@@ -63,11 +64,20 @@ public class NetworkInterface {
         return instance;
     }
 
-    public List<Event> getOrganisedEvents() {
+    public List<Event> getEvents(EventType type) {
+
+        String typeString = "";
+
+        if(type == EventType.ATTENDING){
+            typeString = "attending";
+        }
+        else if(type == EventType.ORGANISE){
+            typeString = "organising";
+        }
 
         AndroidNetworking.get("http://46.101.13.145:8000/api/profile/{username}/{type}/{time}/")
                 .addPathParameter("username", getLoggedInUser())
-                .addPathParameter("type", "organising")
+                .addPathParameter("type", typeString)
                 .addPathParameter("time", "all")
                 .setPriority(Priority.MEDIUM)
                 .build()

@@ -20,4 +20,6 @@
         completions."
     </string>
     <string name="attendane_required">Attendance Required</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
 </resources>
