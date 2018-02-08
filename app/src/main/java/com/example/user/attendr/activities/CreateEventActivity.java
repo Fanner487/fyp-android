@@ -15,6 +15,8 @@ import android.widget.TimePicker;
 
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.TimeSetCallback;
+import com.example.user.attendr.models.Event;
+import com.example.user.attendr.network.NetworkInterface;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -107,6 +109,10 @@ public class CreateEventActivity extends AppCompatActivity {
                     Log.d(TAG, attendee);
                 }
 
+                Event event = new Event(eventName, location, startTime, finishTime, signInTime, attendees, attendanceRequired);
+
+                NetworkInterface.getInstance(CreateEventActivity.this).createEvent(event);
+
             }
         });
 
@@ -140,6 +146,8 @@ public class CreateEventActivity extends AppCompatActivity {
                         Date newTime = time.getTime();
                         Log.d(TAG, sdf.format(newTime));
                         textView.setText(sdf.format(newTime));
+
+
 
                     }
                 });

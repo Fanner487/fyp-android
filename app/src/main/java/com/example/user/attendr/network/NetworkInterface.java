@@ -18,10 +18,16 @@ import com.example.user.attendr.models.Event;
 import com.jacksonandroidnetworking.JacksonParserFactory;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.Response;
 
@@ -177,6 +183,72 @@ public class NetworkInterface {
     }
 
     public void createEvent(Event event){
+
+        SharedPreferences userDetails = context.getSharedPreferences("", Context.MODE_PRIVATE);
+        String sharedUsername = userDetails.getString("username", "");
+
+        JSONObject create = new JSONObject();
+
+        try{
+            create.put("organiser", sharedUsername);
+            create.put("event_name", event.getEventName());
+            create.put("location", event.getLocation());
+            create.put("start_time", parseToIsoTime(event.getStartTime()));
+            create.put("finish_time", parseToIsoTime(event.getFinishTime()));
+            create.put("sign_in_time", parseToIsoTime(event.getSignInTime()));
+            create.put("attendance_required", Boolean.toString(true));
+            JSONArray jsonArray= new JSONArray();
+
+            for(String name : event.getAttendees()){
+                jsonArray.put(name);
+            }
+
+            create.put("attendees", jsonArray);
+            Log.d(TAG, create.toString());
+
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        AndroidNetworking.post("http://46.101.13.145:8000/api/events/")
+                .addJSONObjectBody(create)
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        Log.d(TAG, response.toString());
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Log.d(TAG, Integer.toString(anError.getErrorCode()));
+                        Log.d(TAG, anError.getErrorBody());
+                        Log.d(TAG, anError.getErrorDetail());
+                    }
+                });
+    }
+
+    private String parseToIsoTime(String time){
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.ENGLISH);
+
+        Date newTime = null;
+
+        try{
+            newTime = sdf.parse(time);
+        }
+        catch (ParseException e){
+            e.printStackTrace();
+        }
+        SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
+
+        Log.d(TAG, isoFormat.format(newTime));
+        return isoFormat.format(newTime);
+
+
 
     }
 }

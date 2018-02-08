@@ -177,7 +177,7 @@ public class Event {
     }
 
     @JsonProperty("attendance_required")
-    public boolean isAttendanceRequired() {
+    public boolean getAttendanceRequired() {
         return attendanceRequired;
     }
 
