@@ -176,12 +176,7 @@ public class NetworkInterface {
 
     }
 
+    public void createEvent(Event event){
 
-    private void setEvents(List<Event> events){
-        this.returnList = events;
-    }
-
-    public List<Event> getEvents(){
-        return this.returnList;
     }
 }

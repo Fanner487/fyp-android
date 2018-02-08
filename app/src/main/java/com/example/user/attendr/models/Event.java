@@ -75,6 +75,17 @@ public class Event {
         this.attendanceRequired = attendanceRequired;
     }
 
+    public Event(String eventName, String location, String startTime, String finishTime, String signInTime, ArrayList<String> attendees, boolean attendanceRequired) {
+
+        this.eventName = eventName;
+        this.location = location;
+        this.startTime = startTime;
+        this.finishTime = finishTime;
+        this.signInTime = signInTime;
+        this.attendees = attendees;
+        this.attendanceRequired = attendanceRequired;
+    }
+
     @JsonProperty("id")
     public int getId() {
         return id;
