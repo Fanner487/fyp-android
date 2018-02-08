@@ -1,17 +1,19 @@
 package com.example.user.attendr.network;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONArrayRequestListener;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.androidnetworking.interfaces.OkHttpResponseAndJSONArrayRequestListener;
+import com.androidnetworking.interfaces.OkHttpResponseAndStringRequestListener;
 import com.androidnetworking.interfaces.OkHttpResponseListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+import com.example.user.attendr.callbacks.EventCreateUpdateCallback;
+import com.example.user.attendr.callbacks.EventDeleteCallback;
 import com.example.user.attendr.callbacks.LoginCallback;
 import com.example.user.attendr.callbacks.RegisterCallback;
 import com.example.user.attendr.models.Event;
@@ -24,7 +26,6 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -51,23 +52,20 @@ public class NetworkInterface {
         AndroidNetworking.setParserFactory(new JacksonParserFactory());
     }
 
-    public static synchronized NetworkInterface getInstance(Context context){
+    public static synchronized NetworkInterface getInstance(Context context) {
 
-        if(instance == null){
+        if (instance == null) {
             instance = new NetworkInterface(context);
         }
 
         return instance;
     }
 
-//    RequestQueueInstance.getInstance(this).addToRequestQueue(loginRequest);
-
-
-    public List<Event> getOrganisedEvents(){
+    public List<Event> getOrganisedEvents() {
 
         SharedPreferences userDetails = context.getSharedPreferences("", Context.MODE_PRIVATE);
         String sharedUsername = userDetails.getString("username", "");
-        Log.d(TAG, "Shared username: "+ sharedUsername);
+        Log.d(TAG, "Shared username: " + sharedUsername);
 
 
         AndroidNetworking.get("http://46.101.13.145:8000/api/profile/{username}/{type}/{time}/")
@@ -82,7 +80,7 @@ public class NetworkInterface {
                         // do anything with response
                         Log.d(TAG, "Events size : " + events.size());
 
-                        for(Event event : events){
+                        for (Event event : events) {
                             Log.d(TAG, event.toString());
                             Log.d(TAG, event.getFormattedStartTime().toString());
                             Log.d(TAG, event.getFormattedFinishTime().toString());
@@ -111,7 +109,7 @@ public class NetworkInterface {
     }
 
 
-    public void login(String username, String password, final LoginCallback callback){
+    public void login(String username, String password, final LoginCallback callback) {
         AndroidNetworking.post("http://46.101.13.145:8000/api/login/")
                 .addBodyParameter("username", username)
                 .addBodyParameter("password", password)
@@ -121,10 +119,9 @@ public class NetworkInterface {
                     @Override
                     public void onResponse(Response response) {
 
-                        if(response.code() == 200){
+                        if (response.code() == 200) {
                             callback.onSuccess();
-                        }
-                        else{
+                        } else {
                             callback.onFailure();
                         }
                     }
@@ -137,7 +134,7 @@ public class NetworkInterface {
     }
 
     public void register(String username, String email, String password,
-                         String passwordConfirm, String firstName, String lastName, final RegisterCallback callback){
+                         String passwordConfirm, String firstName, String lastName, final RegisterCallback callback) {
 
         AndroidNetworking.post("http://46.101.13.145:8000/api/register/")
                 .addBodyParameter("username", username)
@@ -151,7 +148,7 @@ public class NetworkInterface {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-
+                        Log.d(TAG, response.toString());
                         callback.onSuccess();
                     }
 
@@ -160,36 +157,16 @@ public class NetworkInterface {
                         callback.onFailure(anError.getErrorBody().toString());
                     }
                 });
-//                .getAsOkHttpResponse(new OkHttpResponseListener() {
-//                    @Override
-//                    public void onResponse(Response response) {
-//
-//                        if(response.code() == 201){
-//                            callback.onSuccess();
-//                        }
-//                        else{
-//
-//                            Log.d(TAG, response.body().toString());
-//                            callback.onFailure(response.body().toString());
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError(ANError anError) {
-//                        callback.onFailure(anError.getErrorBody().toString());
-//                    }
-//                });
-
     }
 
-    public void createEvent(Event event){
+    public void createEvent(Event event, final EventCreateUpdateCallback eventCreateUpdateCallback) {
 
         SharedPreferences userDetails = context.getSharedPreferences("", Context.MODE_PRIVATE);
         String sharedUsername = userDetails.getString("username", "");
 
         JSONObject create = new JSONObject();
 
-        try{
+        try {
             create.put("organiser", sharedUsername);
             create.put("event_name", event.getEventName());
             create.put("location", event.getLocation());
@@ -197,17 +174,16 @@ public class NetworkInterface {
             create.put("finish_time", parseToIsoTime(event.getFinishTime()));
             create.put("sign_in_time", parseToIsoTime(event.getSignInTime()));
             create.put("attendance_required", Boolean.toString(true));
-            JSONArray jsonArray= new JSONArray();
+            JSONArray jsonArray = new JSONArray();
 
-            for(String name : event.getAttendees()){
+            for (String name : event.getAttendees()) {
                 jsonArray.put(name);
             }
 
             create.put("attendees", jsonArray);
             Log.d(TAG, create.toString());
 
-        }
-        catch (JSONException e){
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
@@ -218,37 +194,109 @@ public class NetworkInterface {
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
                     public void onResponse(JSONObject response) {
-
+                        Log.d(TAG, "in onResponse");
                         Log.d(TAG, response.toString());
+                        eventCreateUpdateCallback.onSuccess(response);
                     }
 
                     @Override
                     public void onError(ANError anError) {
+                        Log.d(TAG, "in onError");
                         Log.d(TAG, Integer.toString(anError.getErrorCode()));
                         Log.d(TAG, anError.getErrorBody());
                         Log.d(TAG, anError.getErrorDetail());
+                        eventCreateUpdateCallback.onFailure(anError);
                     }
                 });
     }
 
-    private String parseToIsoTime(String time){
+    public void updateEvent(Event event, final EventCreateUpdateCallback eventCreateUpdateCallback) {
+
+        SharedPreferences userDetails = context.getSharedPreferences("", Context.MODE_PRIVATE);
+        String sharedUsername = userDetails.getString("username", "");
+
+        JSONObject create = new JSONObject();
+
+        try {
+            create.put("organiser", sharedUsername);
+            create.put("event_name", event.getEventName());
+            create.put("location", event.getLocation());
+            create.put("start_time", parseToIsoTime(event.getStartTime()));
+            create.put("finish_time", parseToIsoTime(event.getFinishTime()));
+            create.put("sign_in_time", parseToIsoTime(event.getSignInTime()));
+            create.put("attendance_required", Boolean.toString(true));
+            JSONArray jsonArray = new JSONArray();
+
+            for (String name : event.getAttendees()) {
+                jsonArray.put(name);
+            }
+
+            create.put("attendees", jsonArray);
+            Log.d(TAG, create.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        AndroidNetworking.patch("http://46.101.13.145:8000/api/events/" + Integer.toString(event.getId()) + "/")
+                .addJSONObjectBody(create)
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, "in onResponse");
+                        Log.d(TAG, response.toString());
+                        eventCreateUpdateCallback.onSuccess(response);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        Log.d(TAG, "in onError");
+                        Log.d(TAG, Integer.toString(anError.getErrorCode()));
+                        Log.d(TAG, anError.getErrorBody());
+                        Log.d(TAG, anError.getErrorDetail());
+                        eventCreateUpdateCallback.onFailure(anError);
+                    }
+                });
+
+    }
+
+    public void deleteEvent(int eventId, final EventDeleteCallback eventDeleteCallback) {
+
+        //TODO: Create the right responses for the delete
+
+        AndroidNetworking.delete("http://46.101.13.145:8000/api/events/" + Integer.toString(eventId) + "/")
+                .build()
+                .getAsOkHttpResponseAndString(new OkHttpResponseAndStringRequestListener() {
+                    @Override
+                    public void onResponse(Response okHttpResponse, String response) {
+
+                        eventDeleteCallback.onSuccess();
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        eventDeleteCallback.onFailure();
+                    }
+                });
+
+    }
+
+    private String parseToIsoTime(String time) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.ENGLISH);
 
         Date newTime = null;
 
-        try{
+        try {
             newTime = sdf.parse(time);
-        }
-        catch (ParseException e){
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
 
         Log.d(TAG, isoFormat.format(newTime));
         return isoFormat.format(newTime);
-
-
-
     }
 }

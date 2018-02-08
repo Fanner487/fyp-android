@@ -12,11 +12,18 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.androidnetworking.error.ANError;
 import com.example.user.attendr.R;
+import com.example.user.attendr.callbacks.EventCreateUpdateCallback;
+import com.example.user.attendr.callbacks.EventDeleteCallback;
 import com.example.user.attendr.callbacks.TimeSetCallback;
 import com.example.user.attendr.models.Event;
 import com.example.user.attendr.network.NetworkInterface;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -61,9 +68,7 @@ public class CreateEventActivity extends AppCompatActivity {
         btnSubmit = findViewById(R.id.btnSubmit);
 
         switchAttendanceRequired = findViewById(R.id.switchAttendanceRequired);
-
-
-
+        
         btnStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,7 +116,22 @@ public class CreateEventActivity extends AppCompatActivity {
 
                 Event event = new Event(eventName, location, startTime, finishTime, signInTime, attendees, attendanceRequired);
 
-                NetworkInterface.getInstance(CreateEventActivity.this).createEvent(event);
+                NetworkInterface.getInstance(CreateEventActivity.this).createEvent(event, new EventCreateUpdateCallback() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        try {
+                            Toast.makeText(CreateEventActivity.this, "Created event: " + response.get("event_name"), Toast.LENGTH_SHORT).show();
+                        }
+                        catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(ANError anError) {
+                        Toast.makeText(CreateEventActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
+                    }
+                });
 
             }
         });
