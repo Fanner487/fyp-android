@@ -65,13 +65,8 @@ public class NetworkInterface {
 
     public List<Event> getOrganisedEvents() {
 
-        SharedPreferences userDetails = context.getSharedPreferences("", Context.MODE_PRIVATE);
-        String sharedUsername = userDetails.getString("username", "");
-        Log.d(TAG, "Shared username: " + sharedUsername);
-
-
         AndroidNetworking.get("http://46.101.13.145:8000/api/profile/{username}/{type}/{time}/")
-                .addPathParameter("username", sharedUsername)
+                .addPathParameter("username", getLoggedInUser())
                 .addPathParameter("type", "organising")
                 .addPathParameter("time", "all")
                 .setPriority(Priority.MEDIUM)
@@ -112,6 +107,7 @@ public class NetworkInterface {
 
 
     public void login(String username, String password, final LoginCallback callback) {
+
         AndroidNetworking.post("http://46.101.13.145:8000/api/login/")
                 .addBodyParameter("username", username)
                 .addBodyParameter("password", password)
@@ -163,13 +159,11 @@ public class NetworkInterface {
 
     public void createEvent(Event event, final EventCreateUpdateCallback eventCreateUpdateCallback) {
 
-        SharedPreferences userDetails = context.getSharedPreferences("", Context.MODE_PRIVATE);
-        String sharedUsername = userDetails.getString("username", "");
-
+        // JSON object to append event fields into for the request body
         JSONObject create = new JSONObject();
 
         try {
-            create.put("organiser", sharedUsername);
+            create.put("organiser", getLoggedInUser());
             create.put("event_name", event.getEventName());
             create.put("location", event.getLocation());
             create.put("start_time", parseToIsoTime(event.getStartTime()));
@@ -214,13 +208,11 @@ public class NetworkInterface {
 
     public void updateEvent(Event event, final EventCreateUpdateCallback eventCreateUpdateCallback) {
 
-        SharedPreferences userDetails = context.getSharedPreferences("", Context.MODE_PRIVATE);
-        String sharedUsername = userDetails.getString("username", "");
-
+        // JSON object to append event fields into for the request body
         JSONObject create = new JSONObject();
 
         try {
-            create.put("organiser", sharedUsername);
+            create.put("organiser", getLoggedInUser());
             create.put("event_name", event.getEventName());
             create.put("location", event.getLocation());
             create.put("start_time", parseToIsoTime(event.getStartTime()));
@@ -266,8 +258,6 @@ public class NetworkInterface {
 
     public void deleteEvent(int eventId, final EventDeleteCallback eventDeleteCallback) {
 
-        //TODO: Create the right responses for the delete
-
         AndroidNetworking.delete("http://46.101.13.145:8000/api/events/" + Integer.toString(eventId) + "/")
                 .build()
                 .getAsOkHttpResponseAndString(new OkHttpResponseAndStringRequestListener() {
@@ -285,6 +275,9 @@ public class NetworkInterface {
 
     }
 
+    /*
+    * Converts times into a ISO-8601 standard so server can correctly read it
+    * */
     private String parseToIsoTime(String time) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.ENGLISH);
@@ -300,5 +293,11 @@ public class NetworkInterface {
 
         Log.d(TAG, isoFormat.format(newTime));
         return isoFormat.format(newTime);
+    }
+
+    // Returns logged in user from shared preferences
+    private String getLoggedInUser(){
+        SharedPreferences userDetails = context.getSharedPreferences("", Context.MODE_PRIVATE);
+        return userDetails.getString("username", "");
     }
 }
