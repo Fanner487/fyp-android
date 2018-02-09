@@ -22,4 +22,15 @@
     <string name="attendane_required">Attendance Required</string>
     <string name="password">Password</string>
     <string name="username">Username</string>
+    <string name="password_confirm">Confirm Password</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="event_name">Event Name</string>
+    <string name="location">location</string>
+    <string name="start_time">Start Time</string>
+    <string name="finish_time">Finish Time</string>
+    <string name="sign_in_time">Sign In Time</string>
+    <string name="attendees">attendees</string>
+    <string name="submit">submit</string>
+    <string name="pick">pick</string>
 </resources>
