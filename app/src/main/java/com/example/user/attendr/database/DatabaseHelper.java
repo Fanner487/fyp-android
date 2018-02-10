@@ -16,7 +16,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private final String TAG = DatabaseHelper.class.getSimpleName();
 
     DatabaseHelper(Context context){
+
         super(context, DBManager.DATABASE_NAME, null, DBManager.DATABASE_VERSION);
+        Log.d(TAG, "In Database Helper constructor");
     }
 
     @Override

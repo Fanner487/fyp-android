@@ -8,7 +8,6 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.androidnetworking.interfaces.OkHttpResponseAndJSONArrayRequestListener;
 import com.androidnetworking.interfaces.OkHttpResponseAndStringRequestListener;
 import com.androidnetworking.interfaces.OkHttpResponseListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
@@ -249,7 +248,7 @@ public class NetworkInterface {
             e.printStackTrace();
         }
 
-        AndroidNetworking.patch("http://46.101.13.145:8000/api/events/" + Integer.toString(event.getId()) + "/")
+        AndroidNetworking.patch("http://46.101.13.145:8000/api/events/" + Integer.toString(event.getEventId()) + "/")
                 .addJSONObjectBody(create)
                 .setPriority(Priority.MEDIUM)
                 .build()

@@ -19,8 +19,10 @@ public class Event {
 
     private final String TAG = Event.class.getSimpleName();
 
-    @JsonProperty("id")
     private int id;
+
+    @JsonProperty("eventId")
+    private int eventId;
 
     @JsonProperty("organiser")
     private String organiser;
@@ -53,8 +55,9 @@ public class Event {
     public Event() {
     }
 
-    public Event(int id, String organiser, String eventName, String location, String startTime, String finishTime, String signInTime, ArrayList<String> attendees, ArrayList<String> attending, boolean attendanceRequired) {
+    public Event(int id, int eventId, String organiser, String eventName, String location, String startTime, String finishTime, String signInTime, ArrayList<String> attendees, ArrayList<String> attending, boolean attendanceRequired) {
         this.id = id;
+        this.eventId = eventId;
         this.organiser = organiser;
         this.eventName = eventName;
         this.location = location;
@@ -66,8 +69,34 @@ public class Event {
         this.attendanceRequired = attendanceRequired;
     }
 
-    public Event(int id, String organiser, String eventName, String location, Date startTime, Date finishTime, Date signInTime, ArrayList<String> attendees, ArrayList<String> attending, boolean attendanceRequired) {
+    public Event(int eventId, String organiser, String eventName, String location, String startTime, String finishTime, String signInTime, ArrayList<String> attendees, ArrayList<String> attending, boolean attendanceRequired) {
+        this.eventId = eventId;
+        this.organiser = organiser;
+        this.eventName = eventName;
+        this.location = location;
+        this.startTime = startTime;
+        this.finishTime = finishTime;
+        this.signInTime = signInTime;
+        this.attendees = attendees;
+        this.attending = attending;
+        this.attendanceRequired = attendanceRequired;
+    }
+
+    public Event(int eventId, String organiser, String eventName, String location, Date startTime, Date finishTime, Date signInTime, ArrayList<String> attendees, ArrayList<String> attending, boolean attendanceRequired) {
+        this.eventId = eventId;
+        this.organiser = organiser;
+        this.eventName = eventName;
+        this.location = location;
+        this.startTime = parseDateToString(startTime);
+        this.finishTime = parseDateToString(finishTime);
+        this.signInTime = parseDateToString(signInTime);
+        this.attendees = attendees;
+        this.attending = attending;
+        this.attendanceRequired = attendanceRequired;
+    }
+    public Event(int id, int eventId, String organiser, String eventName, String location, Date startTime, Date finishTime, Date signInTime, ArrayList<String> attendees, ArrayList<String> attending, boolean attendanceRequired) {
         this.id = id;
+        this.eventId = eventId;
         this.organiser = organiser;
         this.eventName = eventName;
         this.location = location;
@@ -90,14 +119,22 @@ public class Event {
         this.attendanceRequired = attendanceRequired;
     }
 
-    @JsonProperty("id")
     public int getId() {
         return id;
     }
 
-    @JsonProperty("id")
     public void setId(int id) {
         this.id = id;
+    }
+
+    @JsonProperty("eventId")
+    public int getEventId() {
+        return eventId;
+    }
+
+    @JsonProperty("eventId")
+    public void setEventId(int eventId) {
+        this.eventId = eventId;
     }
 
     @JsonProperty("organiser")
@@ -181,7 +218,7 @@ public class Event {
     }
 
     @JsonProperty("attendance_required")
-    public boolean getAttendanceRequired() {
+    public boolean isAttendanceRequired() {
         return attendanceRequired;
     }
 
@@ -193,7 +230,7 @@ public class Event {
     @Override
     public String toString() {
         return "Event{" +
-                "id=" + id +
+                "eventId=" + eventId +
                 ", organiser='" + organiser + '\'' +
                 ", eventName='" + eventName + '\'' +
                 ", location='" + location + '\'' +
