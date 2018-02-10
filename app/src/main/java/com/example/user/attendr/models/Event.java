@@ -21,7 +21,7 @@ public class Event {
 
     private int id;
 
-    @JsonProperty("eventId")
+    @JsonProperty("event_id")
     private int eventId;
 
     @JsonProperty("organiser")
@@ -127,12 +127,12 @@ public class Event {
         this.id = id;
     }
 
-    @JsonProperty("eventId")
+    @JsonProperty("id")
     public int getEventId() {
         return eventId;
     }
 
-    @JsonProperty("eventId")
+    @JsonProperty("id")
     public void setEventId(int eventId) {
         this.eventId = eventId;
     }
@@ -227,21 +227,7 @@ public class Event {
         this.attendanceRequired = attendanceRequired;
     }
 
-    @Override
-    public String toString() {
-        return "Event{" +
-                "eventId=" + eventId +
-                ", organiser='" + organiser + '\'' +
-                ", eventName='" + eventName + '\'' +
-                ", location='" + location + '\'' +
-                ", startTime='" + startTime + '\'' +
-                ", finishTime='" + finishTime + '\'' +
-                ", signInTime='" + signInTime + '\'' +
-                ", attendees=" + attendees +
-                ", attending=" + attending +
-                ", attendanceRequired=" + attendanceRequired +
-                '}';
-    }
+
 
     public Date getFormattedStartTime() {
         return parseDateTimeField(this.getStartTime());
@@ -278,5 +264,22 @@ public class Event {
             e.printStackTrace();
         }
         return newDate;
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "id=" + id +
+                ", eventId=" + eventId +
+                ", organiser='" + organiser + '\'' +
+                ", eventName='" + eventName + '\'' +
+                ", location='" + location + '\'' +
+                ", startTime='" + startTime + '\'' +
+                ", finishTime='" + finishTime + '\'' +
+                ", signInTime='" + signInTime + '\'' +
+                ", attendees=" + attendees +
+                ", attending=" + attending +
+                ", attendanceRequired=" + attendanceRequired +
+                '}';
     }
 }

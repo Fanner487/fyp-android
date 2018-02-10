@@ -15,6 +15,7 @@ import com.example.user.attendr.callbacks.EventCreateUpdateCallback;
 import com.example.user.attendr.callbacks.EventDeleteCallback;
 import com.example.user.attendr.callbacks.LoginCallback;
 import com.example.user.attendr.callbacks.RegisterCallback;
+import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.models.Event;
 import com.jacksonandroidnetworking.JacksonParserFactory;
@@ -44,6 +45,7 @@ public class NetworkInterface {
 
     private static NetworkInterface instance;
     private static Context context;
+    private DBManager db;
 
     private static List<Event> returnList = new ArrayList<>();
 
@@ -64,7 +66,7 @@ public class NetworkInterface {
         return instance;
     }
 
-    public List<Event> getEvents(EventType type) {
+    public void getEvents(final EventType type) {
 
         String typeString = "";
 
@@ -89,20 +91,28 @@ public class NetworkInterface {
 
                         for (Event event : events) {
                             Log.d(TAG, event.toString());
-                            Log.d(TAG, event.getFormattedStartTime().toString());
-                            Log.d(TAG, event.getFormattedFinishTime().toString());
-                            Log.d(TAG, event.getFormattedSignInTime().toString());
-                            Log.d(TAG, "Attendees");
-
-                            for(String attendee :event.getAttendees()){
-                                Log.d(TAG, attendee);
-                            }
-
-
                         }
 
-                        returnList = events;
-//                        setEvents(events);
+                        /*
+                        * Adding to DB
+                        * */
+
+                        db = new DBManager(context.getApplicationContext()).open();
+                        ArrayList<Event> newEvents = new ArrayList<>(events);
+
+                        db.deleteAllEvents();
+                        db.insertEvents(newEvents);
+
+//                        NetworkInterface.getInstance(context.getApplicationContext()).getEvents(type);
+
+
+                        ArrayList<Event> dbList = db.getEvents();
+
+                        for(Event eventDb: dbList){
+                            Log.d(TAG, eventDb.toString());
+                        }
+
+
 
 
                     }
@@ -116,9 +126,7 @@ public class NetworkInterface {
                     }
                 });
 
-        Log.d(TAG, "returning");
-        Log.d(TAG, Integer.toString(returnList.size()));
-        return returnList;
+
     }
 
 

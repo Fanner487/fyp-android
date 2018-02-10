@@ -15,6 +15,8 @@ import java.util.List;
 
 /**
  * Created by Eamon on 10/02/2018.
+ *
+ * DB layer of app and all DB CRUD operations are stored here
  */
 
 public class DBManager {
@@ -79,8 +81,6 @@ public class DBManager {
     }
 
     public ArrayList<Event> getEvents(){
-
-
         Cursor c = db.query(
                 false,
                 DBManager.DATABASE_TABLE,
@@ -95,6 +95,10 @@ public class DBManager {
                 );
 
         return toEvents(c);
+    }
+
+    public long deleteAllEvents(){
+        return db.delete(DBManager.DATABASE_TABLE, "1", null);
     }
 
     public void insertEvents(ArrayList<Event> events){

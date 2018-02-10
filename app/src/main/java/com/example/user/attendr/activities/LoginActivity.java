@@ -13,7 +13,12 @@ import android.widget.Toast;
 
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.LoginCallback;
+import com.example.user.attendr.database.DBManager;
+import com.example.user.attendr.enums.EventType;
+import com.example.user.attendr.models.Event;
 import com.example.user.attendr.network.NetworkInterface;
+
+import java.util.ArrayList;
 
 /**
  * Created by Eamon on 06/02/2018.
@@ -29,6 +34,8 @@ public class LoginActivity extends AppCompatActivity {
     EditText etPassword;
     Button btnSubmit;
 
+    DBManager db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +45,34 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         btnSubmit = findViewById(R.id.btnSubmit);
 
+//        ArrayList<String> attendees = new ArrayList<>();
+//        attendees.add("olegpetcov1");
+//        attendees.add("aaronrenaghan1");
+//        db = new DBManager(this).open();
+//
+//        Log.d(TAG, "Events deleted: " + db.deleteAllEvents());
+//
+//        Event event;
+//        event = new Event(31,
+//                "eamont22",
+//                "DBTest",
+//                "TestLocation",
+//                "2018-08-08T23:23:00Z",
+//                "2019-08-08T23:23:00Z",
+//                "2018-08-08T23:23:00Z",
+//                attendees,
+//                attendees,
+//                false
+//        );
+//        db.insertEvent(event);
+//
+//        ArrayList<Event> dbList = db.getEvents();
+//
+//        for(Event eventDb: dbList){
+//            Log.d(TAG, eventDb.toString());
+//        }
+//
+        NetworkInterface.getInstance(this).getEvents(EventType.ATTENDING);
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
