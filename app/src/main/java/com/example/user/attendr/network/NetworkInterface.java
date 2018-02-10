@@ -42,6 +42,7 @@ import okhttp3.Response;
 public class NetworkInterface {
 
     private final String TAG = NetworkInterface.class.getSimpleName();
+
     private static NetworkInterface instance;
     private static Context context;
 
@@ -92,6 +93,12 @@ public class NetworkInterface {
                             Log.d(TAG, event.getFormattedStartTime().toString());
                             Log.d(TAG, event.getFormattedFinishTime().toString());
                             Log.d(TAG, event.getFormattedSignInTime().toString());
+                            Log.d(TAG, "Attendees");
+
+                            for(String attendee :event.getAttendees()){
+                                Log.d(TAG, attendee);
+                            }
+
 
                         }
 

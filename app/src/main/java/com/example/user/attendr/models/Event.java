@@ -17,6 +17,8 @@ import java.util.TimeZone;
 
 public class Event {
 
+    private final String TAG = Event.class.getSimpleName();
+
     @JsonProperty("id")
     private int id;
 

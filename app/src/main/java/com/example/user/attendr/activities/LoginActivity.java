@@ -23,7 +23,8 @@ import com.example.user.attendr.network.NetworkInterface;
 
 public class LoginActivity extends AppCompatActivity {
 
-    final String TAG = LoginActivity.class.getSimpleName();
+    private final String TAG = LoginActivity.class.getSimpleName();
+
     EditText etUsername;
     EditText etPassword;
     Button btnSubmit;
