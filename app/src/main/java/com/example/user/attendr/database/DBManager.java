@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.example.user.attendr.constants.DbConstants;
 import com.example.user.attendr.models.Event;
+import com.example.user.attendr.models.UserGroup;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,6 +99,23 @@ public class DBManager {
         return toEvents(c);
     }
 
+    public ArrayList<UserGroup> getGroups(){
+        Cursor c = db.query(
+                false,
+                DbConstants.DATABASE_GROUPS_TABLE,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        return toUserGroups(c);
+    }
+
     public long deleteAllEvents(){
         return db.delete(DbConstants.DATABASE_EVENTS_TABLE, "1", null);
     }
@@ -109,6 +127,13 @@ public class DBManager {
         }
     }
 
+    public void insertGroups(ArrayList<UserGroup> groups){
+
+        for(UserGroup group: groups){
+            insertUserGroup(group);
+        }
+    }
+
     //insert single item from list in database
     public long insertEvent(Event event) throws SQLException
     {
@@ -116,6 +141,14 @@ public class DBManager {
         ContentValues values = toEventContentValues(event);
 
         return db.insertOrThrow(DbConstants.DATABASE_EVENTS_TABLE, null, values);
+    }
+
+    public long insertUserGroup(UserGroup group) throws SQLException
+    {
+
+        ContentValues values = toUserGroupContentValues(group);
+
+        return db.insertOrThrow(DbConstants.DATABASE_GROUPS_TABLE, null, values);
     }
 
     private ArrayList<Event> toEvents(Cursor c){
@@ -140,6 +173,21 @@ public class DBManager {
         return events;
     }
 
+    private ArrayList<UserGroup> toUserGroups(Cursor c){
+        ArrayList<UserGroup> events = new ArrayList<>();
+
+        while(c.moveToNext()) {
+
+            events.add(new UserGroup(
+                    c.getInt(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_ID)),
+                    c.getString(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_USERNAME)),
+                    c.getString(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_GROUP_NAME)),
+                    stringToList(c.getString(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_USERS)))
+                    ));
+        }
+        return events;
+    }
+
 
     private ContentValues toEventContentValues(Event event){
 
@@ -155,6 +203,17 @@ public class DBManager {
         contentValues.put(DbConstants.EVENT_KEY_ATTENDEES, listToString(event.getAttendees()));
         contentValues.put(DbConstants.EVENT_KEY_ATTENDING, listToString(event.getAttending()));
         contentValues.put(DbConstants.EVENT_KEY_ATTENDANCE_REQUIRED, booleanToInt(event.isAttendanceRequired()));
+
+        return contentValues;
+    }
+
+    private ContentValues toUserGroupContentValues(UserGroup group){
+
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(DbConstants.GROUP_KEY_ROW_USERNAME, group.getUsername());
+        contentValues.put(DbConstants.GROUP_KEY_ROW_GROUP_NAME, group.getGroupName());
+        contentValues.put(DbConstants.GROUP_KEY_ROW_USERS, listToString(group.getUsers()));
 
         return contentValues;
     }

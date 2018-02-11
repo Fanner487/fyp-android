@@ -13,7 +13,11 @@ import android.widget.Toast;
 
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.RegisterCallback;
+import com.example.user.attendr.database.DBManager;
+import com.example.user.attendr.models.UserGroup;
 import com.example.user.attendr.network.NetworkInterface;
+
+import java.util.ArrayList;
 
 /**
  * Created by Eamon on 06/02/2018.
@@ -33,6 +37,8 @@ public class RegisterActivity extends AppCompatActivity {
     EditText etLastName;
     Button btnSubmit;
 
+    DBManager db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +51,21 @@ public class RegisterActivity extends AppCompatActivity {
         etFirstName = findViewById(R.id.etFirstName);
         etLastName = findViewById(R.id.etLastName);
         btnSubmit = findViewById(R.id.btnSubmit);
+
+
+        db = new DBManager(this).open();
+
+//        ArrayList<String> users = new ArrayList<>();
+//        users.add("alannahmullins1");
+//        users.add("androiduser");
+//        UserGroup group = new UserGroup("olegpetcov1", "First Group", users);
+//        db.insertUserGroup(group);
+
+        ArrayList<UserGroup> groups = db.getGroups();
+
+        for(UserGroup g: groups){
+            Log.d(TAG, g.toString());
+        }
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override

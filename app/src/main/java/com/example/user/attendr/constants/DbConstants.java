@@ -26,10 +26,10 @@ public class DbConstants {
     public static final String DATABASE_NAME = "fypDB";
     public static final String DATABASE_EVENTS_TABLE = "events";
     public static final String DATABASE_GROUPS_TABLE = "groups";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 4;
 
     public static final String DATABASE_EVENTS_CREATE =
-            "create table " + DATABASE_EVENTS_TABLE +
+            "create table if not exists " + DATABASE_EVENTS_TABLE +
                     " ( " +
                     EVENT_KEY_ROW_ID + " integer primary key autoincrement, " +
                     EVENT_KEY_EVENT_ID + " text not null, " +
@@ -45,11 +45,11 @@ public class DbConstants {
                     ");";
 
     public static final String DATABASE_GROUPS_CREATE =
-            "create table " + DATABASE_GROUPS_TABLE +
+            "create table if not exists " + DATABASE_GROUPS_TABLE +
                     " ( " +
                     GROUP_KEY_ROW_ID + " integer primary key autoincrement, " +
                     GROUP_KEY_ROW_USERNAME + " text not null, " +
                     GROUP_KEY_ROW_GROUP_NAME + " text not null unique, " +
-                    GROUP_KEY_ROW_USERS + " text not null unique" +
+                    GROUP_KEY_ROW_USERS + " text not null " +
                     ");";
 }

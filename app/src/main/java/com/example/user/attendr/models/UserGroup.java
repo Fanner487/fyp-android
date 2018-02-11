@@ -22,6 +22,11 @@ public class UserGroup {
         this.users = users;
     }
 
+    public UserGroup(String groupName, ArrayList<String> users) {
+        this.groupName = groupName;
+        this.users = users;
+    }
+
     public UserGroup(String username, String groupName, ArrayList<String> users) {
         this.username = username;
         this.groupName = groupName;

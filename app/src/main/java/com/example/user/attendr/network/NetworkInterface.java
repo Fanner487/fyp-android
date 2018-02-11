@@ -16,11 +16,14 @@ import com.example.user.attendr.callbacks.EventCreateUpdateCallback;
 import com.example.user.attendr.callbacks.EventDeleteCallback;
 import com.example.user.attendr.callbacks.LoginCallback;
 import com.example.user.attendr.callbacks.RegisterCallback;
+import com.example.user.attendr.callbacks.UserGroupCreateCallback;
 import com.example.user.attendr.constants.ApiUrls;
 import com.example.user.attendr.constants.TimeFormats;
 import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.models.Event;
+import com.example.user.attendr.models.UserGroup;
+import com.google.gson.JsonArray;
 import com.jacksonandroidnetworking.JacksonParserFactory;
 
 import org.json.JSONArray;
@@ -48,9 +51,8 @@ public class NetworkInterface {
 
     private static NetworkInterface instance;
     private static Context context;
-    private DBManager db;
+    private static DBManager db;
 
-    private static List<Event> returnList = new ArrayList<>();
 
     private NetworkInterface(Context context) {
 
@@ -58,6 +60,7 @@ public class NetworkInterface {
 
         AndroidNetworking.initialize(context.getApplicationContext());
         AndroidNetworking.setParserFactory(new JacksonParserFactory());
+
     }
 
     public static synchronized NetworkInterface getInstance(Context context) {
@@ -178,7 +181,7 @@ public class NetworkInterface {
 
                     @Override
                     public void onError(ANError anError) {
-                        callback.onFailure(anError.getErrorBody().toString());
+                        callback.onFailure(anError.getErrorBody());
                     }
                 });
     }
@@ -196,7 +199,7 @@ public class NetworkInterface {
             create.put("finish_time", parseToIsoTime(event.getFinishTime()));
             create.put("sign_in_time", parseToIsoTime(event.getSignInTime()));
             create.put("attendance_required", Boolean.toString(event.isAttendanceRequired()));
-            
+
             JSONArray jsonArray = new JSONArray();
 
             for (String name : event.getAttendees()) {
@@ -300,6 +303,47 @@ public class NetworkInterface {
                     }
                 });
 
+    }
+
+    public void verifyGroup(final UserGroup group, final UserGroupCreateCallback callback){
+
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+
+        db = new DBManager(context).open();
+
+        try {
+
+            for(String username: group.getUsers()){
+
+                jsonArray.put(username);
+            }
+
+            jsonObject.put("usernames", jsonArray);
+        }
+        catch(JSONException e){
+            e.printStackTrace();
+        }
+
+
+        AndroidNetworking.post(ApiUrls.VERIFY_GROUP)
+                .addJSONObjectBody(jsonObject)
+                .build()
+                .getAsOkHttpResponseAndString(new OkHttpResponseAndStringRequestListener() {
+                    @Override
+                    public void onResponse(Response okHttpResponse, String response) {
+                        callback.onSuccess();
+
+                        // Sets username of current logged in user to be stored in DB
+                        group.setUsername(getLoggedInUser());
+                        db.insertUserGroup(group);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        callback.onFailure(anError.getErrorBody());
+                    }
+                });
     }
 
     /*
