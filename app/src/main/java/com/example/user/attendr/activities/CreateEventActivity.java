@@ -109,6 +109,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 String finishTime = tvFinishTime.getText().toString().trim();
                 String signInTime = tvSignInTime.getText().toString().trim();
                 boolean attendanceRequired = switchAttendanceRequired.isChecked();
+                Toast.makeText(CreateEventActivity.this, Boolean.toString(switchAttendanceRequired.isChecked()), Toast.LENGTH_SHORT).show();
 
                 Log.d(TAG, eventName);
                 Log.d(TAG, location);

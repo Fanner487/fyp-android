@@ -195,7 +195,8 @@ public class NetworkInterface {
             create.put("start_time", parseToIsoTime(event.getStartTime()));
             create.put("finish_time", parseToIsoTime(event.getFinishTime()));
             create.put("sign_in_time", parseToIsoTime(event.getSignInTime()));
-            create.put("attendance_required", Boolean.toString(true));
+            create.put("attendance_required", Boolean.toString(event.isAttendanceRequired()));
+            
             JSONArray jsonArray = new JSONArray();
 
             for (String name : event.getAttendees()) {

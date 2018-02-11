@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.example.user.attendr.constants.DbConstants;
+
 /**
  * Created by Eamon on 10/02/2018.
  *
@@ -17,19 +19,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     DatabaseHelper(Context context){
 
-        super(context, DBManager.DATABASE_NAME, null, DBManager.DATABASE_VERSION);
+        super(context, DbConstants.DATABASE_NAME, null, DbConstants.DATABASE_VERSION);
         Log.d(TAG, "In Database Helper constructor");
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         Log.d(TAG, "In onCreate");
-        sqLiteDatabase.execSQL(DBManager.DATABASE_CREATE);
+        sqLiteDatabase.execSQL(DbConstants.DATABASE_EVENTS_CREATE);
+        sqLiteDatabase.execSQL(DbConstants.DATABASE_GROUPS_CREATE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         Log.d(TAG, "In onUpgrade");
-        sqLiteDatabase.execSQL(DBManager.DATABASE_CREATE);
+        sqLiteDatabase.execSQL(DbConstants.DATABASE_EVENTS_CREATE);
+        sqLiteDatabase.execSQL(DbConstants.DATABASE_GROUPS_CREATE);
     }
 }
