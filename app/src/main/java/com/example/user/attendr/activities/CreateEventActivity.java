@@ -160,9 +160,6 @@ public class CreateEventActivity extends AppCompatActivity {
                 final int month = i1;
                 final int day = i2;
 
-                final Calendar now = Calendar.getInstance();
-
-
                 getTimeFromDialog(new TimeSetCallback() {
                     @Override
                     public void onTimeSet(int hour, int minute) {
@@ -187,6 +184,7 @@ public class CreateEventActivity extends AppCompatActivity {
         }, Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DATE));
 
         datePickerDialog.show();
+
     }
 
     private void getTimeFromDialog(final TimeSetCallback callback){

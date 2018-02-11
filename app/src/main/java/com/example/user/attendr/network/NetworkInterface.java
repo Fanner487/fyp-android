@@ -2,6 +2,7 @@ package com.example.user.attendr.network;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
@@ -15,6 +16,8 @@ import com.example.user.attendr.callbacks.EventCreateUpdateCallback;
 import com.example.user.attendr.callbacks.EventDeleteCallback;
 import com.example.user.attendr.callbacks.LoginCallback;
 import com.example.user.attendr.callbacks.RegisterCallback;
+import com.example.user.attendr.constants.ApiUrls;
+import com.example.user.attendr.constants.TimeFormats;
 import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.models.Event;
@@ -77,7 +80,9 @@ public class NetworkInterface {
             typeString = "organising";
         }
 
-        AndroidNetworking.get("http://46.101.13.145:8000/api/profile/{username}/{type}/{time}/")
+
+
+        AndroidNetworking.get(ApiUrls.PROFILE)
                 .addPathParameter("username", getLoggedInUser())
                 .addPathParameter("type", typeString)
                 .addPathParameter("time", "all")
@@ -102,9 +107,6 @@ public class NetworkInterface {
 
                         db.deleteAllEvents();
                         db.insertEvents(newEvents);
-
-//                        NetworkInterface.getInstance(context.getApplicationContext()).getEvents(type);
-
 
                         ArrayList<Event> dbList = db.getEvents();
 
@@ -132,7 +134,7 @@ public class NetworkInterface {
 
     public void login(String username, String password, final LoginCallback callback) {
 
-        AndroidNetworking.post("http://46.101.13.145:8000/api/login/")
+        AndroidNetworking.post(ApiUrls.LOGIN)
                 .addBodyParameter("username", username)
                 .addBodyParameter("password", password)
                 .setPriority(Priority.MEDIUM)
@@ -158,7 +160,7 @@ public class NetworkInterface {
     public void register(String username, String email, String password,
                          String passwordConfirm, String firstName, String lastName, final RegisterCallback callback) {
 
-        AndroidNetworking.post("http://46.101.13.145:8000/api/register/")
+        AndroidNetworking.post(ApiUrls.REGISTER)
                 .addBodyParameter("username", username)
                 .addBodyParameter("email", email)
                 .addBodyParameter("password", password)
@@ -256,7 +258,7 @@ public class NetworkInterface {
             e.printStackTrace();
         }
 
-        AndroidNetworking.patch("http://46.101.13.145:8000/api/events/" + Integer.toString(event.getEventId()) + "/")
+        AndroidNetworking.patch(ApiUrls.EVENTS + Integer.toString(event.getEventId()) + "/")
                 .addJSONObjectBody(create)
                 .setPriority(Priority.MEDIUM)
                 .build()
@@ -282,7 +284,7 @@ public class NetworkInterface {
 
     public void deleteEvent(int eventId, final EventDeleteCallback eventDeleteCallback) {
 
-        AndroidNetworking.delete("http://46.101.13.145:8000/api/events/" + Integer.toString(eventId) + "/")
+        AndroidNetworking.delete(ApiUrls.EVENTS + Integer.toString(eventId) + "/")
                 .build()
                 .getAsOkHttpResponseAndString(new OkHttpResponseAndStringRequestListener() {
                     @Override
@@ -304,7 +306,7 @@ public class NetworkInterface {
     * */
     private String parseToIsoTime(String time) {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.ENGLISH);
+        SimpleDateFormat sdf = new SimpleDateFormat(TimeFormats.DISPLAY_FORMAT, Locale.ENGLISH);
 
         Date newTime = null;
 
@@ -313,7 +315,7 @@ public class NetworkInterface {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
+        SimpleDateFormat isoFormat = new SimpleDateFormat(TimeFormats.ISO_FORMAT, Locale.ENGLISH);
 
         Log.d(TAG, isoFormat.format(newTime));
         return isoFormat.format(newTime);
