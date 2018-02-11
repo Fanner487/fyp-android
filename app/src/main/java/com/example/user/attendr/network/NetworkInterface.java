@@ -2,7 +2,6 @@ package com.example.user.attendr.network;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
@@ -23,7 +22,6 @@ import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.models.Event;
 import com.example.user.attendr.models.UserGroup;
-import com.google.gson.JsonArray;
 import com.jacksonandroidnetworking.JacksonParserFactory;
 
 import org.json.JSONArray;
@@ -332,11 +330,21 @@ public class NetworkInterface {
                 .getAsOkHttpResponseAndString(new OkHttpResponseAndStringRequestListener() {
                     @Override
                     public void onResponse(Response okHttpResponse, String response) {
-                        callback.onSuccess();
+
 
                         // Sets username of current logged in user to be stored in DB
                         group.setUsername(getLoggedInUser());
-                        db.insertUserGroup(group);
+
+                        if(!db.groupAlreadyExistsWithUser(group)){
+                            db.insertUserGroup(group);
+
+                            callback.onSuccess();
+                        }
+                        else{
+                            callback.onFailure("Group already exists with same name");
+
+                        }
+
                     }
 
                     @Override

@@ -273,4 +273,31 @@ public class DBManager {
     private int booleanToInt(boolean input){
         return (input) ? 1 : 0;
     }
+
+    /*
+    * Checks to see if the group name exists for the user
+    * Different users logged into the phone can create the same group name
+    * as long as they're not duplicate names under the same user
+    * */
+    public boolean groupAlreadyExistsWithUser(UserGroup group){
+        Cursor c = db.query(
+                false,
+                DbConstants.DATABASE_GROUPS_TABLE,
+                null,
+                DbConstants.GROUP_KEY_ROW_GROUP_NAME + "=? and " + DbConstants.GROUP_KEY_ROW_USERNAME + "=?",
+                new String[]{group.getGroupName(), group.getUsername()},
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        if(c.getCount() > 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }
