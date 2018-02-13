@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -241,19 +242,19 @@ public class Event {
         return parseDateTimeField(this.getSignInTime());
     }
 
-    private String parseDateToString(Date date) {
+    public static String parseDateToString(Date date) {
 
         TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'H:mm:ss'Z'");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'H:mm:ss'Z'", Locale.ENGLISH);
         df.setTimeZone(tz);
 
         return df.format(date);
     }
 
-    private Date parseDateTimeField(String date) {
+    public static Date parseDateTimeField(String date) {
 
         TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'H:mm:ss'Z'");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'H:mm:ss'Z'", Locale.ENGLISH);
         df.setTimeZone(tz);
         Date newDate = new Date();
 

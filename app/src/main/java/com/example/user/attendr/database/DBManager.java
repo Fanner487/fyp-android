@@ -2,22 +2,27 @@ package com.example.user.attendr.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.user.attendr.constants.DbConstants;
+import com.example.user.attendr.enums.EventType;
+import com.example.user.attendr.enums.TimeType;
 import com.example.user.attendr.models.Event;
 import com.example.user.attendr.models.UserGroup;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by Eamon on 10/02/2018.
- *
+ * <p>
  * DB layer of app and all DB CRUD operations are stored here
  */
 
@@ -50,24 +55,7 @@ public class DBManager {
         DBHelper.close();
     }
 
-    public ArrayList<Event> getEvents(){
-        Cursor c = db.query(
-                false,
-                DbConstants.DATABASE_EVENTS_TABLE,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-                );
-
-        return toEvents(c);
-    }
-
-    public ArrayList<UserGroup> getGroups(){
+    public ArrayList<UserGroup> getGroups() {
         Cursor c = db.query(
                 false,
                 DbConstants.DATABASE_GROUPS_TABLE,
@@ -84,45 +72,134 @@ public class DBManager {
         return toUserGroups(c);
     }
 
-    public long deleteAllEvents(){
+    public ArrayList<Event> getEvents(EventType eventType, TimeType timeType) {
+
+        ArrayList<Event> eventsOfType = getEventsOfType(getAllEvents(), eventType);
+
+        ArrayList<Event> eventsOfTime = getEventsOfTime(eventsOfType, timeType);
+
+        for (Event event : eventsOfTime) {
+            Log.d(TAG, event.toString());
+        }
+
+        return eventsOfTime;
+    }
+
+    private ArrayList<Event> getEventsOfTime(ArrayList<Event> events, TimeType timeType) {
+
+        ArrayList<Event> filteredEvents = new ArrayList<>();
+
+        Date now = new Date();
+
+        for (Event event : events) {
+            if (timeType == TimeType.PAST) {
+                Log.d(TAG, "Adding past event");
+                Date eventFinishTime = Event.parseDateTimeField(event.getFinishTime());
+
+                if (now.after(eventFinishTime)) {
+                    filteredEvents.add(event);
+                }
+            } else if (timeType == TimeType.ONGOING) {
+                Date eventSignInTime = Event.parseDateTimeField(event.getSignInTime());
+                Date eventFinishTime = Event.parseDateTimeField(event.getFinishTime());
+
+                if (now.after(eventSignInTime) && now.before(eventFinishTime)) {
+                    Log.d(TAG, "Adding ongoing event");
+                    filteredEvents.add(event);
+                }
+            } else {
+                Date eventSignInTime = Event.parseDateTimeField(event.getSignInTime());
+
+                if (now.before(eventSignInTime)) {
+                    Log.d(TAG, "Adding future event");
+                    filteredEvents.add(event);
+                }
+            }
+        }
+        return filteredEvents;
+    }
+
+    private ArrayList<Event> getEventsOfType(ArrayList<Event> events, EventType eventType) {
+
+        ArrayList<Event> filteredEvents = new ArrayList<>();
+
+        for (Event event : events) {
+
+            if (eventType == EventType.ORGANISE) {
+
+                if (event.getOrganiser().equals(getLoggedInUser())) {
+                    Log.d(TAG, "Adding organise event");
+                    filteredEvents.add(event);
+                }
+            } else {
+
+                for (String name : event.getAttendees()) {
+
+                    if (name.equals(getLoggedInUser())) {
+                        Log.d(TAG, "Adding attend event");
+                        filteredEvents.add(event);
+                    }
+                }
+            }
+        }
+
+        return filteredEvents;
+    }
+
+    public ArrayList<Event> getAllEvents() {
+        Cursor c = db.query(
+                false,
+                DbConstants.DATABASE_EVENTS_TABLE,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        return toEvents(c);
+    }
+
+    public long deleteAllEvents() {
         return db.delete(DbConstants.DATABASE_EVENTS_TABLE, "1", null);
     }
 
-    public void insertEvents(ArrayList<Event> events){
+    public void insertEvents(ArrayList<Event> events) {
 
-        for(Event event: events){
+        for (Event event : events) {
             insertEvent(event);
         }
     }
 
-    public void insertGroups(ArrayList<UserGroup> groups){
+    public void insertGroups(ArrayList<UserGroup> groups) {
 
-        for(UserGroup group: groups){
+        for (UserGroup group : groups) {
             insertUserGroup(group);
         }
     }
 
     //insert single item from list in database
-    public long insertEvent(Event event) throws SQLException
-    {
+    public long insertEvent(Event event) throws SQLException {
 
         ContentValues values = toEventContentValues(event);
 
         return db.insertOrThrow(DbConstants.DATABASE_EVENTS_TABLE, null, values);
     }
 
-    public long insertUserGroup(UserGroup group) throws SQLException
-    {
+    public long insertUserGroup(UserGroup group) throws SQLException {
 
         ContentValues values = toUserGroupContentValues(group);
 
         return db.insertOrThrow(DbConstants.DATABASE_GROUPS_TABLE, null, values);
     }
 
-    private ArrayList<Event> toEvents(Cursor c){
+    private ArrayList<Event> toEvents(Cursor c) {
         ArrayList<Event> events = new ArrayList<>();
 
-        while(c.moveToNext()) {
+        while (c.moveToNext()) {
 
             events.add(new Event(
                     c.getInt(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ROW_ID)),
@@ -136,28 +213,28 @@ public class DBManager {
                     stringToList(c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ATTENDEES))),
                     stringToList(c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ATTENDING))),
                     intToBoolean(c.getInt(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ATTENDANCE_REQUIRED))
-            )));
+                    )));
         }
         return events;
     }
 
-    private ArrayList<UserGroup> toUserGroups(Cursor c){
+    private ArrayList<UserGroup> toUserGroups(Cursor c) {
         ArrayList<UserGroup> events = new ArrayList<>();
 
-        while(c.moveToNext()) {
+        while (c.moveToNext()) {
 
             events.add(new UserGroup(
                     c.getInt(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_ID)),
                     c.getString(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_USERNAME)),
                     c.getString(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_GROUP_NAME)),
                     stringToList(c.getString(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_USERS)))
-                    ));
+            ));
         }
         return events;
     }
 
 
-    private ContentValues toEventContentValues(Event event){
+    private ContentValues toEventContentValues(Event event) {
 
         ContentValues contentValues = new ContentValues();
 
@@ -175,7 +252,7 @@ public class DBManager {
         return contentValues;
     }
 
-    private ContentValues toUserGroupContentValues(UserGroup group){
+    private ContentValues toUserGroupContentValues(UserGroup group) {
 
         ContentValues contentValues = new ContentValues();
 
@@ -223,14 +300,13 @@ public class DBManager {
         return result;
     }
 
-    private boolean intToBoolean(int input){
+    private boolean intToBoolean(int input) {
 
         boolean result = false;
 
-        if(input == 0){
+        if (input == 0) {
             result = false;
-        }
-        else if(input == 1){
+        } else if (input == 1) {
             result = true;
         }
 
@@ -238,7 +314,7 @@ public class DBManager {
 
     }
 
-    private int booleanToInt(boolean input){
+    private int booleanToInt(boolean input) {
         return (input) ? 1 : 0;
     }
 
@@ -247,7 +323,7 @@ public class DBManager {
     * Different users logged into the phone can create the same group name
     * as long as they're not duplicate names under the same user
     * */
-    public boolean groupAlreadyExistsWithUser(UserGroup group){
+    public boolean groupAlreadyExistsWithUser(UserGroup group) {
         Cursor c = db.query(
                 false,
                 DbConstants.DATABASE_GROUPS_TABLE,
@@ -261,11 +337,16 @@ public class DBManager {
                 null
         );
 
-        if(c.getCount() > 0){
+        if (c.getCount() > 0) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
+    }
+
+    // Returns logged in user from shared preferences
+    private String getLoggedInUser() {
+        SharedPreferences userDetails = context.getSharedPreferences("", Context.MODE_PRIVATE);
+        return userDetails.getString("username", "");
     }
 }

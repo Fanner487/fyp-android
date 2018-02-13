@@ -15,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.user.attendr.R;
-import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.network.NetworkInterface;
 
 public class MainActivity extends AppCompatActivity
@@ -110,7 +109,7 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, CreateUserGroupActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_share) {
-            Intent intent = new Intent(this, ViewEventsActivity.class);
+            Intent intent = new Intent(this, ViewOrganiseEventsActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_send) {
 

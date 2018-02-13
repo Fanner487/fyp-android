@@ -5,5 +5,5 @@ package com.example.user.attendr.enums;
  */
 
 public enum EventType {
-    ORGANISE, ATTENDING
+    ORGANISE, ATTEND
 }

@@ -8,17 +8,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.LoginCallback;
 import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.enums.EventType;
-import com.example.user.attendr.models.Event;
 import com.example.user.attendr.network.NetworkInterface;
-
-import java.util.ArrayList;
 
 /**
  * Created by Eamon on 06/02/2018.
@@ -72,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
 //            Log.d(TAG, eventDb.toString());
 //        }
 //
-        NetworkInterface.getInstance(this).getEvents(EventType.ATTENDING);
+//        NetworkInterface.getInstance(this).getEvents(EventType.ATTEND);
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(TAG, etUsername.getText().toString());
                 Log.d(TAG, etPassword.getText().toString());
 
-                NetworkInterface.getInstance(getApplicationContext()).login(etUsername.getText().toString(),
+                NetworkInterface.getInstance(getApplicationContext()).login(etUsername.getText().toString().trim().toLowerCase(),
                         etPassword.getText().toString(),
                         new LoginCallback() {
                             @Override
@@ -90,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
                                 // Assign SharedPreferences username to the login
                                 SharedPreferences userDetails = getApplicationContext().getSharedPreferences("", MODE_PRIVATE);
                                 SharedPreferences.Editor edit = userDetails.edit();
-                                edit.putString("username", etUsername.getText().toString());
+                                edit.putString("username", etUsername.getText().toString().trim().toLowerCase());
                                 edit.apply();
 
                                 // Redirect to MainActivity screen

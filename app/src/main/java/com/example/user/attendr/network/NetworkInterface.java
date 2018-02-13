@@ -96,7 +96,7 @@ public class NetworkInterface {
                         db.deleteAllEvents();
                         db.insertEvents(newEvents);
 
-                        ArrayList<Event> dbList = db.getEvents();
+                        ArrayList<Event> dbList = db.getAllEvents();
 
                         for(Event eventDb: dbList){
                             Log.d(TAG, eventDb.toString());
@@ -118,7 +118,7 @@ public class NetworkInterface {
 
         String typeString = "";
 
-        if(type == EventType.ATTENDING){
+        if(type == EventType.ATTEND){
             typeString = "attending";
         }
         else if(type == EventType.ORGANISE){
@@ -153,7 +153,7 @@ public class NetworkInterface {
                         db.deleteAllEvents();
                         db.insertEvents(newEvents);
 
-                        ArrayList<Event> dbList = db.getEvents();
+                        ArrayList<Event> dbList = db.getAllEvents();
 
                         for(Event eventDb: dbList){
                             Log.d(TAG, eventDb.toString());

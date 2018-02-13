@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,9 +18,9 @@ import java.util.List;
  * Created by Eamon on 12/02/2018.
  */
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
+public class EventsViewAdapter extends RecyclerView.Adapter<EventsViewAdapter.ViewHolder>{
 
-    private final String TAG = RecyclerViewAdapter.class.getSimpleName();
+    private final String TAG = EventsViewAdapter.class.getSimpleName();
 
     private List<Event> eventList;
     private Context context;
@@ -51,7 +50,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             });
         }
     }
-    public RecyclerViewAdapter(List<Event> eventList, Context context) {
+    public EventsViewAdapter(List<Event> eventList, Context context) {
         this.eventList = eventList;
         this.context = context;
     }
