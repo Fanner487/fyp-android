@@ -109,10 +109,10 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, CreateUserGroupActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_share) {
-            Intent intent = new Intent(this, ViewOrganiseEventsActivity.class);
+            Intent intent = new Intent(this, OrganiseEventsViewerActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_send) {
-            Intent intent = new Intent(this, NewEventViewerActivity.class);
+            Intent intent = new Intent(this, AttendingEventsViewerActivity.class);
             startActivity(intent);
 
         }

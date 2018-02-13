@@ -7,24 +7,19 @@ import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-
-import android.widget.TextView;
 
 import com.example.user.attendr.R;
 import com.example.user.attendr.adapters.SectionsPagerAdapter;
+import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.fragments.ViewEventsFragment;
 
-public class NewEventViewerActivity extends AppCompatActivity implements ViewEventsFragment.OnFragmentInteractionListener{
+public class OrganiseEventsViewerActivity extends AppCompatActivity implements ViewEventsFragment.OnFragmentInteractionListener{
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -45,13 +40,13 @@ public class NewEventViewerActivity extends AppCompatActivity implements ViewEve
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_event_viewer);
-
+        setContentView(R.layout.activity_organise_events_viewer);
+        setTitle("Organising");
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), EventType.ORGANISE);
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = findViewById(R.id.container);

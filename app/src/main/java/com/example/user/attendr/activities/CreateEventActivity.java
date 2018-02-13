@@ -102,45 +102,51 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String eventName = etEventName.getText().toString().trim();
-                String location = etLocation.getText().toString().trim();
-                ArrayList<String> attendees = toList(etAttendees.getText().toString().trim());
-                String startTime = tvStartTime.getText().toString().trim();
-                String finishTime = tvFinishTime.getText().toString().trim();
-                String signInTime = tvSignInTime.getText().toString().trim();
-                boolean attendanceRequired = switchAttendanceRequired.isChecked();
-                Toast.makeText(CreateEventActivity.this, Boolean.toString(switchAttendanceRequired.isChecked()), Toast.LENGTH_SHORT).show();
+                if(allFieldsFilled()){
+                    String eventName = etEventName.getText().toString().trim();
+                    String location = etLocation.getText().toString().trim();
+                    ArrayList<String> attendees = toList(etAttendees.getText().toString().trim());
+                    String startTime = tvStartTime.getText().toString().trim();
+                    String finishTime = tvFinishTime.getText().toString().trim();
+                    String signInTime = tvSignInTime.getText().toString().trim();
+                    boolean attendanceRequired = switchAttendanceRequired.isChecked();
 
-                Log.d(TAG, eventName);
-                Log.d(TAG, location);
-                Log.d(TAG, startTime);
-                Log.d(TAG, finishTime);
-                Log.d(TAG, signInTime);
-                Log.d(TAG, Boolean.toString(attendanceRequired));
-                Log.d(TAG, "Attendees");
+                    Log.d(TAG, eventName);
+                    Log.d(TAG, location);
+                    Log.d(TAG, startTime);
+                    Log.d(TAG, finishTime);
+                    Log.d(TAG, signInTime);
+                    Log.d(TAG, Boolean.toString(attendanceRequired));
+                    Log.d(TAG, "Attendees");
 
-                for(String attendee : attendees){
-                    Log.d(TAG, attendee);
+                    for(String attendee : attendees){
+                        Log.d(TAG, attendee);
+                    }
+
+                    Event event = new Event(eventName, location, startTime, finishTime, signInTime, attendees, attendanceRequired);
+
+                    NetworkInterface.getInstance(CreateEventActivity.this).createEvent(event, new EventCreateUpdateCallback() {
+                        @Override
+                        public void onSuccess(JSONObject response) {
+                            try {
+                                Toast.makeText(CreateEventActivity.this, "Created event: " + response.get("event_name"), Toast.LENGTH_SHORT).show();
+                            }
+                            catch (JSONException e){
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(ANError anError) {
+                            Toast.makeText(CreateEventActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                else{
+                    Toast.makeText(CreateEventActivity.this, "Fill all fields", Toast.LENGTH_SHORT).show();
                 }
 
-                Event event = new Event(eventName, location, startTime, finishTime, signInTime, attendees, attendanceRequired);
 
-                NetworkInterface.getInstance(CreateEventActivity.this).createEvent(event, new EventCreateUpdateCallback() {
-                    @Override
-                    public void onSuccess(JSONObject response) {
-                        try {
-                            Toast.makeText(CreateEventActivity.this, "Created event: " + response.get("event_name"), Toast.LENGTH_SHORT).show();
-                        }
-                        catch (JSONException e){
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(ANError anError) {
-                        Toast.makeText(CreateEventActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
-                    }
-                });
 
             }
         });
@@ -208,5 +214,18 @@ public class CreateEventActivity extends AppCompatActivity {
         String[] tempList = value.split("\n");
 
         return new ArrayList<>(Arrays.asList(tempList));
+    }
+
+    private boolean allFieldsFilled(){
+        if(etEventName.getText().toString().length() > 0 && etLocation.getText().toString().length() > 0
+                && etAttendees.getText().toString().length() > 0 && !tvStartTime.getText().equals(getString(R.string.start_time))
+                && !tvSignInTime.getText().equals(getString(R.string.sign_in_time))
+                && !tvFinishTime.getText().equals(getString(R.string.finish_time))){
+
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }
