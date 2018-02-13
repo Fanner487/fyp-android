@@ -112,6 +112,8 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, ViewOrganiseEventsActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_send) {
+            Intent intent = new Intent(this, NewEventViewerActivity.class);
+            startActivity(intent);
 
         }
 

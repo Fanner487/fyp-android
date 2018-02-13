@@ -30,7 +30,11 @@
         <activity android:name=".activities.RegisterActivity" />
         <activity android:name=".activities.CreateEventActivity" />
         <activity android:name=".activities.CreateUserGroupActivity" />
-        <activity android:name=".activities.ViewOrganiseEventsActivity"></activity>
+        <activity android:name=".activities.ViewOrganiseEventsActivity" />
+        <activity
+            android:name=".activities.NewEventViewerActivity"
+            android:label="@string/title_activity_new_event_viewer"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

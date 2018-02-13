@@ -30,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText etPassword;
     Button btnSubmit;
 
+
     DBManager db;
 
     @Override
