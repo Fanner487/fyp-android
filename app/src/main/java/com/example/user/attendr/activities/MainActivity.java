@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        NetworkInterface.getInstance(this).getEvents(EventType.ORGANISE);
+        NetworkInterface.getInstance(this).getEventsForUser();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -110,7 +110,8 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, CreateUserGroupActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_share) {
-
+            Intent intent = new Intent(this, ViewEventsActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_send) {
 
         }

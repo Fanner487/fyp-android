@@ -29,38 +29,6 @@ public class DBManager {
     private DatabaseHelper DBHelper;
     private SQLiteDatabase db;
 
-//    public static final String KEY_ROW_ID = "_id";
-//    public static final String KEY_EVENT_ID = "event_id";
-//    public static final String KEY_ORGANISER = "organiser";
-//    public static final String KEY_EVENT_NAME = "event_name";
-//    public static final String KEY_LOCATION = "location";
-//    public static final String KEY_START_TIME = "start_time";
-//    public static final String KEY_FINISH_TIME = "finish_time";
-//    public static final String KEY_SIGN_IN_TIME = "sign_in_time";
-//    public static final String KEY_ATTENDEES = "attendees";
-//    public static final String KEY_ATTENDING = "attending";
-//    public static final String KEY_ATTENDANCE_REQUIRED = "attendance_required";
-//
-//    public static final String DATABASE_NAME = "fypDB";
-//    public static final String DATABASE_TABLE = "events";
-//    public static final int DATABASE_VERSION = 1;
-//
-//    public static final String DATABASE_CREATE =
-//            "create table " + DATABASE_TABLE +
-//                    " ( " +
-//                    KEY_ROW_ID + " integer primary key autoincrement, " +
-//                    KEY_EVENT_ID + " text not null, " +
-//                    KEY_ORGANISER + " text not null, " +
-//                    KEY_EVENT_NAME + " text not null, " +
-//                    KEY_LOCATION + " text not null, " +
-//                    KEY_START_TIME + " text not null, " +
-//                    KEY_FINISH_TIME + " text not null, " +
-//                    KEY_SIGN_IN_TIME + " text not null, " +
-//                    KEY_ATTENDEES + " text not null, " +
-//                    KEY_ATTENDING + " text not null, " +
-//                    KEY_ATTENDANCE_REQUIRED + " integer not null" +
-//                    ");";
-
     public DBManager(Context context) {
 
         Log.d(TAG, "In Constructor");

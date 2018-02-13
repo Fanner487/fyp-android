@@ -70,6 +70,50 @@ public class NetworkInterface {
         return instance;
     }
 
+    public void getEventsForUser(){
+
+        String user = getLoggedInUser();
+        AndroidNetworking.get("http://46.101.13.145:8000/api/" + user + "/events")
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsObjectList(Event.class, new ParsedRequestListener<List<Event>>() {
+                    @Override
+                    public void onResponse(List<Event> events) {
+                        // do anything with response
+                        Log.d(TAG, "Events size : " + events.size());
+
+                        for (Event event : events) {
+                            Log.d(TAG, event.toString());
+                        }
+
+                        /*
+                        * Adding to DB
+                        * */
+
+                        db = new DBManager(context.getApplicationContext()).open();
+                        ArrayList<Event> newEvents = new ArrayList<>(events);
+
+                        db.deleteAllEvents();
+                        db.insertEvents(newEvents);
+
+                        ArrayList<Event> dbList = db.getEvents();
+
+                        for(Event eventDb: dbList){
+                            Log.d(TAG, eventDb.toString());
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        // handle error
+                        Log.d(TAG, anError.getErrorDetail());
+                        Log.d(TAG, anError.getMessage());
+                        Log.d(TAG, Integer.toString(anError.getErrorCode()));
+                    }
+                });
+    }
+
     public void getEvents(final EventType type) {
 
         String typeString = "";
@@ -211,7 +255,7 @@ public class NetworkInterface {
             e.printStackTrace();
         }
 
-        AndroidNetworking.post("http://46.101.13.145:8000/api/events/")
+        AndroidNetworking.post(ApiUrls.EVENTS)
                 .addJSONObjectBody(create)
                 .setPriority(Priority.MEDIUM)
                 .build()
