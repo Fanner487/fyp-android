@@ -38,7 +38,8 @@
         <activity
             android:name=".activities.AttendingEventsViewerActivity"
             android:label="@string/title_activity_attending_events_viewer"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activities.ViewEventActivity"></activity>
     </application>
 
 </manifest>

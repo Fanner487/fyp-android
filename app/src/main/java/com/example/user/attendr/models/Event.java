@@ -251,6 +251,15 @@ public class Event {
         return df.format(date);
     }
 
+//    public static String parseDateToDisplayString(Date date) {
+//
+//        TimeZone tz = TimeZone.getTimeZone("UTC");
+//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'H:mm:ss'Z'", Locale.ENGLISH);
+//        df.setTimeZone(tz);
+//
+//        return df.format(date);
+//    }
+
     public static Date parseDateTimeField(String date) {
 
         TimeZone tz = TimeZone.getTimeZone("UTC");

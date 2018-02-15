@@ -15,7 +15,7 @@
         tools:context="com.example.user.attendr.activities.CreateEventActivity">
 
         <EditText
-            android:id="@+id/etEventName"
+            android:id="@+id/tvEventName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -35,7 +35,7 @@
             android:hint="@string/location"
             android:inputType="text"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etEventName" />
+            app:layout_constraintTop_toBottomOf="@+id/tvEventName" />
 
         <TextView
             android:id="@+id/tvStartTime"

@@ -163,6 +163,28 @@ public class DBManager {
         return toEvents(c);
     }
 
+    public Event getEventWithEventId(int eventId){
+
+        Log.d(TAG, "Getting single event");
+        Cursor c = db.query(
+                false,
+                DbConstants.DATABASE_EVENTS_TABLE,
+                null,
+                DbConstants.EVENT_KEY_EVENT_ID + "=?",
+                new String[]{Integer.toString(eventId)},
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        Log.d(TAG, "size: " + Integer.toString(c.getCount()));
+        c.moveToFirst();
+
+        return toEvent(c);
+    }
+
     public long deleteAllEvents() {
         return db.delete(DbConstants.DATABASE_EVENTS_TABLE, "1", null);
     }
@@ -201,21 +223,42 @@ public class DBManager {
 
         while (c.moveToNext()) {
 
-            events.add(new Event(
-                    c.getInt(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ROW_ID)),
-                    c.getInt(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_EVENT_ID)),
-                    c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ORGANISER)),
-                    c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_EVENT_NAME)),
-                    c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_LOCATION)),
-                    c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_START_TIME)),
-                    c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_FINISH_TIME)),
-                    c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_SIGN_IN_TIME)),
-                    stringToList(c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ATTENDEES))),
-                    stringToList(c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ATTENDING))),
-                    intToBoolean(c.getInt(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ATTENDANCE_REQUIRED))
-                    )));
+            events.add(toEvent(c));
+//
+//            events.add(new Event(
+//                    c.getInt(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ROW_ID)),
+//                    c.getInt(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_EVENT_ID)),
+//                    c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ORGANISER)),
+//                    c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_EVENT_NAME)),
+//                    c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_LOCATION)),
+//                    c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_START_TIME)),
+//                    c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_FINISH_TIME)),
+//                    c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_SIGN_IN_TIME)),
+//                    stringToList(c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ATTENDEES))),
+//                    stringToList(c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ATTENDING))),
+//                    intToBoolean(c.getInt(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ATTENDANCE_REQUIRED))
+//                    )));
         }
         return events;
+    }
+
+    private Event toEvent(Cursor c) {
+
+        Event event = new Event(
+                c.getInt(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ROW_ID)),
+                c.getInt(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_EVENT_ID)),
+                c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ORGANISER)),
+                c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_EVENT_NAME)),
+                c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_LOCATION)),
+                c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_START_TIME)),
+                c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_FINISH_TIME)),
+                c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_SIGN_IN_TIME)),
+                stringToList(c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ATTENDEES))),
+                stringToList(c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ATTENDING))),
+                intToBoolean(c.getInt(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ATTENDANCE_REQUIRED))
+                ));
+
+        return event;
     }
 
     private ArrayList<UserGroup> toUserGroups(Cursor c) {

@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.androidnetworking.error.ANError;
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.EventCreateUpdateCallback;
-import com.example.user.attendr.callbacks.EventDeleteCallback;
 import com.example.user.attendr.callbacks.TimeSetCallback;
 import com.example.user.attendr.models.Event;
 import com.example.user.attendr.network.NetworkInterface;
@@ -62,7 +61,7 @@ public class CreateEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
 
-        etEventName = findViewById(R.id.etEventName);
+        etEventName = findViewById(R.id.tvEventName);
         etLocation = findViewById(R.id.etLocation);
         etAttendees = findViewById(R.id.etAttendees);
 
