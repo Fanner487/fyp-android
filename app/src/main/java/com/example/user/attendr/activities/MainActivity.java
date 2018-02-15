@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,12 +16,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.user.attendr.R;
+import com.example.user.attendr.constants.DbConstants;
+import com.example.user.attendr.database.DBManager;
+import com.example.user.attendr.models.UserGroup;
 import com.example.user.attendr.network.NetworkInterface;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
     private final String TAG = MainActivity.class.getSimpleName();
+
+    DBManager db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +38,14 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         NetworkInterface.getInstance(this).getEventsForUser();
+
+        db = new DBManager(this).open();
+
+        ArrayList<UserGroup> groups = db.getGroups();
+        Log.d(TAG, "Groups");
+        for(UserGroup g : groups){
+            Log.d(TAG, g.toString());
+        }
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

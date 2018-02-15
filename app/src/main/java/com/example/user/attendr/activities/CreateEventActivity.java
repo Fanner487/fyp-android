@@ -2,13 +2,18 @@ package com.example.user.attendr.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -18,7 +23,9 @@ import com.androidnetworking.error.ANError;
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.EventCreateUpdateCallback;
 import com.example.user.attendr.callbacks.TimeSetCallback;
+import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.models.Event;
+import com.example.user.attendr.models.UserGroup;
 import com.example.user.attendr.network.NetworkInterface;
 
 import org.json.JSONException;
@@ -30,6 +37,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -54,12 +62,26 @@ public class CreateEventActivity extends AppCompatActivity {
     Button btnSignInTime;
     Button btnSubmit;
     Switch switchAttendanceRequired;
+    Spinner spinner;
+
+    DBManager db;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
+
+        db = new DBManager(this).open();
+
+        final ArrayList<UserGroup> groups = db.getGroups();
+        ArrayList<String> groupNames = new ArrayList<>();
+
+        groupNames.add("Select from group names");
+        for(UserGroup group : groups){
+            groupNames.add(group.getGroupName());
+        }
+
 
         etEventName = findViewById(R.id.tvEventName);
         etLocation = findViewById(R.id.etLocation);
@@ -75,6 +97,66 @@ public class CreateEventActivity extends AppCompatActivity {
         btnSubmit = findViewById(R.id.btnSubmit);
 
         switchAttendanceRequired = findViewById(R.id.switchAttendanceRequired);
+        spinner = findViewById(R.id.spinner);
+
+
+        final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
+                this,R.layout.spinner_item,groupNames){
+            @Override
+            public boolean isEnabled(int position){
+                if(position == 0)
+                {
+                    // Disable the first item from Spinner
+                    // First item will be use for hint
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if(position == 0){
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                }
+                else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+
+        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
+        spinner.setAdapter(spinnerArrayAdapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String selectedItemText = (String) adapterView.getItemAtPosition(i);
+                // If user change the default selection
+                // First item is disable and it is used for hint
+                if(i > 0){
+                    // Notify the selected item text
+                    Toast.makeText
+                            (getApplicationContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
+                            .show();
+
+                    String attendeeString = listToString(groups.get(i - 1).getUsers());
+
+                    etAttendees.setText(attendeeString);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         btnStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,6 +295,25 @@ public class CreateEventActivity extends AppCompatActivity {
         String[] tempList = value.split("\n");
 
         return new ArrayList<>(Arrays.asList(tempList));
+    }
+
+    private String listToString(ArrayList<String> list) {
+
+        String result;
+
+        if (list == null) {
+            result = "";
+        } else {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for (String name : list) {
+                stringBuilder.append(name);
+                stringBuilder.append("\n");
+            }
+
+            result = stringBuilder.toString().replaceAll("\n$", "");
+        }
+        return result;
     }
 
     private boolean allFieldsFilled(){

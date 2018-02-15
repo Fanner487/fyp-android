@@ -60,11 +60,11 @@ public class DBManager {
                 false,
                 DbConstants.DATABASE_GROUPS_TABLE,
                 null,
+                DbConstants.GROUP_KEY_ROW_USERNAME + "=?",
+                new String[]{getLoggedInUser()},
                 null,
                 null,
-                null,
-                null,
-                null,
+                DbConstants.GROUP_KEY_ROW_GROUP_NAME + " ASC",
                 null,
                 null
         );

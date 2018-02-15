@@ -131,4 +131,5 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="organiser">Organiser</string>
+    <string name="pick_group">Pick a Group</string>
 </resources>

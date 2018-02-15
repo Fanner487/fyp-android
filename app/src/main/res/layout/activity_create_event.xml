@@ -71,13 +71,13 @@
             android:id="@+id/etAttendees"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
             android:ems="10"
             android:hint="@string/attendees"
             android:inputType="textMultiLine"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvSignInTime" />
+            app:layout_constraintTop_toBottomOf="@+id/spinner" />
 
         <Switch
             android:id="@+id/switchAttendanceRequired"
@@ -151,6 +151,15 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/tvFinishTime"
             app:layout_constraintTop_toBottomOf="@+id/etLocation" />
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvSignInTime" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
