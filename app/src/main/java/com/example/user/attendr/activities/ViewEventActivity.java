@@ -1,17 +1,21 @@
 package com.example.user.attendr.activities;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.user.attendr.R;
 import com.example.user.attendr.adapters.AttendeesViewAdapter;
+import com.example.user.attendr.callbacks.EventApiCallback;
 import com.example.user.attendr.constants.DbConstants;
 import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.models.Event;
+import com.example.user.attendr.network.NetworkInterface;
 
 public class ViewEventActivity extends AppCompatActivity {
 
@@ -27,6 +31,9 @@ public class ViewEventActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
     DBManager db;
+    Bundle bundle;
+
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +46,43 @@ public class ViewEventActivity extends AppCompatActivity {
         tvStartTime = findViewById(R.id.tvStartTime);
         tvSignInTime = findViewById(R.id.tvSignInTime);
         tvFinishTime = findViewById(R.id.tvFinishTime);
+        swipeRefreshLayout = findViewById(R.id.swipe_container);
 
-        Bundle bundle = getIntent().getExtras();
-        int eventId = bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID);
+        bundle = getIntent().getExtras();
 
         db = new DBManager(this).open();
 
-        Log.d(TAG, "Event ID: " + Integer.toString(eventId));
+        populateAdapter();
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
+                    @Override
+                    public void onSuccess() {
+                        populateAdapter();
+                        Toast.makeText(getApplicationContext(), "Refreshed", Toast.LENGTH_SHORT).show();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        populateAdapter();
+                        Toast.makeText(getApplicationContext(), "Network Error", Toast.LENGTH_SHORT).show();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+
+
+    }
+
+    public void populateAdapter(){
+        int eventId = bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID);
         Event event = db.getEventWithEventId(eventId);
 
         Log.d(TAG, event.toString());
@@ -58,8 +94,6 @@ public class ViewEventActivity extends AppCompatActivity {
         tvStartTime.setText(event.getStartTime());
         tvSignInTime.setText(event.getSignInTime());
         tvFinishTime.setText(event.getFinishTime());
-
-
         recyclerView = findViewById(R.id.recyclerView);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -67,7 +101,6 @@ public class ViewEventActivity extends AppCompatActivity {
         AttendeesViewAdapter attendeesViewAdapter = new AttendeesViewAdapter(getApplicationContext(), event.getAttendees());
 
         recyclerView.setAdapter(attendeesViewAdapter);
-
 
     }
 }
