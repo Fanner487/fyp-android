@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * Created by Eamon on 10/02/2018.
- * <p>
+ *
  * DB layer of app and all DB CRUD operations are stored here
  */
 
@@ -55,21 +55,24 @@ public class DBManager {
         DBHelper.close();
     }
 
-    public ArrayList<UserGroup> getGroups() {
+    public Event getEventWithEventId(int eventId){
+
         Cursor c = db.query(
                 false,
-                DbConstants.DATABASE_GROUPS_TABLE,
+                DbConstants.DATABASE_EVENTS_TABLE,
                 null,
-                DbConstants.GROUP_KEY_ROW_USERNAME + "=?",
-                new String[]{getLoggedInUser()},
+                DbConstants.EVENT_KEY_EVENT_ID + "=?",
+                new String[]{Integer.toString(eventId)},
                 null,
                 null,
-                DbConstants.GROUP_KEY_ROW_GROUP_NAME + " ASC",
+                null,
                 null,
                 null
         );
 
-        return toUserGroups(c);
+        c.moveToFirst();
+
+        return toEvent(c);
     }
 
     public ArrayList<Event> getEvents(EventType eventType, TimeType timeType) {
@@ -163,28 +166,6 @@ public class DBManager {
         return toEvents(c);
     }
 
-    public Event getEventWithEventId(int eventId){
-
-        Log.d(TAG, "Getting single event");
-        Cursor c = db.query(
-                false,
-                DbConstants.DATABASE_EVENTS_TABLE,
-                null,
-                DbConstants.EVENT_KEY_EVENT_ID + "=?",
-                new String[]{Integer.toString(eventId)},
-                null,
-                null,
-                null,
-                null,
-                null
-        );
-
-        Log.d(TAG, "size: " + Integer.toString(c.getCount()));
-        c.moveToFirst();
-
-        return toEvent(c);
-    }
-
     public long deleteAllEvents() {
         return db.delete(DbConstants.DATABASE_EVENTS_TABLE, "1", null);
     }
@@ -218,26 +199,13 @@ public class DBManager {
         return db.insertOrThrow(DbConstants.DATABASE_GROUPS_TABLE, null, values);
     }
 
+    // Converts cursors to ArrayList of Events
     private ArrayList<Event> toEvents(Cursor c) {
         ArrayList<Event> events = new ArrayList<>();
 
         while (c.moveToNext()) {
 
             events.add(toEvent(c));
-//
-//            events.add(new Event(
-//                    c.getInt(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ROW_ID)),
-//                    c.getInt(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_EVENT_ID)),
-//                    c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ORGANISER)),
-//                    c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_EVENT_NAME)),
-//                    c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_LOCATION)),
-//                    c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_START_TIME)),
-//                    c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_FINISH_TIME)),
-//                    c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_SIGN_IN_TIME)),
-//                    stringToList(c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ATTENDEES))),
-//                    stringToList(c.getString(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ATTENDING))),
-//                    intToBoolean(c.getInt(c.getColumnIndexOrThrow(DbConstants.EVENT_KEY_ATTENDANCE_REQUIRED))
-//                    )));
         }
         return events;
     }
@@ -259,6 +227,27 @@ public class DBManager {
                 ));
 
         return event;
+    }
+
+    /*
+    * UserGroup DB operations
+    * */
+
+    public ArrayList<UserGroup> getGroups() {
+        Cursor c = db.query(
+                false,
+                DbConstants.DATABASE_GROUPS_TABLE,
+                null,
+                DbConstants.GROUP_KEY_ROW_USERNAME + "=?",
+                new String[]{getLoggedInUser()},
+                null,
+                null,
+                DbConstants.GROUP_KEY_ROW_GROUP_NAME + " ASC",
+                null,
+                null
+        );
+
+        return toUserGroups(c);
     }
 
     private ArrayList<UserGroup> toUserGroups(Cursor c) {

@@ -14,6 +14,6 @@ import okhttp3.Response;
 
 public interface EventApiCallback {
 
-    void onSuccess(Response okHttpResponse, JSONArray response);
-    void onFailure(ANError anError);
+    void onSuccess();
+    void onFailure();
 }

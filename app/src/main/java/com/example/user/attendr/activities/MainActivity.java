@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.user.attendr.R;
+import com.example.user.attendr.callbacks.EventApiCallback;
 import com.example.user.attendr.constants.DbConstants;
 import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.models.UserGroup;
@@ -37,7 +38,17 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        NetworkInterface.getInstance(this).getEventsForUser();
+        NetworkInterface.getInstance(this).getEventsForUser(new EventApiCallback() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        });
 
         db = new DBManager(this).open();
 

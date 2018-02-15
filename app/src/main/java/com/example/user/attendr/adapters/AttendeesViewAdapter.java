@@ -17,14 +17,16 @@ import java.util.List;
 
 /**
  * Created by Eamon on 15/02/2018.
+ *
+ * Array adapter for viewing attendees in a list of the ViewEventActivity
  */
 
 public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdapter.AttendeesViewHolder>{
 
     private static final String TAG = AttendeesViewAdapter.class.getSimpleName();
 
-    Context context;
-    List<String> attendees;
+    private Context context;
+    private List<String> attendees;
 
     public class AttendeesViewHolder extends RecyclerView.ViewHolder {
         TextView tvAttendee;

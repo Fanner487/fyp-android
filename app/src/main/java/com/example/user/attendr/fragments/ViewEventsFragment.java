@@ -4,19 +4,23 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.user.attendr.R;
 import com.example.user.attendr.adapters.EventsViewAdapter;
+import com.example.user.attendr.callbacks.EventApiCallback;
 import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.enums.TimeType;
 import com.example.user.attendr.models.Event;
+import com.example.user.attendr.network.NetworkInterface;
 
 import java.util.ArrayList;
 
@@ -35,9 +39,12 @@ public class ViewEventsFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    Bundle bundle;
     RecyclerView recyclerView;
     DBManager db;
     LinearLayoutManager linearLayoutManager;
+
+    SwipeRefreshLayout swipeRefreshLayout;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -81,27 +88,55 @@ public class ViewEventsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_view_events, container, false);
+        final View view = inflater.inflate(R.layout.fragment_view_events, container, false);
 
         db = new DBManager(getContext()).open();
+        bundle = getArguments();
 
-        Bundle bundle = getArguments();
 
+        swipeRefreshLayout = view.findViewById(R.id.swipe_container);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
 
-        ArrayList<Event> events = getEventsWithParameters(bundle);
+                NetworkInterface.getInstance(getContext()).getEventsForUser(new EventApiCallback() {
+                    @Override
+                    public void onSuccess() {
+                        setAdapterWithData();
+                        Toast.makeText(view.getContext(), "Refreshed", Toast.LENGTH_SHORT).show();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        setAdapterWithData();
+                        Toast.makeText(view.getContext(), "Network Error", Toast.LENGTH_SHORT).show();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
 
         recyclerView = view.findViewById(R.id.recyclerView);
 
+
+        setAdapterWithData();
+
+
+        // Inflate the layout for this fragment
+        return view;
+    }
+
+    public void setAdapterWithData(){
+
+        ArrayList<Event> events = getEventsWithParameters(bundle);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
 
         EventsViewAdapter eventsViewAdapter = new EventsViewAdapter(events, getContext());
         recyclerView.setAdapter(eventsViewAdapter);
-
-
-
-        // Inflate the layout for this fragment
-        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

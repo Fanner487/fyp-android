@@ -11,6 +11,7 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.OkHttpResponseAndStringRequestListener;
 import com.androidnetworking.interfaces.OkHttpResponseListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+import com.example.user.attendr.callbacks.EventApiCallback;
 import com.example.user.attendr.callbacks.EventCreateUpdateCallback;
 import com.example.user.attendr.callbacks.EventDeleteCallback;
 import com.example.user.attendr.callbacks.LoginCallback;
@@ -70,7 +71,7 @@ public class NetworkInterface {
         return instance;
     }
 
-    public void getEventsForUser(){
+    public void getEventsForUser(final EventApiCallback eventApiCallback){
 
         String user = getLoggedInUser();
         AndroidNetworking.get("http://46.101.13.145:8000/api/" + user + "/events")
@@ -102,6 +103,8 @@ public class NetworkInterface {
                             Log.d(TAG, eventDb.toString());
                         }
 
+                        eventApiCallback.onSuccess();
+
                     }
 
                     @Override
@@ -110,6 +113,8 @@ public class NetworkInterface {
                         Log.d(TAG, anError.getErrorDetail());
                         Log.d(TAG, anError.getMessage());
                         Log.d(TAG, Integer.toString(anError.getErrorCode()));
+
+                        eventApiCallback.onFailure();
                     }
                 });
     }
