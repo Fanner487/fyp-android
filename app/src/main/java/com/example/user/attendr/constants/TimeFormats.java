@@ -7,6 +7,6 @@ package com.example.user.attendr.constants;
  */
 
 public class TimeFormats {
-    public final static String DISPLAY_FORMAT = "dd/MM/yyyy HH:mm:ss";
+    public final static String DISPLAY_FORMAT = "HH:mm dd/MM/yyyy";
     public final static String ISO_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 }

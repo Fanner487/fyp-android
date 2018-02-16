@@ -85,6 +85,12 @@ public class ViewEventsFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        setAdapterWithData();
+        super.onResume();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 

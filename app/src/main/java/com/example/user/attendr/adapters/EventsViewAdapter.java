@@ -80,8 +80,8 @@ public class EventsViewAdapter extends RecyclerView.Adapter<EventsViewAdapter.Ev
         Log.d(TAG, "onBindViewHolder called");
         holder.tvEventName.setText(eventList.get(position).getEventName());
         holder.tvLocation.setText(eventList.get(position).getLocation());
-        holder.tvStartTime.setText(eventList.get(position).getStartTime());
-        holder.tvFinishTime.setText(eventList.get(position).getFinishTime());
+        holder.tvStartTime.setText(Event.parseDateToDisplayTime(eventList.get(position).getStartTime()));
+        holder.tvFinishTime.setText(Event.parseDateToDisplayTime(eventList.get(position).getFinishTime()));
 
         //Set the current event object for the card on click listener
         holder.currentEvent = eventList.get(position);

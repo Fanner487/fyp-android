@@ -42,35 +42,6 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         btnSubmit = findViewById(R.id.btnSubmit);
 
-//        ArrayList<String> attendees = new ArrayList<>();
-//        attendees.add("olegpetcov1");
-//        attendees.add("aaronrenaghan1");
-//        db = new DBManager(this).open();
-//
-//        Log.d(TAG, "Events deleted: " + db.deleteAllEvents());
-//
-//        Event event;
-//        event = new Event(31,
-//                "eamont22",
-//                "DBTest",
-//                "TestLocation",
-//                "2018-08-08T23:23:00Z",
-//                "2019-08-08T23:23:00Z",
-//                "2018-08-08T23:23:00Z",
-//                attendees,
-//                attendees,
-//                false
-//        );
-//        db.insertEvent(event);
-//
-//        ArrayList<Event> dbList = db.getEvents();
-//
-//        for(Event eventDb: dbList){
-//            Log.d(TAG, eventDb.toString());
-//        }
-//
-//        NetworkInterface.getInstance(this).getEvents(EventType.ATTEND);
-
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,6 +64,9 @@ public class LoginActivity extends AppCompatActivity {
                                 // Redirect to MainActivity screen
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 getApplicationContext().startActivity(intent);
+
+                                // Removes activity from the stack
+                                finish();
                             }
 
                             @Override

@@ -73,8 +73,9 @@ public class NetworkInterface {
 
     public void getEventsForUser(final EventApiCallback eventApiCallback){
 
-        String user = getLoggedInUser();
-        AndroidNetworking.get("http://46.101.13.145:8000/api/" + user + "/events")
+//        String user = getLoggedInUser();
+        AndroidNetworking.get(ApiUrls.EVENTS_FOR_USER)
+                .addPathParameter("username", getLoggedInUser())
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsObjectList(Event.class, new ParsedRequestListener<List<Event>>() {

@@ -2,7 +2,9 @@ package com.example.user.attendr.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,6 +39,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -186,7 +189,43 @@ public class CreateEventActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(ANError anError) {
-                            Toast.makeText(CreateEventActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(CreateEventActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
+
+                            try{
+//                                JSONObject error = new JSONObject(anError.getErrorBody());
+//                                Log.d(TAG, error.getString("non_field_errors"));
+//
+//                                while(error.keys().hasNext()){
+//
+//                                }
+
+                                String jsonString = anError.getErrorBody();
+                                JSONObject resobj = new JSONObject(jsonString);
+                                Iterator<?> keys = resobj.keys();
+                                while(keys.hasNext() ) {
+                                    String key = (String)keys.next();
+                                    if ( resobj.get(key) instanceof JSONObject ) {
+                                        JSONObject value = new JSONObject(resobj.get(key).toString());
+                                        Log.d(TAG, value.getString("something"));
+                                        Log.d(TAG, value.getString("something2"));
+                                    }
+                                }
+
+                            }
+                            catch(JSONException e){
+                                e.printStackTrace();
+                            }
+
+                            AlertDialog alertDialog = new AlertDialog.Builder(CreateEventActivity.this).create();
+                            alertDialog.setTitle("Alert");
+                            alertDialog.setMessage(anError.getErrorBody());
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.show();
                         }
                     });
                 } else {
@@ -246,7 +285,7 @@ public class CreateEventActivity extends AppCompatActivity {
                         time.set(Calendar.SECOND, 0);
 
 
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.ENGLISH);
+                        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.ENGLISH);
                         Date newTime = time.getTime();
                         Log.d(TAG, sdf.format(newTime));
                         textView.setText(sdf.format(newTime));

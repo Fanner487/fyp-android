@@ -91,9 +91,9 @@ public class ViewEventActivity extends AppCompatActivity {
         tvEventName.setText(event.getEventName());
         tvLocation.setText(event.getLocation());
         tvOrganiser.setText(event.getOrganiser());
-        tvStartTime.setText(event.getStartTime());
-        tvSignInTime.setText(event.getSignInTime());
-        tvFinishTime.setText(event.getFinishTime());
+        tvStartTime.setText(Event.parseDateToDisplayTime(event.getStartTime()));
+        tvSignInTime.setText(Event.parseDateToDisplayTime(event.getSignInTime()));
+        tvFinishTime.setText(Event.parseDateToDisplayTime(event.getFinishTime()));
         recyclerView = findViewById(R.id.recyclerView);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -103,4 +103,6 @@ public class ViewEventActivity extends AppCompatActivity {
         recyclerView.setAdapter(attendeesViewAdapter);
 
     }
+
+//    public String toDisplayTime(String time)
 }

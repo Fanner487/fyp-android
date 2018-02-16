@@ -1,7 +1,9 @@
 package com.example.user.attendr.models;
 
+import com.example.user.attendr.constants.TimeFormats;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -251,19 +253,21 @@ public class Event {
         return df.format(date);
     }
 
-//    public static String parseDateToDisplayString(Date date) {
-//
-//        TimeZone tz = TimeZone.getTimeZone("UTC");
-//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'H:mm:ss'Z'", Locale.ENGLISH);
-//        df.setTimeZone(tz);
-//
-//        return df.format(date);
-//    }
+    public static String parseDateToDisplayTime(String date) {
+
+        Date newDate = parseDateTimeField(date);
+
+        TimeZone tz = TimeZone.getTimeZone("UTC");
+        DateFormat df = new SimpleDateFormat(TimeFormats.DISPLAY_FORMAT, Locale.ENGLISH);
+        df.setTimeZone(tz);
+
+        return df.format(newDate);
+    }
 
     public static Date parseDateTimeField(String date) {
 
         TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'H:mm:ss'Z'", Locale.ENGLISH);
+        DateFormat df = new SimpleDateFormat(TimeFormats.ISO_FORMAT, Locale.ENGLISH);
         df.setTimeZone(tz);
         Date newDate = new Date();
 
