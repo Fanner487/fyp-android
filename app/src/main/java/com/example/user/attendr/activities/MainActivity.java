@@ -1,5 +1,6 @@
 package com.example.user.attendr.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.view.MenuItem;
 import com.example.user.attendr.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.EventApiCallback;
+import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.constants.DbConstants;
 import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.models.UserGroup;
@@ -33,13 +35,19 @@ public class MainActivity extends AppCompatActivity
 
     DBManager db;
     FloatingActionButton fab;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        SharedPreferences userDetails = getSharedPreferences("", Context.MODE_PRIVATE);
+        String username = userDetails.getString("username", "");
+
+        getSupportActionBar().setTitle(getString(R.string.welcome_user) + " " + username);
 
         NetworkInterface.getInstance(this).getEventsForUser(new EventApiCallback() {
             @Override
@@ -151,14 +159,15 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void setListeners() {
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 SharedPreferences userDetails = getApplicationContext().getSharedPreferences("", MODE_PRIVATE);
                 SharedPreferences.Editor edit = userDetails.edit();
-                edit.putString("username", "");
-                edit.putBoolean("logged_in", false);
+                edit.putString(BundleAndSharedPreferencesConstants.USERNAME, "");
+                edit.putBoolean(BundleAndSharedPreferencesConstants.LOGGED_IN, false);
                 edit.apply();
 
                 Intent i = new Intent(getApplicationContext(), LoginActivity.class);

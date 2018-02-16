@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.example.user.attendr.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.LoginCallback;
+import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.network.NetworkInterface;
@@ -57,8 +58,8 @@ public class LoginActivity extends AppCompatActivity implements ListenerInterfac
         // Assign SharedPreferences username to the login
         SharedPreferences userDetails = getApplicationContext().getSharedPreferences("", MODE_PRIVATE);
         SharedPreferences.Editor edit = userDetails.edit();
-        edit.putString("username", etUsername.getText().toString().trim().toLowerCase());
-        edit.putBoolean("logged_in", true);
+        edit.putString(BundleAndSharedPreferencesConstants.USERNAME, etUsername.getText().toString().trim().toLowerCase());
+        edit.putBoolean(BundleAndSharedPreferencesConstants.LOGGED_IN, true);
         edit.apply();
     }
 
@@ -75,7 +76,7 @@ public class LoginActivity extends AppCompatActivity implements ListenerInterfac
                         new LoginCallback() {
                             @Override
                             public void onSuccess() {
-                                Toast.makeText(LoginActivity.this, "Log in successful", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, getString(R.string.successful_login), Toast.LENGTH_SHORT).show();
 
                                 setPreferences();
 
@@ -89,7 +90,7 @@ public class LoginActivity extends AppCompatActivity implements ListenerInterfac
 
                             @Override
                             public void onFailure() {
-                                Toast.makeText(LoginActivity.this, "Error sir", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, getString(R.string.failure_login), Toast.LENGTH_SHORT).show();
                             }
                         });
             }
@@ -101,8 +102,8 @@ public class LoginActivity extends AppCompatActivity implements ListenerInterfac
             public void onClick(View view) {
                 SharedPreferences userDetails = getApplicationContext().getSharedPreferences("", MODE_PRIVATE);
                 SharedPreferences.Editor edit = userDetails.edit();
-                edit.putString("username", "");
-                edit.putBoolean("logged_in", false);
+                edit.putString(BundleAndSharedPreferencesConstants.USERNAME, "");
+                edit.putBoolean(BundleAndSharedPreferencesConstants.LOGGED_IN, false);
                 edit.apply();
             }
         });
@@ -110,7 +111,7 @@ public class LoginActivity extends AppCompatActivity implements ListenerInterfac
 
     private void redirectUserIfLoggedIn(){
         SharedPreferences userDetails = getSharedPreferences("", Context.MODE_PRIVATE);
-        boolean loggedIn =  userDetails.getBoolean("logged_in", false);
+        boolean loggedIn =  userDetails.getBoolean(BundleAndSharedPreferencesConstants.LOGGED_IN, false);
 
         if(loggedIn){
             // Redirect to MainActivity screen

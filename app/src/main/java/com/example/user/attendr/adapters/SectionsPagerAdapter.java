@@ -12,8 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.example.user.attendr.R;
-import com.example.user.attendr.constants.BundleConstants;
+import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.enums.TimeType;
 import com.example.user.attendr.fragments.ViewEventsFragment;
@@ -42,21 +41,21 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 fragment = new ViewEventsFragment();
 
-                bundle.putSerializable(BundleConstants.EVENT_TYPE, this.eventType);
-                bundle.putSerializable(BundleConstants.TIME_TYPE, TimeType.PAST);
+                bundle.putSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE, this.eventType);
+                bundle.putSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE, TimeType.PAST);
                 fragment.setArguments(bundle);
                 break;
             case 1:
                 fragment = new ViewEventsFragment();
 
-                bundle.putSerializable(BundleConstants.EVENT_TYPE, this.eventType);
-                bundle.putSerializable(BundleConstants.TIME_TYPE, TimeType.ONGOING);
+                bundle.putSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE, this.eventType);
+                bundle.putSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE, TimeType.ONGOING);
                 fragment.setArguments(bundle);
                 break;
             case 2:
                 fragment = new ViewEventsFragment();
-                bundle.putSerializable(BundleConstants.EVENT_TYPE, this.eventType);
-                bundle.putSerializable(BundleConstants.TIME_TYPE, TimeType.FUTURE);
+                bundle.putSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE, this.eventType);
+                bundle.putSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE, TimeType.FUTURE);
                 fragment.setArguments(bundle);
                 break;
         }

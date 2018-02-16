@@ -19,7 +19,7 @@ import android.widget.Toast;
 import com.example.user.attendr.R;
 import com.example.user.attendr.adapters.EventsViewAdapter;
 import com.example.user.attendr.callbacks.EventApiCallback;
-import com.example.user.attendr.constants.BundleConstants;
+import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.enums.TimeType;
@@ -202,8 +202,8 @@ public class ViewEventsFragment extends Fragment {
     // Fetch events from DB according bundle parameters passed into fragment
     private ArrayList<Event> getEventsWithParameters(Bundle bundle){
 
-        return db.getEvents((EventType) bundle.getSerializable(BundleConstants.EVENT_TYPE),
-                (TimeType)bundle.getSerializable(BundleConstants.TIME_TYPE));
+        return db.getEvents((EventType) bundle.getSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE),
+                (TimeType)bundle.getSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE));
     }
 
     private void displayEvents(ArrayList<Event> events){

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 /**
  * Created by Eamon on 06/02/2018.
  *
- * Activity Registering
+ * Activity for Registering
  */
 
 public class RegisterActivity extends AppCompatActivity implements ListenerInterface{
@@ -56,12 +56,6 @@ public class RegisterActivity extends AppCompatActivity implements ListenerInter
 
         db = new DBManager(this).open();
 
-//        ArrayList<String> users = new ArrayList<>();
-//        users.add("alannahmullins1");
-//        users.add("androiduser");
-//        UserGroup group = new UserGroup("olegpetcov1", "First Group", users);
-//        db.insertUserGroup(group);
-
         ArrayList<UserGroup> groups = db.getGroups();
 
         for(UserGroup g: groups){
@@ -84,7 +78,7 @@ public class RegisterActivity extends AppCompatActivity implements ListenerInter
                                 new RegisterCallback() {
                                     @Override
                                     public void onSuccess() {
-                                        Toast.makeText(RegisterActivity.this, "Account made", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(RegisterActivity.this, R.string.account_made, Toast.LENGTH_SHORT).show();
 
                                         // Redirect to login screen
                                         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -95,10 +89,10 @@ public class RegisterActivity extends AppCompatActivity implements ListenerInter
                                     public void onFailure(String response) {
 
                                         Log.d(TAG, response);
-                                        Toast.makeText(RegisterActivity.this, "Error making account", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(RegisterActivity.this, R.string.error_making_account, Toast.LENGTH_SHORT).show();
 
                                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RegisterActivity.this);
-                                        alertDialogBuilder.setMessage(response.toString());
+                                        alertDialogBuilder.setMessage(response);
                                         alertDialogBuilder.setPositiveButton("yes",
                                                 new DialogInterface.OnClickListener() {
                                                     @Override

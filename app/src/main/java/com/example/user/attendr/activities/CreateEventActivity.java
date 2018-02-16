@@ -238,7 +238,7 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
         groupNames = new ArrayList<>();
 
         // First value in spinner is greyed out and is un-selectable
-        groupNames.add("Select from group names");
+        groupNames.add(getString(R.string.select_from_group_names));
 
         for (UserGroup group : groups) {
             groupNames.add(group.getGroupName());
@@ -320,7 +320,7 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
                         @Override
                         public void onSuccess(JSONObject response) {
                             try {
-                                Toast.makeText(CreateEventActivity.this, "Created event: " + response.get("event_name"), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CreateEventActivity.this, getString(R.string.created_event) + response.get("event_name"), Toast.LENGTH_SHORT).show();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

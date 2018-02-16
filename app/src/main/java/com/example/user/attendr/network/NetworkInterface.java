@@ -18,6 +18,7 @@ import com.example.user.attendr.callbacks.LoginCallback;
 import com.example.user.attendr.callbacks.RegisterCallback;
 import com.example.user.attendr.callbacks.UserGroupCreateCallback;
 import com.example.user.attendr.constants.ApiUrls;
+import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.constants.TimeFormats;
 import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.enums.EventType;
@@ -427,6 +428,6 @@ public class NetworkInterface {
     // Returns logged in user from shared preferences
     private String getLoggedInUser(){
         SharedPreferences userDetails = context.getSharedPreferences("", Context.MODE_PRIVATE);
-        return userDetails.getString("username", "");
+        return userDetails.getString(BundleAndSharedPreferencesConstants.USERNAME, "");
     }
 }
