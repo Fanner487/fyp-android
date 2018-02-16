@@ -1,17 +1,22 @@
 package com.example.user.attendr.activities;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NavUtils;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.example.user.attendr.ListenerInterface;
 import com.example.user.attendr.R;
@@ -20,6 +25,7 @@ import com.example.user.attendr.callbacks.EventApiCallback;
 import com.example.user.attendr.constants.DbConstants;
 import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.models.Event;
+import com.example.user.attendr.network.NetworkCheck;
 import com.example.user.attendr.network.NetworkInterface;
 
 public class ViewEventActivity extends AppCompatActivity implements ListenerInterface{
@@ -37,6 +43,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
     LinearLayoutManager linearLayoutManager;
     DBManager db;
     Bundle bundle;
+    Toolbar toolbar;
 
     SwipeRefreshLayout swipeRefreshLayout;
 
@@ -94,7 +101,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
             @Override
             public void onRefresh() {
 
-                if(isOnline()){
+                if(NetworkCheck.isConnectedToInternet(getApplicationContext())){
                     NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
                         @Override
                         public void onSuccess() {
@@ -119,7 +126,12 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
                     swipeRefreshLayout.setRefreshing(false);
                 }
 
-
+//                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        finish();
+//                    }
+//                });
 //                swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -144,7 +156,4 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
         return connected;
     }
 
-    private void assignAttendingAttendees(){
-
-    }
 }
