@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.example.user.attendr.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.adapters.EventsViewAdapter;
 import com.example.user.attendr.database.DBManager;
@@ -15,8 +16,9 @@ import com.example.user.attendr.models.Event;
 
 import java.util.ArrayList;
 
-public class ViewOrganiseEventsActivity extends AppCompatActivity {
+public class ViewOrganiseEventsActivity extends AppCompatActivity implements ListenerInterface{
 
+    //todo: don't need this anymore
     private final String TAG = ViewOrganiseEventsActivity.class.getSimpleName();
 
     RecyclerView recyclerView;
@@ -68,5 +70,10 @@ public class ViewOrganiseEventsActivity extends AppCompatActivity {
         }
 
         Log.d(TAG, "-------------");
+    }
+
+    @Override
+    public void setListeners() {
+
     }
 }

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.user.attendr.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.adapters.AttendeesViewAdapter;
 import com.example.user.attendr.callbacks.EventApiCallback;
@@ -17,7 +18,7 @@ import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.models.Event;
 import com.example.user.attendr.network.NetworkInterface;
 
-public class ViewEventActivity extends AppCompatActivity {
+public class ViewEventActivity extends AppCompatActivity implements ListenerInterface{
 
     private static final String TAG = ViewEventActivity.class.getSimpleName();
 
@@ -54,30 +55,7 @@ public class ViewEventActivity extends AppCompatActivity {
 
         populateAdapter();
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-
-                NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
-                    @Override
-                    public void onSuccess() {
-                        populateAdapter();
-                        Toast.makeText(getApplicationContext(), "Refreshed", Toast.LENGTH_SHORT).show();
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-
-                    @Override
-                    public void onFailure() {
-                        populateAdapter();
-                        Toast.makeText(getApplicationContext(), "Network Error", Toast.LENGTH_SHORT).show();
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
-
-
+        setListeners();
 
     }
 
@@ -102,6 +80,33 @@ public class ViewEventActivity extends AppCompatActivity {
 
         recyclerView.setAdapter(attendeesViewAdapter);
 
+        setListeners();
+    }
+
+    @Override
+    public void setListeners() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
+                    @Override
+                    public void onSuccess() {
+                        populateAdapter();
+                        Toast.makeText(getApplicationContext(), "Refreshed", Toast.LENGTH_SHORT).show();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        populateAdapter();
+                        Toast.makeText(getApplicationContext(), "Network Error", Toast.LENGTH_SHORT).show();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+//                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
 //    public String toDisplayTime(String time)

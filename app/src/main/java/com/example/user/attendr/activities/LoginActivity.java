@@ -1,5 +1,6 @@
 package com.example.user.attendr.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.user.attendr.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.LoginCallback;
 import com.example.user.attendr.database.DBManager;
@@ -22,13 +24,14 @@ import com.example.user.attendr.network.NetworkInterface;
  * Activity for Login
  */
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements ListenerInterface{
 
     private final String TAG = LoginActivity.class.getSimpleName();
 
     EditText etUsername;
     EditText etPassword;
     Button btnSubmit;
+    Button btnLogout;
 
 
     DBManager db;
@@ -36,12 +39,31 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        redirectUserIfLoggedIn();
+
         setContentView(R.layout.activity_login);
 
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
         btnSubmit = findViewById(R.id.btnSubmit);
+        btnLogout = findViewById(R.id.btnLogout);
 
+        setListeners();
+
+    }
+
+    private void setPreferences(){
+        // Assign SharedPreferences username to the login
+        SharedPreferences userDetails = getApplicationContext().getSharedPreferences("", MODE_PRIVATE);
+        SharedPreferences.Editor edit = userDetails.edit();
+        edit.putString("username", etUsername.getText().toString().trim().toLowerCase());
+        edit.putBoolean("logged_in", true);
+        edit.apply();
+    }
+
+    @Override
+    public void setListeners() {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -55,11 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                             public void onSuccess() {
                                 Toast.makeText(LoginActivity.this, "Log in successful", Toast.LENGTH_SHORT).show();
 
-                                // Assign SharedPreferences username to the login
-                                SharedPreferences userDetails = getApplicationContext().getSharedPreferences("", MODE_PRIVATE);
-                                SharedPreferences.Editor edit = userDetails.edit();
-                                edit.putString("username", etUsername.getText().toString().trim().toLowerCase());
-                                edit.apply();
+                                setPreferences();
 
                                 // Redirect to MainActivity screen
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -77,6 +95,30 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        // Logout listener
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences userDetails = getApplicationContext().getSharedPreferences("", MODE_PRIVATE);
+                SharedPreferences.Editor edit = userDetails.edit();
+                edit.putString("username", "");
+                edit.putBoolean("logged_in", false);
+                edit.apply();
+            }
+        });
+    }
 
+    private void redirectUserIfLoggedIn(){
+        SharedPreferences userDetails = getSharedPreferences("", Context.MODE_PRIVATE);
+        boolean loggedIn =  userDetails.getBoolean("logged_in", false);
+
+        if(loggedIn){
+            // Redirect to MainActivity screen
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            getApplicationContext().startActivity(intent);
+
+            // Removes activity from the stack
+            finish();
+        }
     }
 }

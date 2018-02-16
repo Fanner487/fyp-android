@@ -1,8 +1,11 @@
 package com.example.user.attendr.fragments;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +19,7 @@ import android.widget.Toast;
 import com.example.user.attendr.R;
 import com.example.user.attendr.adapters.EventsViewAdapter;
 import com.example.user.attendr.callbacks.EventApiCallback;
+import com.example.user.attendr.constants.BundleConstants;
 import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.enums.TimeType;
@@ -105,22 +109,33 @@ public class ViewEventsFragment extends Fragment {
             @Override
             public void onRefresh() {
 
-                NetworkInterface.getInstance(getContext()).getEventsForUser(new EventApiCallback() {
-                    @Override
-                    public void onSuccess() {
-                        setAdapterWithData();
-                        Toast.makeText(view.getContext(), "Refreshed", Toast.LENGTH_SHORT).show();
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
+                if(isOnline()){
+                    NetworkInterface.getInstance(getContext()).getEventsForUser(new EventApiCallback() {
+                        @Override
+                        public void onSuccess() {
+                            setAdapterWithData();
+                            Toast.makeText(view.getContext(), "Refreshed", Toast.LENGTH_SHORT).show();
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
 
-                    @Override
-                    public void onFailure() {
-                        setAdapterWithData();
-                        Toast.makeText(view.getContext(), "Network Error", Toast.LENGTH_SHORT).show();
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
-                swipeRefreshLayout.setRefreshing(false);
+                        @Override
+                        public void onFailure() {
+                            setAdapterWithData();
+                            Toast.makeText(view.getContext(), "Network Error", Toast.LENGTH_SHORT).show();
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    });
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+                else{
+                    Snackbar snackbar = Snackbar
+                            .make(view, "Not connected to internet to update", Snackbar.LENGTH_LONG);
+
+                    snackbar.show();
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+
+
             }
         });
 
@@ -184,9 +199,11 @@ public class ViewEventsFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
+    // Fetch events from DB according bundle parameters passed into fragment
     private ArrayList<Event> getEventsWithParameters(Bundle bundle){
 
-        return db.getEvents((EventType) bundle.getSerializable("event_type"), (TimeType)bundle.getSerializable("time_type"));
+        return db.getEvents((EventType) bundle.getSerializable(BundleConstants.EVENT_TYPE),
+                (TimeType)bundle.getSerializable(BundleConstants.TIME_TYPE));
     }
 
     private void displayEvents(ArrayList<Event> events){
@@ -194,8 +211,27 @@ public class ViewEventsFragment extends Fragment {
         for(Event event: events){
             Log.d(TAG, event.toString());
         }
-
         Log.d(TAG, "-------------");
+    }
+
+
+    // Checks to see if user is online to get updates from server
+    public boolean isOnline() {
+        ConnectivityManager connectivityManager;
+        boolean connected = false;
+        try {
+            connectivityManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            connected = networkInfo != null && networkInfo.isAvailable() &&
+                    networkInfo.isConnected();
+
+        } catch (Exception e) {
+            System.out.println("CheckConnectivity Exception: " + e.getMessage());
+            Log.v("connectivity", e.toString());
+        }
+
+        return connected;
     }
 
 }

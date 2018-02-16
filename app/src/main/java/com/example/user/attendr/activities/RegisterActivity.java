@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.user.attendr.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.RegisterCallback;
 import com.example.user.attendr.database.DBManager;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
  * Activity Registering
  */
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements ListenerInterface{
 
     final String TAG = RegisterActivity.class.getSimpleName();
 
@@ -67,6 +68,12 @@ public class RegisterActivity extends AppCompatActivity {
             Log.d(TAG, g.toString());
         }
 
+
+        setListeners();
+    }
+
+    @Override
+    public void setListeners() {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,13 +99,13 @@ public class RegisterActivity extends AppCompatActivity {
 
                                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RegisterActivity.this);
                                         alertDialogBuilder.setMessage(response.toString());
-                                                alertDialogBuilder.setPositiveButton("yes",
-                                                        new DialogInterface.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(DialogInterface arg0, int arg1) {
-                                                                Toast.makeText(RegisterActivity.this,"You clicked yes button",Toast.LENGTH_LONG).show();
-                                                            }
-                                                        });
+                                        alertDialogBuilder.setPositiveButton("yes",
+                                                new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface arg0, int arg1) {
+                                                        Toast.makeText(RegisterActivity.this,"You clicked yes button",Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
 
                                         alertDialogBuilder.setNegativeButton("No",new DialogInterface.OnClickListener() {
                                             @Override
@@ -113,6 +120,5 @@ public class RegisterActivity extends AppCompatActivity {
                                 });
             }
         });
-
     }
 }

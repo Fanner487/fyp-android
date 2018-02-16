@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.user.attendr.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.UserGroupCreateCallback;
 import com.example.user.attendr.models.UserGroup;
@@ -17,7 +18,7 @@ import com.example.user.attendr.network.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class CreateUserGroupActivity extends AppCompatActivity {
+public class CreateUserGroupActivity extends AppCompatActivity implements ListenerInterface{
 
     EditText etGroupName;
     EditText etUsers;
@@ -32,6 +33,18 @@ public class CreateUserGroupActivity extends AppCompatActivity {
         etUsers = findViewById(R.id.etUsers);
         btnSubmit = findViewById(R.id.btnSubmit);
 
+        setListeners();
+    }
+
+    private ArrayList<String> toList(String value){
+
+        String[] tempList = value.split("\n");
+
+        return new ArrayList<>(Arrays.asList(tempList));
+    }
+
+    @Override
+    public void setListeners() {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,12 +75,5 @@ public class CreateUserGroupActivity extends AppCompatActivity {
                 });
             }
         });
-    }
-
-    private ArrayList<String> toList(String value){
-
-        String[] tempList = value.split("\n");
-
-        return new ArrayList<>(Arrays.asList(tempList));
     }
 }

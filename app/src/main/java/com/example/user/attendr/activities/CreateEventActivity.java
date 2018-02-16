@@ -22,6 +22,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.androidnetworking.error.ANError;
+import com.example.user.attendr.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.EventCreateUpdateCallback;
 import com.example.user.attendr.callbacks.TimeSetCallback;
@@ -50,7 +51,7 @@ import java.util.Locale;
  */
 
 
-public class CreateEventActivity extends AppCompatActivity {
+public class CreateEventActivity extends AppCompatActivity implements ListenerInterface{
 
     final String TAG = CreateEventActivity.class.getSimpleName();
 
@@ -131,129 +132,7 @@ public class CreateEventActivity extends AppCompatActivity {
         spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
         spinner.setAdapter(spinnerArrayAdapter);
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                // First item is disable and it is used for hint
-                if (i > 0) {
-
-                    String attendeeString = listToString(groups.get(i - 1).getUsers());
-                    etAttendees.setText(attendeeString);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                // Continues if all fields are filled
-                if (allFieldsFilled()) {
-
-                    String eventName = etEventName.getText().toString().trim();
-                    String location = etLocation.getText().toString().trim();
-                    ArrayList<String> attendees = toList(etAttendees.getText().toString().trim());
-                    String startTime = tvStartTime.getText().toString().trim();
-                    String finishTime = tvFinishTime.getText().toString().trim();
-                    String signInTime = tvSignInTime.getText().toString().trim();
-                    boolean attendanceRequired = switchAttendanceRequired.isChecked();
-
-                    Log.d(TAG, eventName);
-                    Log.d(TAG, location);
-                    Log.d(TAG, startTime);
-                    Log.d(TAG, finishTime);
-                    Log.d(TAG, signInTime);
-                    Log.d(TAG, Boolean.toString(attendanceRequired));
-                    Log.d(TAG, "Attendees");
-
-                    for (String attendee : attendees) {
-                        Log.d(TAG, attendee);
-                    }
-
-                    Event event = new Event(eventName, location, startTime, finishTime, signInTime, attendees, attendanceRequired);
-
-                    NetworkInterface.getInstance(CreateEventActivity.this).createEvent(event, new EventCreateUpdateCallback() {
-                        @Override
-                        public void onSuccess(JSONObject response) {
-                            try {
-                                Toast.makeText(CreateEventActivity.this, "Created event: " + response.get("event_name"), Toast.LENGTH_SHORT).show();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(ANError anError) {
-//                            Toast.makeText(CreateEventActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
-
-                            try{
-//                                JSONObject error = new JSONObject(anError.getErrorBody());
-//                                Log.d(TAG, error.getString("non_field_errors"));
-//
-//                                while(error.keys().hasNext()){
-//
-//                                }
-
-                                String jsonString = anError.getErrorBody();
-                                JSONObject resobj = new JSONObject(jsonString);
-                                Iterator<?> keys = resobj.keys();
-                                while(keys.hasNext() ) {
-                                    String key = (String)keys.next();
-                                    if ( resobj.get(key) instanceof JSONObject ) {
-                                        JSONObject value = new JSONObject(resobj.get(key).toString());
-                                        Log.d(TAG, value.getString("something"));
-                                        Log.d(TAG, value.getString("something2"));
-                                    }
-                                }
-
-                            }
-                            catch(JSONException e){
-                                e.printStackTrace();
-                            }
-
-                            AlertDialog alertDialog = new AlertDialog.Builder(CreateEventActivity.this).create();
-                            alertDialog.setTitle("Alert");
-                            alertDialog.setMessage(anError.getErrorBody());
-                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-                            alertDialog.show();
-                        }
-                    });
-                } else {
-                    Toast.makeText(CreateEventActivity.this, "Fill all fields", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        // Opens date and time alert dialogs for the user to pick the times
-        btnStartTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setTextViewTimeFromDateTimeDialog(tvStartTime);
-            }
-        });
-
-        btnFinishTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setTextViewTimeFromDateTimeDialog(tvFinishTime);
-            }
-        });
-        btnSignInTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setTextViewTimeFromDateTimeDialog(tvSignInTime);
-            }
-        });
+        setListeners();
     }
 
     /*
@@ -364,5 +243,134 @@ public class CreateEventActivity extends AppCompatActivity {
         for (UserGroup group : groups) {
             groupNames.add(group.getGroupName());
         }
+    }
+
+    @Override
+    public void setListeners() {
+
+        // Opens date and time alert dialogs for the user to pick the times
+        btnStartTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setTextViewTimeFromDateTimeDialog(tvStartTime);
+            }
+        });
+
+        btnFinishTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setTextViewTimeFromDateTimeDialog(tvFinishTime);
+            }
+        });
+        btnSignInTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setTextViewTimeFromDateTimeDialog(tvSignInTime);
+            }
+        });
+
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                // First item is disable and it is used for hint
+                if (i > 0) {
+
+                    String attendeeString = listToString(groups.get(i - 1).getUsers());
+                    etAttendees.setText(attendeeString);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // Continues if all fields are filled
+                if (allFieldsFilled()) {
+
+                    String eventName = etEventName.getText().toString().trim();
+                    String location = etLocation.getText().toString().trim();
+                    ArrayList<String> attendees = toList(etAttendees.getText().toString().trim());
+                    String startTime = tvStartTime.getText().toString().trim();
+                    String finishTime = tvFinishTime.getText().toString().trim();
+                    String signInTime = tvSignInTime.getText().toString().trim();
+                    boolean attendanceRequired = switchAttendanceRequired.isChecked();
+
+                    Log.d(TAG, eventName);
+                    Log.d(TAG, location);
+                    Log.d(TAG, startTime);
+                    Log.d(TAG, finishTime);
+                    Log.d(TAG, signInTime);
+                    Log.d(TAG, Boolean.toString(attendanceRequired));
+                    Log.d(TAG, "Attendees");
+
+                    for (String attendee : attendees) {
+                        Log.d(TAG, attendee);
+                    }
+
+                    Event event = new Event(eventName, location, startTime, finishTime, signInTime, attendees, attendanceRequired);
+
+                    NetworkInterface.getInstance(CreateEventActivity.this).createEvent(event, new EventCreateUpdateCallback() {
+                        @Override
+                        public void onSuccess(JSONObject response) {
+                            try {
+                                Toast.makeText(CreateEventActivity.this, "Created event: " + response.get("event_name"), Toast.LENGTH_SHORT).show();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(ANError anError) {
+//                            Toast.makeText(CreateEventActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
+
+                            try{
+//                                JSONObject error = new JSONObject(anError.getErrorBody());
+//                                Log.d(TAG, error.getString("non_field_errors"));
+//
+//                                while(error.keys().hasNext()){
+//
+//                                }
+
+                                String jsonString = anError.getErrorBody();
+                                JSONObject resobj = new JSONObject(jsonString);
+                                Iterator<?> keys = resobj.keys();
+                                while(keys.hasNext() ) {
+                                    String key = (String)keys.next();
+                                    if ( resobj.get(key) instanceof JSONObject ) {
+                                        JSONObject value = new JSONObject(resobj.get(key).toString());
+                                        Log.d(TAG, value.getString("something"));
+                                        Log.d(TAG, value.getString("something2"));
+                                    }
+                                }
+
+                            }
+                            catch(JSONException e){
+                                e.printStackTrace();
+                            }
+
+                            AlertDialog alertDialog = new AlertDialog.Builder(CreateEventActivity.this).create();
+                            alertDialog.setTitle("Alert");
+                            alertDialog.setMessage(anError.getErrorBody());
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.show();
+                        }
+                    });
+                } else {
+                    Toast.makeText(CreateEventActivity.this, "Fill all fields", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }

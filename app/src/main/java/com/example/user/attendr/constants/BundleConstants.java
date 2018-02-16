@@ -9,5 +9,5 @@ package com.example.user.attendr.constants;
 public class BundleConstants {
 
     public static final String EVENT_TYPE = "event_type";
-    public static final String TIME_TYPE = "time_tye";
+    public static final String TIME_TYPE = "time_type";
 }

@@ -137,4 +137,5 @@
     </string>
     <string name="organiser">Organiser</string>
     <string name="pick_group">Pick a Group</string>
+    <string name="logout">Logout</string>
 </resources>

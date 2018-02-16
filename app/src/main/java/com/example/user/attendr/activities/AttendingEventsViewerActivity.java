@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import com.example.user.attendr.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.adapters.SectionsPagerAdapter;
 import com.example.user.attendr.enums.EventType;
@@ -29,20 +30,23 @@ import com.example.user.attendr.fragments.ViewEventsFragment;
  * Tab Layout Activity for showing Attending events
  */
 
-public class AttendingEventsViewerActivity extends AppCompatActivity implements ViewEventsFragment.OnFragmentInteractionListener{
+public class AttendingEventsViewerActivity extends AppCompatActivity
+        implements ViewEventsFragment.OnFragmentInteractionListener, ListenerInterface{
 
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     private ViewPager mViewPager;
     TabLayout tabLayout;
+    Toolbar toolbar;
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attending_events_viewer);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         toolbar.setTitle(R.string.attending);
@@ -50,12 +54,7 @@ public class AttendingEventsViewerActivity extends AppCompatActivity implements 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), EventType.ATTEND);
 
@@ -66,15 +65,9 @@ public class AttendingEventsViewerActivity extends AppCompatActivity implements 
         tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab = findViewById(R.id.fab);
 
+        setListeners();
     }
 
 
@@ -103,5 +96,23 @@ public class AttendingEventsViewerActivity extends AppCompatActivity implements 
     // Needed for the fragment inits
     @Override
     public void onFragmentInteraction(Uri uri) {
+    }
+
+    @Override
+    public void setListeners() {
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
     }
 }
