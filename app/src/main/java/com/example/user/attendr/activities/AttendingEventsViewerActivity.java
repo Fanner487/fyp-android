@@ -7,9 +7,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -24,6 +22,12 @@ import com.example.user.attendr.R;
 import com.example.user.attendr.adapters.SectionsPagerAdapter;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.fragments.ViewEventsFragment;
+
+/**
+ * Created by Eamon on 16/02/2018.
+ *
+ * Tab Layout Activity for showing Attending events
+ */
 
 public class AttendingEventsViewerActivity extends AppCompatActivity implements ViewEventsFragment.OnFragmentInteractionListener{
 
@@ -42,6 +46,16 @@ public class AttendingEventsViewerActivity extends AppCompatActivity implements 
         setSupportActionBar(toolbar);
 
         toolbar.setTitle(R.string.attending);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), EventType.ATTEND);
 
@@ -86,7 +100,7 @@ public class AttendingEventsViewerActivity extends AppCompatActivity implements 
         return super.onOptionsItemSelected(item);
     }
 
-
+    // Needed for the fragment inits
     @Override
     public void onFragmentInteraction(Uri uri) {
     }

@@ -37,7 +37,7 @@ public class CreateUserGroupActivity extends AppCompatActivity {
             public void onClick(View view) {
                 UserGroup group = new UserGroup(
                         etGroupName.getText().toString(),
-                        toList(etUsers.getText().toString().trim())
+                        toList(etUsers.getText().toString().toLowerCase().trim())
                 );
 
                 NetworkInterface.getInstance(CreateUserGroupActivity.this).verifyGroup(group, new UserGroupCreateCallback() {

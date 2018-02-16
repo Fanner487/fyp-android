@@ -49,7 +49,6 @@ public class OrganiseEventsViewerActivity extends AppCompatActivity implements V
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-//        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

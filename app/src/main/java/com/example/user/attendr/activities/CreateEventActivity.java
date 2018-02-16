@@ -45,7 +45,7 @@ import java.util.Locale;
 
 /**
  * Created by Eamon on 08/02/2018.
- * <p>
+ *
  * Activity for creating and updating Events
  */
 
