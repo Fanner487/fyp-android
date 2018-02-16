@@ -49,6 +49,7 @@
     <string name="data_updated">Data updated</string>
     <string name="network_error">Network Error</string>
     <string name="not_connected_to_internet">Not connected to internet to update data</string>
+    <string name="is_attendee">Is attendee</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->

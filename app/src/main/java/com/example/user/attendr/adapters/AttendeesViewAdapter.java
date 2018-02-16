@@ -27,6 +27,7 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
 
     private Context context;
     private List<String> attendees;
+    private List<String> attending;
 
     public class AttendeesViewHolder extends RecyclerView.ViewHolder {
         TextView tvAttendee;
@@ -47,9 +48,10 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
         }
     }
 
-    public AttendeesViewAdapter(Context context, List<String> attendees) {
+    public AttendeesViewAdapter(Context context, List<String> attendees, List<String> attending) {
         this.context = context;
         this.attendees = attendees;
+        this.attending = attending;
     }
 
     @Override
@@ -63,11 +65,38 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
     @Override
     public void onBindViewHolder(AttendeesViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder called");
-        holder.tvAttendee.setText(attendees.get(position));
+
+        if(isAttending(attendees.get(position))){
+
+            //TODO: change background colour whenever it comes up
+            holder.tvAttendee.setText(attendees.get(position) + " is attendee");
+
+        }
+        else{
+            holder.tvAttendee.setText(attendees.get(position));
+
+        }
     }
 
     @Override
     public int getItemCount() {
         return this.attendees.size();
+    }
+
+    // Checks to see if attendee is in attendee list
+    private boolean isAttending(String attendee){
+
+        boolean result = false;
+
+        if(attending != null){
+            for(String name : attending){
+
+                if(name.trim().toLowerCase().equals(attendee.trim().toLowerCase())){
+                    result = true;
+                }
+            }
+        }
+
+        return result;
     }
 }

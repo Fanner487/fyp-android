@@ -64,11 +64,11 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
     }
 
     public void populateAdapter(){
+
         int eventId = bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID);
         Event event = db.getEventWithEventId(eventId);
 
         Log.d(TAG, event.toString());
-
 
         tvEventName.setText(event.getEventName());
         tvLocation.setText(event.getLocation());
@@ -80,7 +80,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        AttendeesViewAdapter attendeesViewAdapter = new AttendeesViewAdapter(getApplicationContext(), event.getAttendees());
+        AttendeesViewAdapter attendeesViewAdapter = new AttendeesViewAdapter(getApplicationContext(), event.getAttendees(), event.getAttending());
 
         recyclerView.setAdapter(attendeesViewAdapter);
 
@@ -142,5 +142,9 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
         }
 
         return connected;
+    }
+
+    private void assignAttendingAttendees(){
+
     }
 }
