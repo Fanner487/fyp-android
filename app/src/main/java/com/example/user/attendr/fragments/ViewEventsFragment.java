@@ -114,14 +114,14 @@ public class ViewEventsFragment extends Fragment {
                         @Override
                         public void onSuccess() {
                             setAdapterWithData();
-                            Toast.makeText(view.getContext(), "Refreshed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(view.getContext(), getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
                             swipeRefreshLayout.setRefreshing(false);
                         }
 
                         @Override
                         public void onFailure() {
                             setAdapterWithData();
-                            Toast.makeText(view.getContext(), "Network Error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(view.getContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
                             swipeRefreshLayout.setRefreshing(false);
                         }
                     });
@@ -129,7 +129,7 @@ public class ViewEventsFragment extends Fragment {
                 }
                 else{
                     Snackbar snackbar = Snackbar
-                            .make(view, "Not connected to internet to update", Snackbar.LENGTH_LONG);
+                            .make(view, getString(R.string.not_connected_to_internet), Snackbar.LENGTH_LONG);
 
                     snackbar.show();
                     swipeRefreshLayout.setRefreshing(false);

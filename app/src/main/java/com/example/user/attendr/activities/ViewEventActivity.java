@@ -1,5 +1,9 @@
 package com.example.user.attendr.activities;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -86,28 +90,57 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
     @Override
     public void setListeners() {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
             @Override
             public void onRefresh() {
 
-                NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
-                    @Override
-                    public void onSuccess() {
-                        populateAdapter();
-                        Toast.makeText(getApplicationContext(), "Refreshed", Toast.LENGTH_SHORT).show();
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
+                if(isOnline()){
+                    NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
+                        @Override
+                        public void onSuccess() {
+                            populateAdapter();
+                            Toast.makeText(getApplicationContext(), getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
 
-                    @Override
-                    public void onFailure() {
-                        populateAdapter();
-                        Toast.makeText(getApplicationContext(), "Network Error", Toast.LENGTH_SHORT).show();
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
+                        @Override
+                        public void onFailure() {
+                            populateAdapter();
+                            Toast.makeText(getApplicationContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    });
+                }
+                else{
+                    Snackbar snackbar = Snackbar
+                            .make(swipeRefreshLayout, getString(R.string.not_connected_to_internet), Snackbar.LENGTH_LONG);
+
+                    snackbar.show();
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+
+
 //                swipeRefreshLayout.setRefreshing(false);
             }
         });
     }
 
-//    public String toDisplayTime(String time)
+    // Checks to see if user is online to get updates from server
+    private boolean isOnline() {
+        ConnectivityManager connectivityManager;
+        boolean connected = false;
+        try {
+            connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            connected = networkInfo != null && networkInfo.isAvailable() &&
+                    networkInfo.isConnected();
+
+        } catch (Exception e) {
+            System.out.println("CheckConnectivity Exception: " + e.getMessage());
+            Log.v("connectivity", e.toString());
+        }
+
+        return connected;
+    }
 }

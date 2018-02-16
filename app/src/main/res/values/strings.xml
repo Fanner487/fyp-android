@@ -46,6 +46,9 @@
     <string name="successful_login">Log In Successful</string>
     <string name="failure_login">Log In Error</string>
     <string name="welcome_user">Welcome, </string>
+    <string name="data_updated">Data updated</string>
+    <string name="network_error">Network Error</string>
+    <string name="not_connected_to_internet">Not connected to internet to update data</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
