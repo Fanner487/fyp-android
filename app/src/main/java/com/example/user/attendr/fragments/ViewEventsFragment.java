@@ -101,9 +101,7 @@ public class ViewEventsFragment extends Fragment {
             }
 
             @Override
-            public void onFailure() {
-
-            }
+            public void onFailure() {}
         });
 
 
