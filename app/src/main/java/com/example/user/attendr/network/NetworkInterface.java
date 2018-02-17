@@ -74,7 +74,6 @@ public class NetworkInterface {
 
     public void getEventsForUser(final EventApiCallback eventApiCallback){
 
-//        String user = getLoggedInUser();
         AndroidNetworking.get(ApiUrls.EVENTS_FOR_USER)
                 .addPathParameter("username", getLoggedInUser())
                 .setPriority(Priority.MEDIUM)

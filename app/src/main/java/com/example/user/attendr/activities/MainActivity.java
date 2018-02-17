@@ -137,6 +137,9 @@ public class MainActivity extends AppCompatActivity
 
 
             Intent intent = new Intent(this, CreateEventActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
+            intent.putExtras(bundle);
             startActivity(intent);
 
         } else if (id == R.id.nav_manage) {

@@ -48,7 +48,7 @@
     <string name="welcome_user">Welcome, </string>
     <string name="data_updated">Data updated</string>
     <string name="network_error">Network Error</string>
-    <string name="not_connected_to_internet">Not connected to internet to update data</string>
+    <string name="not_connected_to_internet">Not connected to internet to perform action</string>
     <string name="is_attendee">Is attendee</string>
 
 
@@ -150,4 +150,6 @@
     <string name="organiser">Organiser</string>
     <string name="pick_group">Pick a Group</string>
     <string name="logout">Logout</string>
+    <string name="delete">Delete</string>
+    <string name="update">Update</string>
 </resources>

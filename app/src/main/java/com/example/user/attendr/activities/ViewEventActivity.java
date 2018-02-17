@@ -2,6 +2,7 @@ package com.example.user.attendr.activities;
 
 import android.app.ActionBar;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.design.widget.Snackbar;
@@ -14,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -22,6 +24,7 @@ import com.example.user.attendr.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.adapters.AttendeesViewAdapter;
 import com.example.user.attendr.callbacks.EventApiCallback;
+import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.constants.DbConstants;
 import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.models.Event;
@@ -38,6 +41,8 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
     TextView tvStartTime;
     TextView tvSignInTime;
     TextView tvFinishTime;
+    Button btnUpdate;
+    int eventId;
 
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
@@ -58,11 +63,14 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
         tvStartTime = findViewById(R.id.tvStartTime);
         tvSignInTime = findViewById(R.id.tvSignInTime);
         tvFinishTime = findViewById(R.id.tvFinishTime);
+        btnUpdate = findViewById(R.id.btnUpdate);
         swipeRefreshLayout = findViewById(R.id.swipe_container);
 
         bundle = getIntent().getExtras();
 
         db = new DBManager(this).open();
+
+        Log.d(TAG, "Event ID: " + Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID)));
 
         populateAdapter();
 
@@ -72,7 +80,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
 
     public void populateAdapter(){
 
-        int eventId = bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID);
+        eventId = bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID);
         Event event = db.getEventWithEventId(eventId);
 
         Log.d(TAG, event.toString());
@@ -101,7 +109,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
             @Override
             public void onRefresh() {
 
-                if(NetworkCheck.isConnectedToInternet(getApplicationContext())){
+                if(NetworkCheck.isConnectedToInternet(getApplicationContext(), swipeRefreshLayout)){
                     NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
                         @Override
                         public void onSuccess() {
@@ -118,13 +126,6 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
                         }
                     });
                 }
-                else{
-                    Snackbar snackbar = Snackbar
-                            .make(swipeRefreshLayout, getString(R.string.not_connected_to_internet), Snackbar.LENGTH_LONG);
-
-                    snackbar.show();
-                    swipeRefreshLayout.setRefreshing(false);
-                }
 
 //                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
 //                    @Override
@@ -135,25 +136,21 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
 //                swipeRefreshLayout.setRefreshing(false);
             }
         });
-    }
 
-    // Checks to see if user is online to get updates from server
-    private boolean isOnline() {
-        ConnectivityManager connectivityManager;
-        boolean connected = false;
-        try {
-            connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-            connected = networkInfo != null && networkInfo.isAvailable() &&
-                    networkInfo.isConnected();
-
-        } catch (Exception e) {
-            System.out.println("CheckConnectivity Exception: " + e.getMessage());
-            Log.v("connectivity", e.toString());
-        }
-
-        return connected;
+                Log.d(TAG, "Event ID: " + Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID)));
+                Intent intent = new Intent(getApplicationContext(), CreateEventActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.UPDATE);
+                bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, eventId);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
 }

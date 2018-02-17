@@ -3,7 +3,10 @@ package com.example.user.attendr.activities;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Network;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,11 +27,17 @@ import android.widget.Toast;
 import com.androidnetworking.error.ANError;
 import com.example.user.attendr.ListenerInterface;
 import com.example.user.attendr.R;
+import com.example.user.attendr.callbacks.EventApiCallback;
 import com.example.user.attendr.callbacks.EventCreateUpdateCallback;
+import com.example.user.attendr.callbacks.EventDeleteCallback;
 import com.example.user.attendr.callbacks.TimeSetCallback;
+import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
+import com.example.user.attendr.constants.DbConstants;
+import com.example.user.attendr.constants.TimeFormats;
 import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.models.Event;
 import com.example.user.attendr.models.UserGroup;
+import com.example.user.attendr.network.NetworkCheck;
 import com.example.user.attendr.network.NetworkInterface;
 
 import org.json.JSONException;
@@ -48,6 +57,8 @@ import java.util.Locale;
  * Created by Eamon on 08/02/2018.
  *
  * Activity for creating and updating Events
+ *
+ * todo: update whole database after update or create
  */
 
 
@@ -65,6 +76,7 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
     Button btnFinishTime;
     Button btnSignInTime;
     Button btnSubmit;
+    Button btnDelete;
     Switch switchAttendanceRequired;
     Spinner spinner;
 
@@ -73,12 +85,26 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
     ArrayList<UserGroup> groups;
     ArrayList<String> groupNames;
 
+    Bundle bundle;
+    String createOrUpdate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
 
         db = new DBManager(this).open();
+
+        bundle = getIntent().getExtras();
+
+        Log.d(TAG, "Bundle Extras");
+        Log.d(TAG, "Create or update: " + bundle.getString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE));
+        Log.d(TAG, "Event ID: " + Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID)));
+
+
+        createOrUpdate = bundle.getString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE);
+
+
 
         prepareGroups();
 
@@ -95,10 +121,18 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
         btnFinishTime = findViewById(R.id.btnFinishTime);
         btnSignInTime = findViewById(R.id.btnSignInTime);
         btnSubmit = findViewById(R.id.btnSubmit);
+        btnDelete = findViewById(R.id.btnDelete);
 
         switchAttendanceRequired = findViewById(R.id.switchAttendanceRequired);
         spinner = findViewById(R.id.spinner);
 
+        if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.CREATE)){
+            btnDelete.setVisibility(View.INVISIBLE);
+        }
+        else if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.UPDATE)){
+
+            populateWithExistingData();
+        }
 
         final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
                 this, R.layout.spinner_item, groupNames) {
@@ -164,7 +198,7 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
                         time.set(Calendar.SECOND, 0);
 
 
-                        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.ENGLISH);
+                        SimpleDateFormat sdf = new SimpleDateFormat(TimeFormats.DISPLAY_FORMAT, Locale.ENGLISH);
                         Date newTime = time.getTime();
                         Log.d(TAG, sdf.format(newTime));
                         textView.setText(sdf.format(newTime));
@@ -291,46 +325,77 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
             @Override
             public void onClick(View view) {
 
-                // Continues if all fields are filled
-                if (allFieldsFilled()) {
+                if(NetworkCheck.isConnectedToInternet(getApplicationContext(), view)){
+                    // Continues if all fields are filled
+                    if (allFieldsFilled()) {
 
-                    String eventName = etEventName.getText().toString().trim();
-                    String location = etLocation.getText().toString().trim();
-                    ArrayList<String> attendees = toList(etAttendees.getText().toString().trim());
-                    String startTime = tvStartTime.getText().toString().trim();
-                    String finishTime = tvFinishTime.getText().toString().trim();
-                    String signInTime = tvSignInTime.getText().toString().trim();
-                    boolean attendanceRequired = switchAttendanceRequired.isChecked();
+                        String eventName = etEventName.getText().toString().trim();
+                        String location = etLocation.getText().toString().trim();
+                        ArrayList<String> attendees = toList(etAttendees.getText().toString().trim());
+                        String startTime = tvStartTime.getText().toString().trim();
+                        String finishTime = tvFinishTime.getText().toString().trim();
+                        String signInTime = tvSignInTime.getText().toString().trim();
+                        boolean attendanceRequired = switchAttendanceRequired.isChecked();
 
-                    Log.d(TAG, eventName);
-                    Log.d(TAG, location);
-                    Log.d(TAG, startTime);
-                    Log.d(TAG, finishTime);
-                    Log.d(TAG, signInTime);
-                    Log.d(TAG, Boolean.toString(attendanceRequired));
-                    Log.d(TAG, "Attendees");
+                        Log.d(TAG, eventName);
+                        Log.d(TAG, location);
+                        Log.d(TAG, startTime);
+                        Log.d(TAG, finishTime);
+                        Log.d(TAG, signInTime);
+                        Log.d(TAG, Boolean.toString(attendanceRequired));
+                        Log.d(TAG, "Attendees");
 
-                    for (String attendee : attendees) {
-                        Log.d(TAG, attendee);
-                    }
-
-                    Event event = new Event(eventName, location, startTime, finishTime, signInTime, attendees, attendanceRequired);
-
-                    NetworkInterface.getInstance(CreateEventActivity.this).createEvent(event, new EventCreateUpdateCallback() {
-                        @Override
-                        public void onSuccess(JSONObject response) {
-                            try {
-                                Toast.makeText(CreateEventActivity.this, getString(R.string.created_event) + response.get("event_name"), Toast.LENGTH_SHORT).show();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                        for (String attendee : attendees) {
+                            Log.d(TAG, attendee);
                         }
 
-                        @Override
-                        public void onFailure(ANError anError) {
+                        final Event event = new Event(eventName, location, startTime, finishTime, signInTime, attendees, attendanceRequired);
+
+                        if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.CREATE)){
+                            NetworkInterface.getInstance(CreateEventActivity.this).createEvent(event, new EventCreateUpdateCallback() {
+                                @Override
+                                public void onSuccess(final JSONObject response) {
+                                    try {
+                                        Toast.makeText(CreateEventActivity.this, getString(R.string.created_event) + response.get("event_name"), Toast.LENGTH_SHORT).show();
+
+                                        Log.d(TAG, "New event ID: " + Integer.toString(response.getInt("id")));
+
+                                        NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
+                                            @Override
+                                            public void onSuccess() {
+
+                                                try{
+                                                    Intent intent = new Intent(CreateEventActivity.this, ViewEventActivity.class);
+                                                    Bundle bundle = new Bundle();
+                                                    bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, (response.getInt("id")));
+                                                    intent.putExtras(bundle);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                                catch (JSONException e){
+                                                    e.printStackTrace();
+                                                }
+
+                                            }
+
+                                            @Override
+                                            public void onFailure() {
+
+                                            }
+                                        });
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+
+                                }
+
+                                @Override
+                                public void onFailure(ANError anError) {
 //                            Toast.makeText(CreateEventActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
 
-                            try{
+                                    try{
 //                                JSONObject error = new JSONObject(anError.getErrorBody());
 //                                Log.d(TAG, error.getString("non_field_errors"));
 //
@@ -338,38 +403,122 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
 //
 //                                }
 
-                                String jsonString = anError.getErrorBody();
-                                JSONObject resobj = new JSONObject(jsonString);
-                                Iterator<?> keys = resobj.keys();
-                                while(keys.hasNext() ) {
-                                    String key = (String)keys.next();
-                                    if ( resobj.get(key) instanceof JSONObject ) {
-                                        JSONObject value = new JSONObject(resobj.get(key).toString());
-                                        Log.d(TAG, value.getString("something"));
-                                        Log.d(TAG, value.getString("something2"));
+                                        String jsonString = anError.getErrorBody();
+                                        JSONObject resobj = new JSONObject(jsonString);
+                                        Iterator<?> keys = resobj.keys();
+                                        while(keys.hasNext() ) {
+                                            String key = (String)keys.next();
+                                            if ( resobj.get(key) instanceof JSONObject ) {
+                                                JSONObject value = new JSONObject(resobj.get(key).toString());
+                                                Log.d(TAG, value.getString("something"));
+                                                Log.d(TAG, value.getString("something2"));
+                                            }
+                                        }
+
                                     }
+                                    catch(JSONException e){
+                                        e.printStackTrace();
+                                    }
+
+                                    AlertDialog alertDialog = new AlertDialog.Builder(CreateEventActivity.this).create();
+                                    alertDialog.setTitle("Alert");
+                                    alertDialog.setMessage(anError.getErrorBody());
+                                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                                    alertDialog.show();
+                                }
+                            });
+                        }
+                        else if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.UPDATE)){
+                            event.setEventId(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID));
+
+                            NetworkInterface.getInstance(CreateEventActivity.this).updateEvent(event, new EventCreateUpdateCallback() {
+                                @Override
+                                public void onSuccess(JSONObject response) {
+                                    Toast.makeText(CreateEventActivity.this, getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
+
+                                    Intent intent = new Intent(CreateEventActivity.this, ViewEventActivity.class);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, event.getEventId());
+                                    intent.putExtras(bundle);
+                                    startActivity(intent);
+                                    finish();
                                 }
 
-                            }
-                            catch(JSONException e){
-                                e.printStackTrace();
-                            }
-
-                            AlertDialog alertDialog = new AlertDialog.Builder(CreateEventActivity.this).create();
-                            alertDialog.setTitle("Alert");
-                            alertDialog.setMessage(anError.getErrorBody());
-                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-                            alertDialog.show();
+                                @Override
+                                public void onFailure(ANError anError) {
+                                    Toast.makeText(CreateEventActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
-                    });
-                } else {
-                    Toast.makeText(CreateEventActivity.this, "Fill all fields", Toast.LENGTH_SHORT).show();
+
+
+                    } else {
+                        Toast.makeText(CreateEventActivity.this, "Fill all fields", Toast.LENGTH_SHORT).show();
+                    }
                 }
+            }
+        });
+
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(NetworkCheck.isConnectedToInternet(getApplicationContext(), view)){
+
+                    NetworkInterface.getInstance(getApplicationContext()).deleteEvent(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID),
+                            new EventDeleteCallback() {
+                                @Override
+                                public void onSuccess() {
+                                    Toast.makeText(CreateEventActivity.this, "Event Deleted", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
+
+                                @Override
+                                public void onFailure() {
+                                    Toast.makeText(CreateEventActivity.this, "Error deleting event", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                }
+            }
+        });
+    }
+
+    private void populateWithExistingData(){
+
+        Log.d(TAG, "Event ID: " + Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID)));
+
+        Event event = db.getEventWithEventId(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID));
+
+        etEventName.setText(event.getEventName());
+        etLocation.setText(event.getLocation());
+        tvStartTime.setText(Event.parseDateToDisplayTime(event.getStartTime()));
+        tvFinishTime.setText(Event.parseDateToDisplayTime(event.getFinishTime()));
+        tvSignInTime.setText(Event.parseDateToDisplayTime(event.getSignInTime()));
+        etAttendees.setText(listToString(event.getAttendees()));
+        switchAttendanceRequired.setChecked(event.isAttendanceRequired());
+
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        Log.d(TAG, "in onDestroy");
+        super.onDestroy();
+        NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onFailure() {
+
             }
         });
     }

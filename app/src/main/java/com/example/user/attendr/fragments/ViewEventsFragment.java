@@ -24,6 +24,7 @@ import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.enums.TimeType;
 import com.example.user.attendr.models.Event;
+import com.example.user.attendr.network.NetworkCheck;
 import com.example.user.attendr.network.NetworkInterface;
 
 import java.util.ArrayList;
@@ -90,8 +91,24 @@ public class ViewEventsFragment extends Fragment {
 
     @Override
     public void onResume() {
-        setAdapterWithData();
         super.onResume();
+        Log.d(TAG, "In onResume");
+
+        NetworkInterface.getInstance(getContext()).getEventsForUser(new EventApiCallback() {
+            @Override
+            public void onSuccess() {
+                setAdapterWithData();
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        });
+
+
+//        notifyAll();
+
     }
 
     @Override
@@ -109,7 +126,7 @@ public class ViewEventsFragment extends Fragment {
             @Override
             public void onRefresh() {
 
-                if(isOnline()){
+                if(NetworkCheck.isConnectedToInternet(getContext(), swipeRefreshLayout)){
                     NetworkInterface.getInstance(getContext()).getEventsForUser(new EventApiCallback() {
                         @Override
                         public void onSuccess() {
@@ -125,13 +142,6 @@ public class ViewEventsFragment extends Fragment {
                             swipeRefreshLayout.setRefreshing(false);
                         }
                     });
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-                else{
-                    Snackbar snackbar = Snackbar
-                            .make(view, getString(R.string.not_connected_to_internet), Snackbar.LENGTH_LONG);
-
-                    snackbar.show();
                     swipeRefreshLayout.setRefreshing(false);
                 }
 
@@ -153,11 +163,20 @@ public class ViewEventsFragment extends Fragment {
     public void setAdapterWithData(){
 
         ArrayList<Event> events = getEventsWithParameters(bundle);
+
+        Log.d(TAG, "---------");
+        for(Event event : events){
+            Log.d(TAG, event.getEventName());
+        }
+        Log.d(TAG, "---------");
+
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
 
         EventsViewAdapter eventsViewAdapter = new EventsViewAdapter(events, getContext());
+
         recyclerView.setAdapter(eventsViewAdapter);
+        eventsViewAdapter.notifyDataSetChanged();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
