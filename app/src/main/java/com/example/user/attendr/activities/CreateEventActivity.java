@@ -282,6 +282,45 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
     @Override
     public void setListeners() {
 
+        setTimeListeners();
+        groupPickListener();
+        createUpdateListener();
+        deleteListener();
+    }
+
+    private void populateWithExistingData(){
+
+        Log.d(TAG, "Event ID: " + Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID)));
+
+        Event event = db.getEventWithEventId(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID));
+
+        etEventName.setText(event.getEventName());
+        etLocation.setText(event.getLocation());
+        tvStartTime.setText(Event.parseDateToDisplayTime(event.getStartTime()));
+        tvFinishTime.setText(Event.parseDateToDisplayTime(event.getFinishTime()));
+        tvSignInTime.setText(Event.parseDateToDisplayTime(event.getSignInTime()));
+        etAttendees.setText(listToString(event.getAttendees()));
+        switchAttendanceRequired.setChecked(event.isAttendanceRequired());
+
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        Log.d(TAG, "in onDestroy");
+        super.onDestroy();
+
+        // Syncs database with server when after event creation/update
+        NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
+            @Override
+            public void onSuccess() {}
+
+            @Override
+            public void onFailure() {}
+        });
+    }
+
+    private void setTimeListeners(){
         // Opens date and time alert dialogs for the user to pick the times
         btnStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -303,7 +342,9 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
             }
         });
 
+    }
 
+    private void groupPickListener(){
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -316,10 +357,11 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
+            public void onNothingSelected(AdapterView<?> adapterView) {}
         });
+    }
+
+    private void createUpdateListener(){
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -351,7 +393,12 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
 
                         final Event event = new Event(eventName, location, startTime, finishTime, signInTime, attendees, attendanceRequired);
 
+                        /*
+                        * If the activity is of type CREATE or UPDATE will determine CRUD API call to server
+                        * whether it is a post or patch request
+                        * */
                         if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.CREATE)){
+
                             NetworkInterface.getInstance(CreateEventActivity.this).createEvent(event, new EventCreateUpdateCallback() {
                                 @Override
                                 public void onSuccess(final JSONObject response) {
@@ -360,6 +407,7 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
 
                                         Log.d(TAG, "New event ID: " + Integer.toString(response.getInt("id")));
 
+                                        // Sync DB with server do get new event passed off into the new viewing activity
                                         NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
                                             @Override
                                             public void onSuccess() {
@@ -375,20 +423,15 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
                                                 catch (JSONException e){
                                                     e.printStackTrace();
                                                 }
-
                                             }
 
                                             @Override
-                                            public void onFailure() {
-
-                                            }
+                                            public void onFailure() {}
                                         });
 
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
-
-
                                 }
 
                                 @Override
@@ -463,6 +506,9 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
                 }
             }
         });
+    }
+
+    private void deleteListener(){
 
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -474,52 +520,18 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
                             new EventDeleteCallback() {
                                 @Override
                                 public void onSuccess() {
-                                    Toast.makeText(CreateEventActivity.this, "Event Deleted", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(CreateEventActivity.this, getString(R.string.event_deleted), Toast.LENGTH_SHORT).show();
                                     finish();
                                 }
 
                                 @Override
                                 public void onFailure() {
-                                    Toast.makeText(CreateEventActivity.this, "Error deleting event", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(CreateEventActivity.this, getString(R.string.event_delete_error), Toast.LENGTH_SHORT).show();
                                 }
                             });
-
                 }
             }
         });
     }
 
-    private void populateWithExistingData(){
-
-        Log.d(TAG, "Event ID: " + Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID)));
-
-        Event event = db.getEventWithEventId(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID));
-
-        etEventName.setText(event.getEventName());
-        etLocation.setText(event.getLocation());
-        tvStartTime.setText(Event.parseDateToDisplayTime(event.getStartTime()));
-        tvFinishTime.setText(Event.parseDateToDisplayTime(event.getFinishTime()));
-        tvSignInTime.setText(Event.parseDateToDisplayTime(event.getSignInTime()));
-        etAttendees.setText(listToString(event.getAttendees()));
-        switchAttendanceRequired.setChecked(event.isAttendanceRequired());
-
-    }
-
-    @Override
-    protected void onDestroy() {
-
-        Log.d(TAG, "in onDestroy");
-        super.onDestroy();
-        NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
-            @Override
-            public void onSuccess() {
-
-            }
-
-            @Override
-            public void onFailure() {
-
-            }
-        });
-    }
 }

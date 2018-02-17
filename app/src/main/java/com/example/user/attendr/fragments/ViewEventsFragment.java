@@ -29,14 +29,7 @@ import com.example.user.attendr.network.NetworkInterface;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ViewEventsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ViewEventsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class ViewEventsFragment extends Fragment {
     private static final String TAG = ViewEventsFragment.class.getSimpleName();
     // TODO: Rename parameter arguments, choose names that match
@@ -61,14 +54,7 @@ public class ViewEventsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ViewEventsFragment.
-     */
+
     // TODO: Rename and change types and number of parameters
     public static ViewEventsFragment newInstance(String param1, String param2) {
         ViewEventsFragment fragment = new ViewEventsFragment();
@@ -92,8 +78,8 @@ public class ViewEventsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "In onResume");
 
+        // Refreshes data from the server when events updated/deleted
         NetworkInterface.getInstance(getContext()).getEventsForUser(new EventApiCallback() {
             @Override
             public void onSuccess() {
@@ -103,9 +89,6 @@ public class ViewEventsFragment extends Fragment {
             @Override
             public void onFailure() {}
         });
-
-
-//        notifyAll();
 
     }
 
@@ -142,8 +125,6 @@ public class ViewEventsFragment extends Fragment {
                     });
                     swipeRefreshLayout.setRefreshing(false);
                 }
-
-
             }
         });
 

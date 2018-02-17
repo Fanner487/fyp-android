@@ -50,6 +50,8 @@
     <string name="network_error">Network Error</string>
     <string name="not_connected_to_internet">Not connected to internet to perform action</string>
     <string name="is_attendee">Is attendee</string>
+    <string name="event_deleted">Event Deleted</string>
+    <string name="event_delete_error">Error deleting event</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
