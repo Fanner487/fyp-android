@@ -101,7 +101,6 @@ public class ViewEventsFragment extends Fragment {
         db = new DBManager(getContext()).open();
         bundle = getArguments();
 
-
         swipeRefreshLayout = view.findViewById(R.id.swipe_container);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

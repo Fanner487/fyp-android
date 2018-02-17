@@ -1,19 +1,12 @@
 package com.example.user.attendr.activities;
 
-import android.app.ActionBar;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.NavUtils;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -142,7 +135,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
             public void onClick(View view) {
 
                 Log.d(TAG, "Event ID: " + Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID)));
-                Intent intent = new Intent(getApplicationContext(), CreateEventActivity.class);
+                Intent intent = new Intent(getApplicationContext(), CreateUpdateEventActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.UPDATE);
                 bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, eventId);

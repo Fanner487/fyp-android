@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -21,7 +20,6 @@ import com.example.user.attendr.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.EventApiCallback;
 import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
-import com.example.user.attendr.constants.DbConstants;
 import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.models.UserGroup;
 import com.example.user.attendr.network.NetworkInterface;
@@ -125,7 +123,10 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_camera) {
 
-            Intent intent = new Intent(this, LoginActivity.class);
+            Intent intent = new Intent(this, ViewGroupsActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
+            intent.putExtras(bundle);
             startActivity(intent);
         } else if (id == R.id.nav_gallery) {
 
@@ -136,7 +137,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_slideshow) {
 
 
-            Intent intent = new Intent(this, CreateEventActivity.class);
+            Intent intent = new Intent(this, CreateUpdateEventActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
             intent.putExtras(bundle);

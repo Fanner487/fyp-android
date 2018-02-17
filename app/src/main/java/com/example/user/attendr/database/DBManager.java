@@ -250,19 +250,45 @@ public class DBManager {
         return toUserGroups(c);
     }
 
+    public UserGroup getGroupWithId(int id) {
+        Cursor c = db.query(
+                false,
+                DbConstants.DATABASE_GROUPS_TABLE,
+                null,
+                DbConstants.GROUP_KEY_ROW_ID + "=?",
+                new String[]{Integer.toString(id)},
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        c.moveToFirst();
+
+        return toUserGroup(c);
+    }
+
     private ArrayList<UserGroup> toUserGroups(Cursor c) {
         ArrayList<UserGroup> events = new ArrayList<>();
 
         while (c.moveToNext()) {
 
-            events.add(new UserGroup(
-                    c.getInt(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_ID)),
-                    c.getString(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_USERNAME)),
-                    c.getString(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_GROUP_NAME)),
-                    stringToList(c.getString(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_USERS)))
-            ));
+            events.add(toUserGroup(c));
+            //TODO: add button stuff
         }
         return events;
+    }
+
+    private UserGroup toUserGroup(Cursor c) {
+        UserGroup group = new UserGroup(
+                c.getInt(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_ID)),
+                c.getString(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_USERNAME)),
+                c.getString(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_GROUP_NAME)),
+                stringToList(c.getString(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_USERS))
+                ));
+
+        return group;
     }
 
 

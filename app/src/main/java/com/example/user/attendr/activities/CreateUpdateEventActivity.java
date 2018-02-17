@@ -5,8 +5,6 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Network;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -50,7 +48,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -62,9 +59,9 @@ import java.util.Locale;
  */
 
 
-public class CreateEventActivity extends AppCompatActivity implements ListenerInterface{
+public class CreateUpdateEventActivity extends AppCompatActivity implements ListenerInterface{
 
-    final String TAG = CreateEventActivity.class.getSimpleName();
+    final String TAG = CreateUpdateEventActivity.class.getSimpleName();
 
     EditText etEventName;
     EditText etLocation;
@@ -91,7 +88,7 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_event);
+        setContentView(R.layout.activity_create_update_event);
 
         db = new DBManager(this).open();
 
@@ -176,7 +173,7 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
     * */
     private void setTextViewTimeFromDateTimeDialog(final TextView textView) {
 
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(CreateEventActivity.this, new DatePickerDialog.OnDateSetListener() {
+        final DatePickerDialog datePickerDialog = new DatePickerDialog(CreateUpdateEventActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
 
@@ -212,7 +209,7 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
     }
 
     private void getTimeFromDialog(final TimeSetCallback callback) {
-        final TimePickerDialog timePickerDialog = new TimePickerDialog(CreateEventActivity.this, new TimePickerDialog.OnTimeSetListener() {
+        final TimePickerDialog timePickerDialog = new TimePickerDialog(CreateUpdateEventActivity.this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int i, int i1) {
                 Log.d(TAG, Integer.toString(i));
@@ -399,11 +396,11 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
                         * */
                         if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.CREATE)){
 
-                            NetworkInterface.getInstance(CreateEventActivity.this).createEvent(event, new EventCreateUpdateCallback() {
+                            NetworkInterface.getInstance(CreateUpdateEventActivity.this).createEvent(event, new EventCreateUpdateCallback() {
                                 @Override
                                 public void onSuccess(final JSONObject response) {
                                     try {
-                                        Toast.makeText(CreateEventActivity.this, getString(R.string.created_event) + response.get("event_name"), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(CreateUpdateEventActivity.this, getString(R.string.created_event) + response.get("event_name"), Toast.LENGTH_SHORT).show();
 
                                         Log.d(TAG, "New event ID: " + Integer.toString(response.getInt("id")));
 
@@ -413,7 +410,7 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
                                             public void onSuccess() {
 
                                                 try{
-                                                    Intent intent = new Intent(CreateEventActivity.this, ViewEventActivity.class);
+                                                    Intent intent = new Intent(CreateUpdateEventActivity.this, ViewEventActivity.class);
                                                     Bundle bundle = new Bundle();
                                                     bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, (response.getInt("id")));
                                                     intent.putExtras(bundle);
@@ -436,7 +433,7 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
 
                                 @Override
                                 public void onFailure(ANError anError) {
-//                            Toast.makeText(CreateEventActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(CreateUpdateEventActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
 
                                     try{
 //                                JSONObject error = new JSONObject(anError.getErrorBody());
@@ -463,7 +460,7 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
                                         e.printStackTrace();
                                     }
 
-                                    AlertDialog alertDialog = new AlertDialog.Builder(CreateEventActivity.this).create();
+                                    AlertDialog alertDialog = new AlertDialog.Builder(CreateUpdateEventActivity.this).create();
                                     alertDialog.setTitle("Alert");
                                     alertDialog.setMessage(anError.getErrorBody());
                                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
@@ -479,12 +476,12 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
                         else if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.UPDATE)){
                             event.setEventId(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID));
 
-                            NetworkInterface.getInstance(CreateEventActivity.this).updateEvent(event, new EventCreateUpdateCallback() {
+                            NetworkInterface.getInstance(CreateUpdateEventActivity.this).updateEvent(event, new EventCreateUpdateCallback() {
                                 @Override
                                 public void onSuccess(JSONObject response) {
-                                    Toast.makeText(CreateEventActivity.this, getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(CreateUpdateEventActivity.this, getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
 
-                                    Intent intent = new Intent(CreateEventActivity.this, ViewEventActivity.class);
+                                    Intent intent = new Intent(CreateUpdateEventActivity.this, ViewEventActivity.class);
                                     Bundle bundle = new Bundle();
                                     bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, event.getEventId());
                                     intent.putExtras(bundle);
@@ -494,14 +491,14 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
 
                                 @Override
                                 public void onFailure(ANError anError) {
-                                    Toast.makeText(CreateEventActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(CreateUpdateEventActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
 
 
                     } else {
-                        Toast.makeText(CreateEventActivity.this, "Fill all fields", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateUpdateEventActivity.this, "Fill all fields", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -520,13 +517,13 @@ public class CreateEventActivity extends AppCompatActivity implements ListenerIn
                             new EventDeleteCallback() {
                                 @Override
                                 public void onSuccess() {
-                                    Toast.makeText(CreateEventActivity.this, getString(R.string.event_deleted), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(CreateUpdateEventActivity.this, getString(R.string.event_deleted), Toast.LENGTH_SHORT).show();
                                     finish();
                                 }
 
                                 @Override
                                 public void onFailure() {
-                                    Toast.makeText(CreateEventActivity.this, getString(R.string.event_delete_error), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(CreateUpdateEventActivity.this, getString(R.string.event_delete_error), Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }
