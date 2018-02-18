@@ -55,6 +55,8 @@
     <string name="verified_group">Verified group</string>
     <string name="group_updated">Group updated</string>
     <string name="create">Create</string>
+    <string name="group_deleted">Group deleted</string>
+    <string name="group_delete_error">Error deleting group</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
