@@ -52,6 +52,7 @@
     <string name="is_attendee">Is attendee</string>
     <string name="event_deleted">Event Deleted</string>
     <string name="event_delete_error">Error deleting event</string>
+    <string name="verified_group">Verified group</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->

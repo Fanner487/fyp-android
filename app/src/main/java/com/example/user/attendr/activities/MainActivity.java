@@ -146,6 +146,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_manage) {
 
             Intent intent = new Intent(this, CreateUserGroupActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
+            intent.putExtras(bundle);
             startActivity(intent);
         } else if (id == R.id.nav_share) {
             Intent intent = new Intent(this, OrganiseEventsViewerActivity.class);

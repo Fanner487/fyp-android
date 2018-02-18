@@ -45,7 +45,7 @@ public class ViewGroupsActivity extends AppCompatActivity {
 
         Log.d(TAG, "---------");
         for(UserGroup group : groups){
-            Log.d(TAG, group.getGroupName());
+            Log.d(TAG, group.toString());
         }
         Log.d(TAG, "---------");
 

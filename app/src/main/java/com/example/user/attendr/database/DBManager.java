@@ -291,6 +291,14 @@ public class DBManager {
         return group;
     }
 
+    public long updateGroup(UserGroup group){
+
+        ContentValues contentValues = toUserGroupContentValues(group);
+
+         return db.update(DbConstants.DATABASE_GROUPS_TABLE, contentValues, DbConstants.GROUP_KEY_ROW_ID + "=?", new String[]{Integer.toString(group.getId())});
+
+    }
+
 
     private ContentValues toEventContentValues(Event event) {
 

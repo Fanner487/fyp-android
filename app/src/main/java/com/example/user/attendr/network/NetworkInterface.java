@@ -353,7 +353,7 @@ public class NetworkInterface {
 
     }
 
-    public void verifyGroup(final UserGroup group, final UserGroupCreateCallback callback){
+    public void verifyGroup(final UserGroup group, final String type, final UserGroupCreateCallback callback){
 
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
@@ -385,15 +385,22 @@ public class NetworkInterface {
                         // Sets username of current logged in user to be stored in DB
                         group.setUsername(getLoggedInUser());
 
-                        if(!db.groupAlreadyExistsWithUser(group)){
-                            db.insertUserGroup(group);
+                        if(type.equals(BundleAndSharedPreferencesConstants.CREATE)){
+                            if(!db.groupAlreadyExistsWithUser(group)){
+//                            db.insertUserGroup(group);
 
-                            callback.onSuccess();
+                                callback.onSuccess();
+                            }
+                            else{
+                                callback.onFailure("Group already exists with same name");
+
+                            }
                         }
                         else{
-                            callback.onFailure("Group already exists with same name");
-
+                            callback.onSuccess();
                         }
+
+
 
                     }
 
