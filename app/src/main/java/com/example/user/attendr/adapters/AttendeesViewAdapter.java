@@ -10,9 +10,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.attendr.R;
-import com.example.user.attendr.activities.AttendingEventsViewerActivity;
 import com.example.user.attendr.models.Event;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -49,9 +50,37 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
     }
 
     public AttendeesViewAdapter(Context context, List<String> attendees, List<String> attending) {
+
+        ArrayList<String> listOfAttending = sortAttendees(attendees, attending);
         this.context = context;
-        this.attendees = attendees;
+        this.attendees = listOfAttending;
         this.attending = attending;
+    }
+
+    private ArrayList<String> sortAttendees(List<String> attendees, List<String> attending){
+        ArrayList<String> result = new ArrayList<>();
+        List<String> newAttendees = new ArrayList<>();
+
+        if(attending != null){
+            Collections.sort(attending);
+
+            for(String name: attendees){
+                if(!attending.contains(name)){
+                    newAttendees.add(name);
+                }
+            }
+
+            Collections.sort(newAttendees);
+
+            result.addAll(attending);
+            result.addAll(newAttendees);
+        }
+        else{
+            Collections.sort(attendees);
+            result.addAll(attendees);
+        }
+        
+        return result;
     }
 
     @Override

@@ -165,9 +165,6 @@ public class NetworkInterface {
                             Log.d(TAG, eventDb.toString());
                         }
 
-
-
-
                     }
 
                     @Override

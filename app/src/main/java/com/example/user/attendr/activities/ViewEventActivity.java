@@ -119,14 +119,6 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
                         }
                     });
                 }
-
-//                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        finish();
-//                    }
-//                });
-//                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
