@@ -38,6 +38,7 @@ import com.example.user.attendr.models.UserGroup;
 import com.example.user.attendr.network.NetworkCheck;
 import com.example.user.attendr.network.NetworkInterface;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -434,7 +435,7 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
                                 @Override
                                 public void onFailure(ANError anError) {
 //                            Toast.makeText(CreateUpdateEventActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
-
+                                    final StringBuilder errorMessage = new StringBuilder();
                                     try{
 //                                JSONObject error = new JSONObject(anError.getErrorBody());
 //                                Log.d(TAG, error.getString("non_field_errors"));
@@ -444,16 +445,26 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
 //                                }
 
                                         String jsonString = anError.getErrorBody();
-                                        JSONObject resobj = new JSONObject(jsonString);
-                                        Iterator<?> keys = resobj.keys();
-                                        while(keys.hasNext() ) {
-                                            String key = (String)keys.next();
-                                            if ( resobj.get(key) instanceof JSONObject ) {
-                                                JSONObject value = new JSONObject(resobj.get(key).toString());
-                                                Log.d(TAG, value.getString("something"));
-                                                Log.d(TAG, value.getString("something2"));
-                                            }
+                                        JSONObject error = new JSONObject(jsonString);
+
+                                        Log.d(TAG, error.getString("non_field_errors"));
+                                        JSONArray jsonArray= error.getJSONArray("non_field_errors");
+
+
+
+                                        for(int i = 0; i < jsonArray.length(); i++){
+                                            errorMessage.append(jsonArray.get(i));
                                         }
+                                        Log.d(TAG, errorMessage.toString());
+//                                        Iterator<?> keys = resobj.keys();
+//                                        while(keys.hasNext() ) {
+//                                            String key = (String)keys.next();
+//                                            if ( resobj.get(key) instanceof JSONObject ) {
+//                                                JSONObject value = new JSONObject(resobj.get(key).toString());
+//                                                Log.d(TAG, value.getString("something"));
+//                                                Log.d(TAG, value.getString("something2"));
+//                                            }
+//                                        }
 
                                     }
                                     catch(JSONException e){
@@ -461,8 +472,8 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
                                     }
 
                                     AlertDialog alertDialog = new AlertDialog.Builder(CreateUpdateEventActivity.this).create();
-                                    alertDialog.setTitle("Alert");
-                                    alertDialog.setMessage(anError.getErrorBody());
+                                    alertDialog.setTitle(getString(R.string.alert));
+                                    alertDialog.setMessage(errorMessage.toString());
                                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                                             new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int which) {

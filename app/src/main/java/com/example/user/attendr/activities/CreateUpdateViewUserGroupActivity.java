@@ -129,6 +129,7 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
                                 group.setId(bundle.getInt(DbConstants.GROUP_KEY_ROW_ID));
 
                                 if(db.updateGroup(group) > 0 ){
+
                                     Toast.makeText(CreateUpdateViewUserGroupActivity.this, getString(R.string.group_updated), Toast.LENGTH_SHORT).show();
 
                                     finish();
