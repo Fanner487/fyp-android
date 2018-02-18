@@ -23,7 +23,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.androidnetworking.error.ANError;
-import com.example.user.attendr.ListenerInterface;
+import com.example.user.attendr.interfaces.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.EventApiCallback;
 import com.example.user.attendr.callbacks.EventCreateUpdateCallback;

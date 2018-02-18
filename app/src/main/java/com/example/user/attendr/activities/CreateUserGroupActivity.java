@@ -10,14 +10,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.user.attendr.ListenerInterface;
+import com.example.user.attendr.interfaces.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.UserGroupCreateCallback;
 import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.constants.DbConstants;
 import com.example.user.attendr.database.DBManager;
-import com.example.user.attendr.models.Event;
 import com.example.user.attendr.models.UserGroup;
+import com.example.user.attendr.network.NetworkCheck;
 import com.example.user.attendr.network.NetworkInterface;
 
 import java.util.ArrayList;
@@ -48,8 +48,11 @@ public class CreateUserGroupActivity extends AppCompatActivity implements Listen
         btnSubmit = findViewById(R.id.btnSubmit);
 
         if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.UPDATE)){
-
+            btnSubmit.setText(getString(R.string.update));
             populateWithExistingData();
+        }
+        else{
+            btnSubmit.setText(getString(R.string.create));
         }
 
         setListeners();
@@ -72,67 +75,75 @@ public class CreateUserGroupActivity extends AppCompatActivity implements Listen
 
     @Override
     public void setListeners() {
+
         btnSubmit.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
-                final UserGroup group = new UserGroup(
-                        etGroupName.getText().toString(),
-                        toList(etUsers.getText().toString().toLowerCase().trim())
-                );
 
-                if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.CREATE)){
+                if(NetworkCheck.isConnectedToInternet(getApplicationContext(), btnSubmit)){
 
-                    NetworkInterface.getInstance(CreateUserGroupActivity.this).verifyGroup(group, createOrUpdate, new UserGroupCreateCallback() {
-                        @Override
-                        public void onSuccess() {
-                            Toast.makeText(CreateUserGroupActivity.this, getString(R.string.verified_group), Toast.LENGTH_SHORT).show();
-                            db.insertUserGroup(group);
-                        }
+                    final UserGroup group = new UserGroup(
+                            etGroupName.getText().toString(),
+                            toList(etUsers.getText().toString().toLowerCase().trim())
+                    );
+                    /*
+                    * Perform either create or update on group
+                    * */
+                    if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.CREATE)){
 
-                        @Override
-                        public void onFailure(String response) {
-                            AlertDialog alertDialog = new AlertDialog.Builder(CreateUserGroupActivity.this).create();
-                            alertDialog.setTitle("Alert");
-                            alertDialog.setMessage(response);
-                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-                            alertDialog.show();
-                        }
-                    });
+                        NetworkInterface.getInstance(CreateUserGroupActivity.this).verifyGroup(group, createOrUpdate, new UserGroupCreateCallback() {
+                            @Override
+                            public void onSuccess() {
+                                Toast.makeText(CreateUserGroupActivity.this, getString(R.string.verified_group), Toast.LENGTH_SHORT).show();
+                                db.insertUserGroup(group);
+                            }
+
+                            @Override
+                            public void onFailure(String response) {
+                                AlertDialog alertDialog = new AlertDialog.Builder(CreateUserGroupActivity.this).create();
+                                alertDialog.setTitle("Alert");
+                                alertDialog.setMessage(response);
+                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                alertDialog.show();
+                            }
+                        });
+                    }
+                    else if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.UPDATE)){
+                        NetworkInterface.getInstance(CreateUserGroupActivity.this).verifyGroup(group, createOrUpdate, new UserGroupCreateCallback() {
+                            @Override
+                            public void onSuccess() {
+                                Toast.makeText(CreateUserGroupActivity.this, getString(R.string.verified_group), Toast.LENGTH_SHORT).show();
+
+                                // Sets ID of group to be group ID passed in
+                                group.setId(bundle.getInt(DbConstants.GROUP_KEY_ROW_ID));
+
+                                if(db.updateGroup(group) > 0 ){
+                                    Toast.makeText(CreateUserGroupActivity.this, getString(R.string.group_updated), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(String response) {
+                                AlertDialog alertDialog = new AlertDialog.Builder(CreateUserGroupActivity.this).create();
+                                alertDialog.setTitle("Alert");
+                                alertDialog.setMessage(response);
+                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                alertDialog.show();
+                            }
+                        });
+                    }
                 }
-                else if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.UPDATE)){
-                    NetworkInterface.getInstance(CreateUserGroupActivity.this).verifyGroup(group, createOrUpdate, new UserGroupCreateCallback() {
-                        @Override
-                        public void onSuccess() {
-                            Toast.makeText(CreateUserGroupActivity.this, getString(R.string.verified_group), Toast.LENGTH_SHORT).show();
-
-                            group.setId(bundle.getInt(DbConstants.GROUP_KEY_ROW_ID));
-                            long result = db.updateGroup(group);
-
-                            Log.d(TAG, "return: " + result);
-                        }
-
-                        @Override
-                        public void onFailure(String response) {
-                            AlertDialog alertDialog = new AlertDialog.Builder(CreateUserGroupActivity.this).create();
-                            alertDialog.setTitle("Alert");
-                            alertDialog.setMessage(response);
-                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-                            alertDialog.show();
-                        }
-                    });
-                }
-
-
             }
         });
     }

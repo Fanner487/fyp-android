@@ -14,13 +14,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.user.attendr.ListenerInterface;
+import com.example.user.attendr.interfaces.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.adapters.SectionsPagerAdapter;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.fragments.ViewEventsFragment;
-
-import java.util.List;
 
 public class OrganiseEventsViewerActivity extends AppCompatActivity
         implements ViewEventsFragment.OnFragmentInteractionListener, ListenerInterface{

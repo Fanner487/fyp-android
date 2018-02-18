@@ -16,7 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.user.attendr.ListenerInterface;
+import com.example.user.attendr.interfaces.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.EventApiCallback;
 import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;

@@ -1,4 +1,4 @@
-package com.example.user.attendr;
+package com.example.user.attendr.interfaces;
 
 /**
  * Created by Eamon on 16/02/2018.

@@ -11,12 +11,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.user.attendr.ListenerInterface;
+import com.example.user.attendr.interfaces.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.LoginCallback;
 import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.database.DBManager;
-import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.network.NetworkInterface;
 
 /**

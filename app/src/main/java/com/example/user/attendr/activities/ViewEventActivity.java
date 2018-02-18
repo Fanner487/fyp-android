@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
-import com.example.user.attendr.ListenerInterface;
+import com.example.user.attendr.interfaces.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.adapters.AttendeesViewAdapter;
 import com.example.user.attendr.callbacks.EventApiCallback;

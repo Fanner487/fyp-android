@@ -38,6 +38,11 @@ public class ViewGroupsActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setAdapterWithData();
+    }
 
     public void setAdapterWithData(){
 

@@ -53,6 +53,8 @@
     <string name="event_deleted">Event Deleted</string>
     <string name="event_delete_error">Error deleting event</string>
     <string name="verified_group">Verified group</string>
+    <string name="group_updated">Group updated</string>
+    <string name="create">Create</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->

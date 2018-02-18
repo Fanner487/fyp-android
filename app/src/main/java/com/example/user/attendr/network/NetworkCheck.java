@@ -4,20 +4,23 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 
 import com.example.user.attendr.R;
 
 /**
  * Created by Eamon on 16/02/2018.
+ *
+ * Checks to see if phone has access to internet. If not, pop up a snackbar to give warning message
  */
 
 public class NetworkCheck {
 
     // Checks to see if user is online to get updates from server
     public static boolean isConnectedToInternet(Context context, View view) {
+
         ConnectivityManager connectivityManager;
+
         boolean connected = false;
         try {
             connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -27,14 +30,11 @@ public class NetworkCheck {
                     networkInfo.isConnected();
 
         } catch (Exception e) {
-            System.out.println("CheckConnectivity Exception: " + e.getMessage());
-            Log.v("connectivity", e.toString());
+            e.printStackTrace();
         }
 
         if(!connected){
-            Snackbar snackbar = Snackbar
-                    .make(view, context.getString(R.string.not_connected_to_internet), Snackbar.LENGTH_LONG);
-
+            Snackbar snackbar = Snackbar.make(view, context.getString(R.string.not_connected_to_internet), Snackbar.LENGTH_LONG);
             snackbar.show();
 
         }

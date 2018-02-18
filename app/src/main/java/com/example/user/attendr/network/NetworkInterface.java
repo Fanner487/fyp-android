@@ -399,9 +399,6 @@ public class NetworkInterface {
                         else{
                             callback.onSuccess();
                         }
-
-
-
                     }
 
                     @Override
