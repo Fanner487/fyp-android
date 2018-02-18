@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_manage) {
 
-            Intent intent = new Intent(this, CreateUserGroupActivity.class);
+            Intent intent = new Intent(this, CreateUpdateViewUserGroupActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
             intent.putExtras(bundle);

@@ -12,11 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.attendr.R;
-import com.example.user.attendr.activities.CreateUserGroupActivity;
-import com.example.user.attendr.activities.ViewEventActivity;
+import com.example.user.attendr.activities.CreateUpdateViewUserGroupActivity;
 import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.constants.DbConstants;
-import com.example.user.attendr.models.Event;
 import com.example.user.attendr.models.UserGroup;
 
 import java.util.List;
@@ -62,7 +60,7 @@ public class GroupsViewAdapter extends RecyclerView.Adapter<GroupsViewAdapter.Gr
                     }
                     Log.d(TAG, "-----");
 
-                    Intent intent = new Intent(view.getContext(), CreateUserGroupActivity.class);
+                    Intent intent = new Intent(view.getContext(), CreateUpdateViewUserGroupActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.UPDATE);
                     bundle.putInt(DbConstants.GROUP_KEY_ROW_ID, currentGroup.getId());

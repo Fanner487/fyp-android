@@ -23,8 +23,8 @@ import com.example.user.attendr.network.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class CreateUserGroupActivity extends AppCompatActivity implements ListenerInterface{
-    private static final String TAG = CreateUserGroupActivity.class.getSimpleName();
+public class CreateUpdateViewUserGroupActivity extends AppCompatActivity implements ListenerInterface{
+    private static final String TAG = CreateUpdateViewUserGroupActivity.class.getSimpleName();
 
     EditText etGroupName;
     EditText etUsers;
@@ -39,7 +39,7 @@ public class CreateUserGroupActivity extends AppCompatActivity implements Listen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_user_group);
+        setContentView(R.layout.activity_create_update_view_user_group);
 
         db = new DBManager(this).open();
         bundle = getIntent().getExtras();
@@ -96,19 +96,19 @@ public class CreateUserGroupActivity extends AppCompatActivity implements Listen
                     * */
                     if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.CREATE)){
 
-                        NetworkInterface.getInstance(CreateUserGroupActivity.this).verifyGroup(group, createOrUpdate, new UserGroupCreateCallback() {
+                        NetworkInterface.getInstance(CreateUpdateViewUserGroupActivity.this).verifyGroup(group, createOrUpdate, new UserGroupCreateCallback() {
                             @Override
                             public void onSuccess() {
 
                                 if(db.insertUserGroup(group) > 0){
-                                    Toast.makeText(CreateUserGroupActivity.this, getString(R.string.verified_group), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(CreateUpdateViewUserGroupActivity.this, getString(R.string.verified_group), Toast.LENGTH_SHORT).show();
                                     finish();
                                 }
                             }
 
                             @Override
                             public void onFailure(String response) {
-                                AlertDialog alertDialog = new AlertDialog.Builder(CreateUserGroupActivity.this).create();
+                                AlertDialog alertDialog = new AlertDialog.Builder(CreateUpdateViewUserGroupActivity.this).create();
                                 alertDialog.setTitle("Alert");
                                 alertDialog.setMessage(response);
                                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
@@ -122,14 +122,14 @@ public class CreateUserGroupActivity extends AppCompatActivity implements Listen
                         });
                     }
                     else if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.UPDATE)){
-                        NetworkInterface.getInstance(CreateUserGroupActivity.this).verifyGroup(group, createOrUpdate, new UserGroupCreateCallback() {
+                        NetworkInterface.getInstance(CreateUpdateViewUserGroupActivity.this).verifyGroup(group, createOrUpdate, new UserGroupCreateCallback() {
                             @Override
                             public void onSuccess() {
                                 // Sets ID of group to be group ID passed in
                                 group.setId(bundle.getInt(DbConstants.GROUP_KEY_ROW_ID));
 
                                 if(db.updateGroup(group) > 0 ){
-                                    Toast.makeText(CreateUserGroupActivity.this, getString(R.string.group_updated), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(CreateUpdateViewUserGroupActivity.this, getString(R.string.group_updated), Toast.LENGTH_SHORT).show();
 
                                     finish();
                                 }
@@ -137,7 +137,7 @@ public class CreateUserGroupActivity extends AppCompatActivity implements Listen
 
                             @Override
                             public void onFailure(String response) {
-                                AlertDialog alertDialog = new AlertDialog.Builder(CreateUserGroupActivity.this).create();
+                                AlertDialog alertDialog = new AlertDialog.Builder(CreateUpdateViewUserGroupActivity.this).create();
                                 alertDialog.setTitle("Alert");
                                 alertDialog.setMessage(response);
                                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
@@ -159,11 +159,11 @@ public class CreateUserGroupActivity extends AppCompatActivity implements Listen
             public void onClick(View view) {
 
                 if(db.deleteGroup(existingGroup) > 0){
-                    Toast.makeText(CreateUserGroupActivity.this, getString(R.string.group_deleted), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateUpdateViewUserGroupActivity.this, getString(R.string.group_deleted), Toast.LENGTH_SHORT).show();
                     finish();
                 }
                 else{
-                    Toast.makeText(CreateUserGroupActivity.this, getString(R.string.group_delete_error), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateUpdateViewUserGroupActivity.this, getString(R.string.group_delete_error), Toast.LENGTH_SHORT).show();
                 }
             }
         });

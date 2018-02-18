@@ -1,6 +1,7 @@
 package com.example.user.attendr.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,6 +58,8 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
         this.attending = attending;
     }
 
+    // Sort attendees by all attending alphabetically, then all other attendees
+    // then by all other attendees alphabetically
     private ArrayList<String> sortAttendees(List<String> attendees, List<String> attending){
         ArrayList<String> result = new ArrayList<>();
         List<String> newAttendees = new ArrayList<>();
@@ -79,7 +82,7 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
             Collections.sort(attendees);
             result.addAll(attendees);
         }
-        
+
         return result;
     }
 
@@ -98,8 +101,8 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
         if(isAttending(attendees.get(position))){
 
             //TODO: change background colour whenever it comes up
-            holder.tvAttendee.setText(attendees.get(position) + " is attendee");
-
+            holder.tvAttendee.setBackgroundColor(Color.RED);
+            holder.tvAttendee.setText(attendees.get(position));
         }
         else{
             holder.tvAttendee.setText(attendees.get(position));

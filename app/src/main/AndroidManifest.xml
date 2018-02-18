@@ -30,7 +30,7 @@
         </activity>
         <activity android:name=".activities.RegisterActivity" />
         <activity android:name=".activities.CreateUpdateEventActivity" />
-        <activity android:name=".activities.CreateUserGroupActivity" />
+        <activity android:name=".activities.CreateUpdateViewUserGroupActivity" />
         <activity android:name=".activities.ViewOrganiseEventsActivity" />
         <activity
             android:name=".activities.OrganiseEventsViewerActivity"
