@@ -13,8 +13,11 @@ import android.widget.Toast;
 
 import com.example.user.attendr.R;
 import com.example.user.attendr.activities.ViewEventActivity;
+import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.constants.DbConstants;
 import com.example.user.attendr.database.DBManager;
+import com.example.user.attendr.enums.EventType;
+import com.example.user.attendr.enums.TimeType;
 import com.example.user.attendr.models.Event;
 
 import java.util.List;
@@ -23,12 +26,14 @@ import java.util.List;
  * Created by Eamon on 12/02/2018.
  */
 
-public class EventsViewAdapter extends RecyclerView.Adapter<EventsViewAdapter.EventsViewHolder>{
+public class EventsViewAdapter extends RecyclerView.Adapter<EventsViewAdapter.EventsViewHolder> {
 
     private final String TAG = EventsViewAdapter.class.getSimpleName();
 
     private List<Event> eventList;
     private Context context;
+    private Bundle bundle;
+
 
     public class EventsViewHolder extends RecyclerView.ViewHolder {
         TextView tvEventName;
@@ -53,17 +58,24 @@ public class EventsViewAdapter extends RecyclerView.Adapter<EventsViewAdapter.Ev
                     Log.d(TAG, currentEvent.toString());
 
                     Intent intent = new Intent(view.getContext(), ViewEventActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, currentEvent.getEventId());
-                    intent.putExtras(bundle);
+
+                    Bundle extras = new Bundle();
+                    extras.putInt(DbConstants.EVENT_KEY_EVENT_ID, currentEvent.getEventId());
+                    extras.putSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE, bundle.getSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE));
+                    extras.putSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE, bundle.getSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE));
+                    intent.putExtras(extras);
+
                     view.getContext().startActivity(intent);
+
                 }
             });
         }
     }
-    public EventsViewAdapter(List<Event> eventList, Context context) {
+
+    public EventsViewAdapter(Context context, List<Event> eventList, Bundle bundle) {
         this.eventList = eventList;
         this.context = context;
+        this.bundle = bundle;
     }
 
     @Override

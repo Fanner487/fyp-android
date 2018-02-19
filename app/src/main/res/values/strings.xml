@@ -58,6 +58,7 @@
     <string name="group_deleted">Group deleted</string>
     <string name="group_delete_error">Error deleting group</string>
     <string name="alert">Alert</string>
+    <string name="event_sign_in">Sign In</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -160,4 +161,5 @@
     <string name="logout">Logout</string>
     <string name="delete">Delete</string>
     <string name="update">Update</string>
+    <string name="sign_in">Sign In</string>
 </resources>

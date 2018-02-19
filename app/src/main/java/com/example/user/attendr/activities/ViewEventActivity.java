@@ -13,6 +13,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.example.user.attendr.SignInActivity;
+import com.example.user.attendr.enums.EventType;
+import com.example.user.attendr.enums.TimeType;
 import com.example.user.attendr.interfaces.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.adapters.AttendeesViewAdapter;
@@ -35,6 +38,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
     TextView tvSignInTime;
     TextView tvFinishTime;
     Button btnUpdate;
+    Button btnSignIn;
     int eventId;
 
     RecyclerView recyclerView;
@@ -58,12 +62,25 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
         tvFinishTime = findViewById(R.id.tvFinishTime);
         btnUpdate = findViewById(R.id.btnUpdate);
         swipeRefreshLayout = findViewById(R.id.swipe_container);
+        btnSignIn = findViewById(R.id.btnSignIn);
 
         bundle = getIntent().getExtras();
 
         db = new DBManager(this).open();
 
         Log.d(TAG, "Event ID: " + Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID)));
+//        TimeType.ONGOING, EventType.ATTEND
+
+        TimeType timeType = (TimeType) bundle.getSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE);
+        EventType eventType = (EventType) bundle.getSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE);
+
+        // Hides event sign-in button unless user is attendee to event happening right now
+        if(timeType == TimeType.ONGOING && eventType == EventType.ATTEND){
+            btnSignIn.setVisibility(View.VISIBLE);
+        }
+        else{
+            btnSignIn.setVisibility(View.INVISIBLE);
+        }
 
         populateAdapter();
 
@@ -134,6 +151,18 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
                 intent.putExtras(bundle);
                 startActivity(intent);
                 finish();
+            }
+        });
+
+        btnSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "Event ID: " + Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID)));
+                Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, eventId);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
     }

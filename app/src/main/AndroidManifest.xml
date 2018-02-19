@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,7 +20,7 @@
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,7 +31,6 @@
         <activity android:name=".activities.RegisterActivity" />
         <activity android:name=".activities.CreateUpdateEventActivity" />
         <activity android:name=".activities.CreateUpdateViewUserGroupActivity" />
-        <activity android:name=".activities.ViewOrganiseEventsActivity" />
         <activity
             android:name=".activities.OrganiseEventsViewerActivity"
             android:label="@string/title_activity_new_event_viewer"
@@ -41,7 +40,8 @@
             android:label="@string/title_activity_attending_events_viewer"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.ViewEventActivity" />
-        <activity android:name=".activities.ViewGroupsActivity"></activity>
+        <activity android:name=".activities.ViewGroupsActivity" />
+        <activity android:name=".SignInActivity"></activity>
     </application>
 
 </manifest>

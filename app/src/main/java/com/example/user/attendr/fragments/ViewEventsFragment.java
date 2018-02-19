@@ -151,7 +151,7 @@ public class ViewEventsFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        EventsViewAdapter eventsViewAdapter = new EventsViewAdapter(events, getContext());
+        EventsViewAdapter eventsViewAdapter = new EventsViewAdapter(getContext(), events, bundle);
 
         recyclerView.setAdapter(eventsViewAdapter);
         eventsViewAdapter.notifyDataSetChanged();
@@ -211,24 +211,5 @@ public class ViewEventsFragment extends Fragment {
         Log.d(TAG, "-------------");
     }
 
-
-    // Checks to see if user is online to get updates from server
-    public boolean isOnline() {
-        ConnectivityManager connectivityManager;
-        boolean connected = false;
-        try {
-            connectivityManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-
-            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-            connected = networkInfo != null && networkInfo.isAvailable() &&
-                    networkInfo.isConnected();
-
-        } catch (Exception e) {
-            System.out.println("CheckConnectivity Exception: " + e.getMessage());
-            Log.v("connectivity", e.toString());
-        }
-
-        return connected;
-    }
 
 }
