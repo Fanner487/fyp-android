@@ -15,5 +15,8 @@ public class BundleAndSharedPreferencesConstants {
     public static final String CREATE_OR_UPDATE = "create_or_update";
     public static final String CREATE = "create";
     public static final String UPDATE= "update";
+    public static final String TOKEN= "token";
+    public static final String JWT= "JWT";
+    public static final String AUTHORIZATION_HEADER = "Authorization";
 //    public static final String EVENT_ID = "event_id";
 }

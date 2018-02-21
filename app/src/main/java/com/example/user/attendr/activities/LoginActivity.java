@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.user.attendr.callbacks.RegisterCallback;
 import com.example.user.attendr.interfaces.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.LoginCallback;
@@ -79,6 +80,20 @@ public class LoginActivity extends AppCompatActivity implements ListenerInterfac
 
                                 setPreferences();
 
+//                                NetworkInterface.getInstance(getApplicationContext()).getTokenForUser(etUsername.getText().toString().trim().toLowerCase(),
+//                                        etPassword.getText().toString(),
+//                                        new RegisterCallback() {
+//                                            @Override
+//                                            public void onSuccess() {
+//                                                Toast.makeText(LoginActivity.this, "token obtained", Toast.LENGTH_SHORT).show();
+//                                            }
+//
+//                                            @Override
+//                                            public void onFailure(String response) {
+//                                                Toast.makeText(LoginActivity.this, "token error", Toast.LENGTH_SHORT).show();
+//
+//                                            }
+//                                        });
                                 // Redirect to MainActivity screen
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 getApplicationContext().startActivity(intent);

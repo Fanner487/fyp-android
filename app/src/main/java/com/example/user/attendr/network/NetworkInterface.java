@@ -8,6 +8,7 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.androidnetworking.interfaces.OkHttpResponseAndJSONObjectRequestListener;
 import com.androidnetworking.interfaces.OkHttpResponseAndStringRequestListener;
 import com.androidnetworking.interfaces.OkHttpResponseListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
@@ -16,6 +17,8 @@ import com.example.user.attendr.callbacks.EventCreateUpdateCallback;
 import com.example.user.attendr.callbacks.EventDeleteCallback;
 import com.example.user.attendr.callbacks.LoginCallback;
 import com.example.user.attendr.callbacks.RegisterCallback;
+import com.example.user.attendr.callbacks.TokenCallback;
+import com.example.user.attendr.callbacks.TokenVerifyCallback;
 import com.example.user.attendr.callbacks.UserGroupCreateCallback;
 import com.example.user.attendr.constants.ApiUrls;
 import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
@@ -38,6 +41,8 @@ import java.util.List;
 import java.util.Locale;
 
 import okhttp3.Response;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Eamon on 06/02/2018.
@@ -76,6 +81,7 @@ public class NetworkInterface {
 
         AndroidNetworking.get(ApiUrls.EVENTS_FOR_USER)
                 .addPathParameter("username", getLoggedInUser())
+                .addHeaders(BundleAndSharedPreferencesConstants.AUTHORIZATION_HEADER, getAuthorizationHeaderToken())
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsObjectList(Event.class, new ParsedRequestListener<List<Event>>() {
@@ -120,6 +126,62 @@ public class NetworkInterface {
                 });
     }
 
+    public void getTokenForUser(String username, String password, final TokenCallback tokenCallback){
+
+        AndroidNetworking.post("http://46.101.13.145:8000/api/api-token-auth/")
+                .setPriority(Priority.MEDIUM)
+                .addBodyParameter("username", username)
+                .addBodyParameter("password", password)
+                .build()
+                .getAsOkHttpResponseAndJSONObject(new OkHttpResponseAndJSONObjectRequestListener() {
+
+                    @Override
+                    public void onResponse(Response okHttpResponse, JSONObject response) {
+
+                        Log.d(TAG, "Get token for user");
+                        Log.d(TAG, Integer.toString(okHttpResponse.code()));
+
+                        if(okHttpResponse.code() == 200) {
+                            tokenCallback.onSuccess(response);
+                        }
+                        else{
+                            tokenCallback.onFailure();
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+
+                    }
+                });
+
+
+
+    }
+
+    public void testToken(final RegisterCallback registerCallback){
+
+        AndroidNetworking.get("http://46.101.13.145:8000/api/jwt_login/")
+                .setPriority(Priority.MEDIUM)
+                .addHeaders(BundleAndSharedPreferencesConstants.AUTHORIZATION_HEADER, getAuthorizationHeaderToken())
+                .build()
+                .getAsOkHttpResponseAndString(new OkHttpResponseAndStringRequestListener() {
+                    @Override
+                    public void onResponse(Response okHttpResponse, String response) {
+                        registerCallback.onSuccess();
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        registerCallback.onFailure(anError.getErrorBody());
+                    }
+                });
+
+
+    }
+
     public void getEvents(final EventType type) {
 
         String typeString = "";
@@ -137,6 +199,7 @@ public class NetworkInterface {
                 .addPathParameter("username", getLoggedInUser())
                 .addPathParameter("type", typeString)
                 .addPathParameter("time", "all")
+                .addHeaders(BundleAndSharedPreferencesConstants.AUTHORIZATION_HEADER, getAuthorizationHeaderToken())
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsObjectList(Event.class, new ParsedRequestListener<List<Event>>() {
@@ -179,8 +242,7 @@ public class NetworkInterface {
 
     }
 
-
-    public void login(String username, String password, final LoginCallback callback) {
+    public void login(final String username, final String password, final LoginCallback callback) {
 
         AndroidNetworking.post(ApiUrls.LOGIN)
                 .addBodyParameter("username", username)
@@ -191,8 +253,43 @@ public class NetworkInterface {
                     @Override
                     public void onResponse(Response response) {
 
+                        Log.d(TAG, "login status: " + response.code());
+//                        Log.d(TAG, "body: " + response.);
+//                        Log.d(TAG, "login status: " + response.code);
+
                         if (response.code() == 200) {
-                            callback.onSuccess();
+
+                            getTokenForUser(username, password, new TokenCallback() {
+                                @Override
+                                public void onSuccess(JSONObject response) {
+
+                                    String token;
+                                    try{
+                                        token = response.getString(BundleAndSharedPreferencesConstants.TOKEN);
+
+                                        Log.d(TAG, "login Token callback");
+                                        Log.d(TAG, token);
+
+                                        SharedPreferences userDetails = context.getSharedPreferences("", MODE_PRIVATE);
+                                        SharedPreferences.Editor edit = userDetails.edit();
+                                        edit.putString(BundleAndSharedPreferencesConstants.TOKEN, token);
+                                        edit.apply();
+
+                                        callback.onSuccess();
+
+                                    }
+                                    catch (JSONException e){
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure() {
+                                    Log.d(TAG, "login Token callback failure");
+                                }
+                            });
+
+//                            callback.onSuccess();
                         } else {
                             callback.onFailure();
                         }
@@ -260,7 +357,9 @@ public class NetworkInterface {
 
         AndroidNetworking.post(ApiUrls.EVENTS)
                 .addJSONObjectBody(create)
+
                 .setPriority(Priority.MEDIUM)
+                .addHeaders(BundleAndSharedPreferencesConstants.AUTHORIZATION_HEADER, getAuthorizationHeaderToken())
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
@@ -277,6 +376,33 @@ public class NetworkInterface {
                         Log.d(TAG, anError.getErrorBody());
                         Log.d(TAG, anError.getErrorDetail());
                         eventCreateUpdateCallback.onFailure(anError);
+                    }
+                });
+    }
+
+    public void verifyToken(final TokenVerifyCallback tokenVerifyCallback){
+
+        SharedPreferences userDetails = context.getSharedPreferences("", MODE_PRIVATE);
+        String token = userDetails.getString(BundleAndSharedPreferencesConstants.TOKEN, "");
+        AndroidNetworking.post("http://46.101.13.145:8000/api/api-token-verify/")
+                .addBodyParameter(BundleAndSharedPreferencesConstants.TOKEN, token)
+                .build()
+                .getAsOkHttpResponse(new OkHttpResponseListener() {
+                    @Override
+                    public void onResponse(Response response) {
+
+                        if(response.code() == 200){
+                            tokenVerifyCallback.onSuccess();
+                        }
+                        else{
+                            tokenVerifyCallback.onFailure();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+
+                        tokenVerifyCallback.onFailure();
                     }
                 });
     }
@@ -310,6 +436,7 @@ public class NetworkInterface {
         AndroidNetworking.patch(ApiUrls.EVENTS + Integer.toString(event.getEventId()) + "/")
                 .addJSONObjectBody(create)
                 .setPriority(Priority.MEDIUM)
+                .addHeaders(BundleAndSharedPreferencesConstants.AUTHORIZATION_HEADER, getAuthorizationHeaderToken())
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
                     @Override
@@ -334,6 +461,7 @@ public class NetworkInterface {
     public void deleteEvent(int eventId, final EventDeleteCallback eventDeleteCallback) {
 
         AndroidNetworking.delete(ApiUrls.EVENTS + Integer.toString(eventId) + "/")
+                .addHeaders(BundleAndSharedPreferencesConstants.AUTHORIZATION_HEADER, getAuthorizationHeaderToken())
                 .build()
                 .getAsOkHttpResponseAndString(new OkHttpResponseAndStringRequestListener() {
                     @Override
@@ -373,6 +501,7 @@ public class NetworkInterface {
 
         AndroidNetworking.post(ApiUrls.VERIFY_GROUP)
                 .addJSONObjectBody(jsonObject)
+                .addHeaders(BundleAndSharedPreferencesConstants.AUTHORIZATION_HEADER, getAuthorizationHeaderToken())
                 .build()
                 .getAsOkHttpResponseAndString(new OkHttpResponseAndStringRequestListener() {
                     @Override
@@ -427,7 +556,12 @@ public class NetworkInterface {
 
     // Returns logged in user from shared preferences
     private String getLoggedInUser(){
-        SharedPreferences userDetails = context.getSharedPreferences("", Context.MODE_PRIVATE);
+        SharedPreferences userDetails = context.getSharedPreferences("", MODE_PRIVATE);
         return userDetails.getString(BundleAndSharedPreferencesConstants.USERNAME, "");
+    }
+
+    private String getAuthorizationHeaderToken(){
+        SharedPreferences userDetails = context.getSharedPreferences("", MODE_PRIVATE);
+        return BundleAndSharedPreferencesConstants.JWT + " " + userDetails.getString(BundleAndSharedPreferencesConstants.TOKEN, "");
     }
 }

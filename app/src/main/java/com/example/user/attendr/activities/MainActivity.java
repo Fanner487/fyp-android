@@ -174,6 +174,7 @@ public class MainActivity extends AppCompatActivity
                 SharedPreferences userDetails = getApplicationContext().getSharedPreferences("", MODE_PRIVATE);
                 SharedPreferences.Editor edit = userDetails.edit();
                 edit.putString(BundleAndSharedPreferencesConstants.USERNAME, "");
+                edit.putString(BundleAndSharedPreferencesConstants.TOKEN, "");
                 edit.putBoolean(BundleAndSharedPreferencesConstants.LOGGED_IN, false);
                 edit.apply();
 

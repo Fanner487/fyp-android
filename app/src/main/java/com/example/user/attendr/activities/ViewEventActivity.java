@@ -49,10 +49,16 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
 
     SwipeRefreshLayout swipeRefreshLayout;
 
+    TimeType timeType;
+    EventType eventType;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_event);
+
+        bundle = getIntent().getExtras();
+        db = new DBManager(this).open();
 
         tvEventName = findViewById(R.id.tvEventName);
         tvLocation = findViewById(R.id.tvLocation);
@@ -64,17 +70,21 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
         swipeRefreshLayout = findViewById(R.id.swipe_container);
         btnSignIn = findViewById(R.id.btnSignIn);
 
-        bundle = getIntent().getExtras();
+        timeType = (TimeType) bundle.getSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE);
+        eventType = (EventType) bundle.getSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE);
 
-        db = new DBManager(this).open();
+        setButtonVisibilities();
 
-        Log.d(TAG, "Event ID: " + Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID)));
-//        TimeType.ONGOING, EventType.ATTEND
+        populateAdapter();
 
-        TimeType timeType = (TimeType) bundle.getSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE);
-        EventType eventType = (EventType) bundle.getSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE);
+        setListeners();
 
-        // Hides event sign-in button unless user is attendee to event happening right now
+    }
+
+    // Hides event sign-in button unless user is attendee to event happening right now
+    // Hides update button if the event is not an attending one
+    private void setButtonVisibilities(){
+
         if(timeType == TimeType.ONGOING && eventType == EventType.ATTEND){
             btnSignIn.setVisibility(View.VISIBLE);
         }
@@ -82,10 +92,9 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
             btnSignIn.setVisibility(View.INVISIBLE);
         }
 
-        populateAdapter();
-
-        setListeners();
-
+        if(eventType == EventType.ATTEND){
+            btnUpdate.setVisibility(View.INVISIBLE);
+        }
     }
 
     public void populateAdapter(){
@@ -144,12 +153,11 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
             public void onClick(View view) {
 
                 Log.d(TAG, "Event ID: " + Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID)));
-                Intent intent = new Intent(getApplicationContext(), CreateUpdateEventActivity.class);
+
                 Bundle bundle = new Bundle();
                 bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.UPDATE);
                 bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, eventId);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                startNewActivity(CreateUpdateEventActivity.class, bundle);
                 finish();
             }
         });
@@ -158,13 +166,17 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "Event ID: " + Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID)));
-                Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, eventId);
-                intent.putExtras(bundle);
-                startActivity(intent);
+
+                startNewActivity(SignInActivity.class, bundle);
             }
         });
     }
 
+    public void startNewActivity(Class<?> cls, Bundle bundle){
+        Intent intent = new Intent(getApplicationContext(), cls);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
 }

@@ -79,6 +79,8 @@ public class ViewEventsFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        NetworkCheck.tokenExpired(getContext());
+
         // Refreshes data from the server when events updated/deleted
         NetworkInterface.getInstance(getContext()).getEventsForUser(new EventApiCallback() {
             @Override
