@@ -59,6 +59,10 @@
     <string name="group_delete_error">Error deleting group</string>
     <string name="alert">Alert</string>
     <string name="event_sign_in">Sign In</string>
+    <string name="token_expired">Token expired</string>
+    <string name="sign_in_again">Please sign in again</string>
+    <string name="ok">OK</string>
+    <string name="are_you_sure">Are you sure?</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->

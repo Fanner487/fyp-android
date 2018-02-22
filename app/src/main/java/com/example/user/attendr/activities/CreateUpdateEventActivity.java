@@ -48,7 +48,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.Locale;
 
 /**
@@ -365,7 +364,7 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
             @Override
             public void onClick(View view) {
 
-                if(NetworkCheck.isConnectedToInternet(getApplicationContext(), view)){
+                if(NetworkCheck.alertIfNotConnectedToInternet(getApplicationContext(), view)){
                     // Continues if all fields are filled
                     if (allFieldsFilled()) {
 
@@ -437,13 +436,8 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
 //                            Toast.makeText(CreateUpdateEventActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
                                     final StringBuilder errorMessage = new StringBuilder();
                                     try{
-//                                JSONObject error = new JSONObject(anError.getErrorBody());
-//                                Log.d(TAG, error.getString("non_field_errors"));
-//
-//                                while(error.keys().hasNext()){
-//
-//                                }
 
+                                        //TODO: change this
                                         String jsonString = anError.getErrorBody();
                                         JSONObject error = new JSONObject(jsonString);
 
@@ -456,15 +450,6 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
                                             errorMessage.append(jsonArray.get(i));
                                         }
                                         Log.d(TAG, errorMessage.toString());
-//                                        Iterator<?> keys = resobj.keys();
-//                                        while(keys.hasNext() ) {
-//                                            String key = (String)keys.next();
-//                                            if ( resobj.get(key) instanceof JSONObject ) {
-//                                                JSONObject value = new JSONObject(resobj.get(key).toString());
-//                                                Log.d(TAG, value.getString("something"));
-//                                                Log.d(TAG, value.getString("something2"));
-//                                            }
-//                                        }
 
                                     }
                                     catch(JSONException e){
@@ -474,7 +459,7 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
                                     AlertDialog alertDialog = new AlertDialog.Builder(CreateUpdateEventActivity.this).create();
                                     alertDialog.setTitle(getString(R.string.alert));
                                     alertDialog.setMessage(errorMessage.toString());
-                                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
                                             new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int which) {
                                                     dialog.dismiss();
@@ -507,7 +492,6 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
                             });
                         }
 
-
                     } else {
                         Toast.makeText(CreateUpdateEventActivity.this, "Fill all fields", Toast.LENGTH_SHORT).show();
                     }
@@ -520,24 +504,44 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
 
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
 
-                if(NetworkCheck.isConnectedToInternet(getApplicationContext(), view)){
+                // Prompt the users with a dialog box
+                AlertDialog.Builder builder = new AlertDialog.Builder(CreateUpdateEventActivity.this);
+                builder.setTitle(getString(R.string.are_you_sure));
+                builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //TODO
 
-                    NetworkInterface.getInstance(getApplicationContext()).deleteEvent(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID),
-                            new EventDeleteCallback() {
-                                @Override
-                                public void onSuccess() {
-                                    Toast.makeText(CreateUpdateEventActivity.this, getString(R.string.event_deleted), Toast.LENGTH_SHORT).show();
-                                    finish();
-                                }
+                        if(NetworkCheck.alertIfNotConnectedToInternet(getApplicationContext(), view)){
 
-                                @Override
-                                public void onFailure() {
-                                    Toast.makeText(CreateUpdateEventActivity.this, getString(R.string.event_delete_error), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                }
+                            NetworkInterface.getInstance(getApplicationContext()).deleteEvent(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID),
+                                    new EventDeleteCallback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            Toast.makeText(CreateUpdateEventActivity.this, getString(R.string.event_deleted), Toast.LENGTH_SHORT).show();
+                                            finish();
+                                        }
+
+                                        @Override
+                                        public void onFailure() {
+                                            Toast.makeText(CreateUpdateEventActivity.this, getString(R.string.event_delete_error), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+
             }
         });
     }

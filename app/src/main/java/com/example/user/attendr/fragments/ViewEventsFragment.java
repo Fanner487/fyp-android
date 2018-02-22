@@ -1,11 +1,8 @@
 package com.example.user.attendr.fragments;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -79,7 +76,9 @@ public class ViewEventsFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        NetworkCheck.tokenExpired(getContext());
+        if(NetworkCheck.isConnectedToInternet(getContext())){
+            NetworkCheck.redirectToLoginIfTokenExpired(getContext());
+        }
 
         // Refreshes data from the server when events updated/deleted
         NetworkInterface.getInstance(getContext()).getEventsForUser(new EventApiCallback() {
@@ -100,6 +99,11 @@ public class ViewEventsFragment extends Fragment {
 
         final View view = inflater.inflate(R.layout.fragment_view_events, container, false);
 
+        if(NetworkCheck.isConnectedToInternet(getContext())){
+            NetworkCheck.redirectToLoginIfTokenExpired(getContext());
+        }
+
+
         db = new DBManager(getContext()).open();
         bundle = getArguments();
 
@@ -108,7 +112,8 @@ public class ViewEventsFragment extends Fragment {
             @Override
             public void onRefresh() {
 
-                if(NetworkCheck.isConnectedToInternet(getContext(), swipeRefreshLayout)){
+                if(NetworkCheck.alertIfNotConnectedToInternet(getContext(), swipeRefreshLayout)){
+
                     NetworkInterface.getInstance(getContext()).getEventsForUser(new EventApiCallback() {
                         @Override
                         public void onSuccess() {
@@ -125,6 +130,10 @@ public class ViewEventsFragment extends Fragment {
                         }
                     });
                     swipeRefreshLayout.setRefreshing(false);
+                }
+                else{
+                    swipeRefreshLayout.setRefreshing(false);
+
                 }
             }
         });

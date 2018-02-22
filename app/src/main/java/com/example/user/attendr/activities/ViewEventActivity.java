@@ -53,12 +53,25 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
     EventType eventType;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(NetworkCheck.isConnectedToInternet(ViewEventActivity.this)){
+            NetworkCheck.redirectToLoginIfTokenExpired(ViewEventActivity.this);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_event);
 
         bundle = getIntent().getExtras();
         db = new DBManager(this).open();
+
+        if(NetworkCheck.isConnectedToInternet(ViewEventActivity.this)){
+            NetworkCheck.redirectToLoginIfTokenExpired(ViewEventActivity.this);
+        }
 
         tvEventName = findViewById(R.id.tvEventName);
         tvLocation = findViewById(R.id.tvLocation);
@@ -128,7 +141,8 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
             @Override
             public void onRefresh() {
 
-                if(NetworkCheck.isConnectedToInternet(getApplicationContext(), swipeRefreshLayout)){
+                if(NetworkCheck.alertIfNotConnectedToInternet(getApplicationContext(), swipeRefreshLayout)){
+
                     NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
                         @Override
                         public void onSuccess() {
@@ -144,6 +158,10 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
                             swipeRefreshLayout.setRefreshing(false);
                         }
                     });
+                }
+                else{
+                    swipeRefreshLayout.setRefreshing(false);
+
                 }
             }
         });

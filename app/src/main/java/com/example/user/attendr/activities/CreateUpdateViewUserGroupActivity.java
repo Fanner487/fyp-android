@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.user.attendr.callbacks.EventDeleteCallback;
 import com.example.user.attendr.interfaces.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.UserGroupCreateCallback;
@@ -85,7 +86,7 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
             @Override
             public void onClick(View view) {
 
-                if(NetworkCheck.isConnectedToInternet(getApplicationContext(), btnSubmit)){
+                if(NetworkCheck.alertIfNotConnectedToInternet(getApplicationContext(), btnSubmit)){
 
                     final UserGroup group = new UserGroup(
                             etGroupName.getText().toString(),
@@ -159,13 +160,30 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
             @Override
             public void onClick(View view) {
 
-                if(db.deleteGroup(existingGroup) > 0){
-                    Toast.makeText(CreateUpdateViewUserGroupActivity.this, getString(R.string.group_deleted), Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-                else{
-                    Toast.makeText(CreateUpdateViewUserGroupActivity.this, getString(R.string.group_delete_error), Toast.LENGTH_SHORT).show();
-                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(CreateUpdateViewUserGroupActivity.this);
+                builder.setTitle(getString(R.string.are_you_sure));
+                builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        if(db.deleteGroup(existingGroup) > 0){
+                            Toast.makeText(CreateUpdateViewUserGroupActivity.this, getString(R.string.group_deleted), Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                        else{
+                            Toast.makeText(CreateUpdateViewUserGroupActivity.this, getString(R.string.group_delete_error), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+
             }
         });
     }
