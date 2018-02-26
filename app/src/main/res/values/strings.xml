@@ -166,4 +166,8 @@
     <string name="delete">Delete</string>
     <string name="update">Update</string>
     <string name="sign_in">Sign In</string>
+    <string name="percentage">Percentage</string>
+    <string name="events_attended">Events Attended</string>
+    <string name="attended">Attended</string>
+    <string name="not_attended">Not Attended</string>
 </resources>

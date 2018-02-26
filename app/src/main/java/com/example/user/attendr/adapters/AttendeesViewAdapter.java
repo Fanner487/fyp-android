@@ -1,7 +1,9 @@
 package com.example.user.attendr.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.attendr.R;
+import com.example.user.attendr.activities.UserStatsActivity;
+import com.example.user.attendr.constants.DbConstants;
 import com.example.user.attendr.models.Event;
 
 import java.util.ArrayList;
@@ -44,9 +48,17 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+
                     Toast.makeText(view.getContext(), tvAttendee.getText(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(view.getContext(), UserStatsActivity.class);
+                    Bundle extras = new Bundle();
+                    extras.putString(DbConstants.GROUP_KEY_ROW_USERNAME, tvAttendee.getText().toString());
+                    intent.putExtras(extras);
+                    view.getContext().startActivity(intent);
                 }
             });
+
         }
     }
 

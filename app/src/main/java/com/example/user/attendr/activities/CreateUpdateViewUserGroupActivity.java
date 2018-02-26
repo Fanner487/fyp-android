@@ -1,6 +1,7 @@
 package com.example.user.attendr.activities;
 
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,12 +12,16 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.user.attendr.callbacks.EventDeleteCallback;
+import com.example.user.attendr.enums.AttendanceType;
+import com.example.user.attendr.enums.EventType;
+import com.example.user.attendr.enums.TimeType;
 import com.example.user.attendr.interfaces.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.UserGroupCreateCallback;
 import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.constants.DbConstants;
 import com.example.user.attendr.database.DBManager;
+import com.example.user.attendr.models.Event;
 import com.example.user.attendr.models.UserGroup;
 import com.example.user.attendr.network.NetworkCheck;
 import com.example.user.attendr.network.NetworkInterface;
@@ -59,6 +64,25 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
             btnSubmit.setText(getString(R.string.create));
             btnDelete.setVisibility(View.INVISIBLE);
         }
+
+        ArrayList<Event> eventsUserSignedIn = getEventsOrganisedWithUserInAttendees("r", AttendanceType.ATTENDING);
+        ArrayList<Event> eventsUserNotSignedIn = getEventsOrganisedWithUserInAttendees("r", AttendanceType.NOT_ATTENDING);
+
+        Log.d(TAG, "-------------------");
+        Log.d(TAG, "eventsUserSignedIn");
+        for(Event event : eventsUserSignedIn){
+            Log.d(TAG, event.toString());
+        }
+
+        Log.d(TAG, "-------------------");
+        Log.d(TAG, "eventsUserNotSignedIn");
+        for(Event event : eventsUserNotSignedIn){
+            Log.d(TAG, event.toString());
+        }
+
+        Log.d(TAG, "-------------------");
+        Log.d(TAG, "Percentage");
+        Log.d(TAG, Integer.toString(getPercentageAttendanceForUser("r")));
 
         setListeners();
     }
@@ -142,7 +166,7 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
                                 AlertDialog alertDialog = new AlertDialog.Builder(CreateUpdateViewUserGroupActivity.this).create();
                                 alertDialog.setTitle("Alert");
                                 alertDialog.setMessage(response);
-                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 dialog.dismiss();
@@ -208,5 +232,75 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
             result = stringBuilder.toString().replaceAll("\n$", "");
         }
         return result;
+    }
+
+
+    public int getPercentageAttendanceForUser(String user){
+
+        ArrayList<Event> eventsOrganised = getEventsWithUserInAttendees(db.getEvents(EventType.ORGANISE, TimeType.PAST), user);
+        ArrayList<Event> eventsWithUserInAttending = getEventsOrganisedWithUserInAttendees(user, AttendanceType.ATTENDING);
+
+
+        float result;
+
+        if(eventsOrganised.size() < 1){
+            result = 0f;
+        }
+        else{
+            result = ((float) eventsWithUserInAttending.size() / (float) eventsOrganised.size() * 100.0f);
+        }
+
+        return (int)Math.floor(result);
+
+    }
+
+    private ArrayList<Event> getEventsWithUserInAttendees(ArrayList<Event> events, String user){
+
+        ArrayList<Event> result = new ArrayList<>();
+
+        for(Event event : events){
+
+            if(event.getAttendees().contains(user)) {
+                result.add(event);
+            }
+        }
+
+        return result;
+    }
+
+
+
+    private ArrayList<Event> getEventsOrganisedWithUserInAttendees(String user, AttendanceType type){
+        ArrayList<Event> events = getEventsWithUserInAttendees(db.getEvents(EventType.ORGANISE, TimeType.PAST), user);
+        ArrayList<Event> result = new ArrayList<>();
+
+
+        for(Event event : events){
+
+            if (event.getAttending() != null) {
+
+                if(type == AttendanceType.ATTENDING){
+
+                    if (event.getAttending().contains(user)) {
+
+                        result.add(event);
+                    }
+                }
+                else if(type == AttendanceType.NOT_ATTENDING){
+
+                    if (! event.getAttending().contains(user)) {
+
+                        result.add(event);
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private String getLoggedInUser(){
+        SharedPreferences userDetails = getSharedPreferences("", MODE_PRIVATE);
+        return userDetails.getString(BundleAndSharedPreferencesConstants.USERNAME, "");
     }
 }
