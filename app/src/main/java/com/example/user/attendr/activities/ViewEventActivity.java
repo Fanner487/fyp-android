@@ -37,9 +37,13 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
     TextView tvStartTime;
     TextView tvSignInTime;
     TextView tvFinishTime;
+    TextView tvPercentage;
+    TextView tvAttended;
     Button btnUpdate;
     Button btnSignIn;
+
     int eventId;
+    Event event;
 
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
@@ -73,12 +77,17 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
             NetworkCheck.redirectToLoginIfTokenExpired(ViewEventActivity.this);
         }
 
+        eventId = bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID);
+
+
         tvEventName = findViewById(R.id.tvEventName);
         tvLocation = findViewById(R.id.tvLocation);
         tvOrganiser = findViewById(R.id.tvOrganiser);
         tvStartTime = findViewById(R.id.tvStartTime);
         tvSignInTime = findViewById(R.id.tvSignInTime);
         tvFinishTime = findViewById(R.id.tvFinishTime);
+        tvPercentage = findViewById(R.id.tvPercentage);
+        tvAttended = findViewById(R.id.tvAttended);
         btnUpdate = findViewById(R.id.btnUpdate);
         swipeRefreshLayout = findViewById(R.id.swipe_container);
         btnSignIn = findViewById(R.id.btnSignIn);
@@ -87,10 +96,61 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
         eventType = (EventType) bundle.getSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE);
 
         setButtonVisibilities();
+        assignEvent();
 
         populateAdapter();
 
+
+        Log.d(TAG, "Size of attendees");
+        Log.d(TAG, Integer.toString(event.getAttendees().size()));
+
         setListeners();
+        populateTextViews();
+
+    }
+
+    private void assignEvent(){
+        event = db.getEventWithEventId(eventId);
+    }
+
+    private String getPercentageAttended(){
+
+        int result;
+
+        if(event.getAttending() == null || event.getAttending().size() == 0){
+            result = 0;
+        }
+        else{
+            float percentage = ((float) event.getAttending().size() / (float) event.getAttendees().size() * 100.0f);
+            result = (int) Math.floor(percentage);
+        }
+
+        return Integer.toString(result) + "%";
+    }
+
+    private String getUsersAttended(){
+
+        int result;
+
+        if(event.getAttending() == null || event.getAttending().size() == 0){
+            result = 0;
+        }
+        else{
+            result = event.getAttending().size();
+        }
+
+        return Integer.toString(result) + "/" + Integer.toString(event.getAttendees().size());
+    }
+
+    private void populateTextViews(){
+        tvEventName.setText(event.getEventName());
+        tvLocation.setText(event.getLocation());
+        tvOrganiser.setText(event.getOrganiser());
+        tvStartTime.setText(Event.parseDateToDisplayTime(event.getStartTime()));
+        tvSignInTime.setText(Event.parseDateToDisplayTime(event.getSignInTime()));
+        tvFinishTime.setText(Event.parseDateToDisplayTime(event.getFinishTime()));
+        tvPercentage.setText(getPercentageAttended());
+        tvAttended.setText(getUsersAttended());
 
     }
 
@@ -112,17 +172,12 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
 
     public void populateAdapter(){
 
-        eventId = bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID);
-        Event event = db.getEventWithEventId(eventId);
+
+
 
         Log.d(TAG, event.toString());
 
-        tvEventName.setText(event.getEventName());
-        tvLocation.setText(event.getLocation());
-        tvOrganiser.setText(event.getOrganiser());
-        tvStartTime.setText(Event.parseDateToDisplayTime(event.getStartTime()));
-        tvSignInTime.setText(Event.parseDateToDisplayTime(event.getSignInTime()));
-        tvFinishTime.setText(Event.parseDateToDisplayTime(event.getFinishTime()));
+
         recyclerView = findViewById(R.id.recyclerView);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -146,7 +201,10 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
                     NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
                         @Override
                         public void onSuccess() {
+                            assignEvent();
                             populateAdapter();
+                            setListeners();
+                            populateTextViews();
                             Toast.makeText(getApplicationContext(), getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
                             swipeRefreshLayout.setRefreshing(false);
                         }

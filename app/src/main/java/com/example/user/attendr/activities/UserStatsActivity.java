@@ -18,6 +18,13 @@ import com.example.user.attendr.models.Event;
 
 import java.util.ArrayList;
 
+/*
+* Created by Eamon on 26/02/2018
+*
+* Allows organiser of events to view a users attendance to their events such as
+* % attended, and lists of which ones they signed in for or not.
+* */
+
 public class UserStatsActivity extends AppCompatActivity {
 
     DBManager db;
@@ -53,14 +60,14 @@ public class UserStatsActivity extends AppCompatActivity {
         rvAttended = findViewById(R.id.rvAttended);
         rvNotAttended = findViewById(R.id.rvNotAttended);
 
-
-
-
         setAdaptersWithData();
         setTextViews();
 
     }
 
+    /**
+     * Sets and formats the text views of the activity
+     */
     private void setTextViews() {
         tvUsername.setText(username);
         tvPercentage.setText(Integer.toString(getPercentageAttendanceForUser(username)) + "%");
@@ -68,11 +75,12 @@ public class UserStatsActivity extends AppCompatActivity {
         int totalEventsWithUser = getEventsWithUserInAttendees(db.getEvents(EventType.ORGANISE, TimeType.PAST), username).size();
         int eventsAttended = getEventsOrganisedWithUserInAttendees(username, AttendanceType.ATTENDING).size();
 
-        tvEventsAttended.setText(Integer.toString(eventsAttended) +  "/" + Integer.toString(totalEventsWithUser));
+        tvEventsAttended.setText(Integer.toString(eventsAttended) + "/" + Integer.toString(totalEventsWithUser));
 
     }
 
     private void setAdaptersWithData() {
+
         ArrayList<Event> eventsAttended = getEventsOrganisedWithUserInAttendees(username, AttendanceType.ATTENDING);
         ArrayList<Event> eventsNotAttended = getEventsOrganisedWithUserInAttendees(username, AttendanceType.NOT_ATTENDING);
 
@@ -92,7 +100,6 @@ public class UserStatsActivity extends AppCompatActivity {
         rvAttended.setAdapter(eventsViewAdapterAttended);
         rvNotAttended.setAdapter(eventsViewAdapterNotAttended);
 
-
         eventsViewAdapterAttended.notifyDataSetChanged();
         eventsViewAdapterNotAttended.notifyDataSetChanged();
     }
@@ -102,7 +109,6 @@ public class UserStatsActivity extends AppCompatActivity {
 
         ArrayList<Event> eventsOrganised = getEventsWithUserInAttendees(db.getEvents(EventType.ORGANISE, TimeType.PAST), user);
         ArrayList<Event> eventsWithUserInAttending = getEventsOrganisedWithUserInAttendees(user, AttendanceType.ATTENDING);
-
 
         float result;
 
@@ -116,6 +122,9 @@ public class UserStatsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * filters events by user being in the attendees
+     */
     private ArrayList<Event> getEventsWithUserInAttendees(ArrayList<Event> events, String user) {
 
         ArrayList<Event> result = new ArrayList<>();
@@ -130,11 +139,13 @@ public class UserStatsActivity extends AppCompatActivity {
         return result;
     }
 
-
+    /**
+     * returns Lists for adapters for events that the user did or did not sign in for
+     */
     private ArrayList<Event> getEventsOrganisedWithUserInAttendees(String user, AttendanceType type) {
+
         ArrayList<Event> events = getEventsWithUserInAttendees(db.getEvents(EventType.ORGANISE, TimeType.PAST), user);
         ArrayList<Event> result = new ArrayList<>();
-
 
         for (Event event : events) {
 
@@ -146,7 +157,8 @@ public class UserStatsActivity extends AppCompatActivity {
 
                         result.add(event);
                     }
-                } else if (type == AttendanceType.NOT_ATTENDING) {
+                }
+                else if (type == AttendanceType.NOT_ATTENDING) {
 
                     if (!event.getAttending().contains(user)) {
 
@@ -158,5 +170,4 @@ public class UserStatsActivity extends AppCompatActivity {
 
         return result;
     }
-
 }
