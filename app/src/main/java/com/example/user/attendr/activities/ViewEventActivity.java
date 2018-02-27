@@ -96,17 +96,22 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
         eventType = (EventType) bundle.getSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE);
 
         setButtonVisibilities();
-        assignEvent();
 
-        populateAdapter();
-
+        updateData();
 
         Log.d(TAG, "Size of attendees");
         Log.d(TAG, Integer.toString(event.getAttendees().size()));
 
+
+    }
+
+    private void updateData(){
+
+        assignEvent();
+
+        populateAdapter();
         setListeners();
         populateTextViews();
-
     }
 
     private void assignEvent(){
@@ -172,9 +177,6 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
 
     public void populateAdapter(){
 
-
-
-
         Log.d(TAG, event.toString());
 
 
@@ -201,10 +203,11 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
                     NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
                         @Override
                         public void onSuccess() {
-                            assignEvent();
-                            populateAdapter();
-                            setListeners();
-                            populateTextViews();
+//                            assignEvent();
+//                            populateAdapter();
+//                            setListeners();
+//                            populateTextViews();
+                            updateData();
                             Toast.makeText(getApplicationContext(), getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
                             swipeRefreshLayout.setRefreshing(false);
                         }
