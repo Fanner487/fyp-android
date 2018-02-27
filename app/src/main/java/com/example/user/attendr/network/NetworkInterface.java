@@ -412,6 +412,11 @@ public class NetworkInterface {
         // JSON object to append event fields into for the request body
         JSONObject create = new JSONObject();
 
+        Log.d(TAG, "Attending members");
+        for(String name : event.getAttending()){
+            Log.d(TAG, name);
+        }
+
         try {
             create.put("organiser", getLoggedInUser());
             create.put("event_name", event.getEventName());
@@ -419,7 +424,9 @@ public class NetworkInterface {
             create.put("start_time", parseToIsoTime(event.getStartTime()));
             create.put("finish_time", parseToIsoTime(event.getFinishTime()));
             create.put("sign_in_time", parseToIsoTime(event.getSignInTime()));
-            create.put("attendance_required", Boolean.toString(true));
+//            create.put("attendees", event.getAttendees());
+//            create.put("attending", event.getAttending());
+            create.put("attendance_required", Boolean.toString(event.isAttendanceRequired()));
             JSONArray jsonArray = new JSONArray();
 
             for (String name : event.getAttendees()) {
@@ -427,6 +434,25 @@ public class NetworkInterface {
             }
 
             create.put("attendees", jsonArray);
+            Log.d(TAG, create.toString());
+
+
+            JSONArray jsonArrayAttending = new JSONArray();
+
+            Log.d(TAG, "Before get attending");
+
+            if(event.getAttending() != null){
+
+                Log.d(TAG, "in get attending");
+                for (String name : event.getAttending()) {
+                    jsonArrayAttending.put(name);
+                }
+
+                create.put("attending", jsonArrayAttending);
+            }
+
+
+
             Log.d(TAG, create.toString());
 
         } catch (JSONException e) {

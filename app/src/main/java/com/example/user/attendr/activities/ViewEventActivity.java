@@ -231,6 +231,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
             @Override
             public void onClick(View view) {
 
+                Log.d(TAG, "clicked update listener");
                 Log.d(TAG, "Event ID: " + Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID)));
 
                 Bundle bundle = new Bundle();

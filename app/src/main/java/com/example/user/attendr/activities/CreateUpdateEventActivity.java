@@ -78,6 +78,7 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
     Spinner spinner;
 
     DBManager db;
+    Event existingEvent;
 
     ArrayList<UserGroup> groups;
     ArrayList<String> groupNames;
@@ -287,17 +288,27 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
 
     private void populateWithExistingData(){
 
+        Log.d(TAG, "populate existing data");
         Log.d(TAG, "Event ID: " + Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID)));
 
-        Event event = db.getEventWithEventId(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID));
 
-        etEventName.setText(event.getEventName());
-        etLocation.setText(event.getLocation());
-        tvStartTime.setText(Event.parseDateToDisplayTime(event.getStartTime()));
-        tvFinishTime.setText(Event.parseDateToDisplayTime(event.getFinishTime()));
-        tvSignInTime.setText(Event.parseDateToDisplayTime(event.getSignInTime()));
-        etAttendees.setText(listToString(event.getAttendees()));
-        switchAttendanceRequired.setChecked(event.isAttendanceRequired());
+        existingEvent = db.getEventWithEventId(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID));
+
+        Log.d(TAG, "Attending");
+
+        if(existingEvent.getAttending() != null){
+            for(String name : existingEvent.getAttending()){
+                Log.d(TAG, name);
+            }
+        }
+
+        etEventName.setText(existingEvent.getEventName());
+        etLocation.setText(existingEvent.getLocation());
+        tvStartTime.setText(Event.parseDateToDisplayTime(existingEvent.getStartTime()));
+        tvFinishTime.setText(Event.parseDateToDisplayTime(existingEvent.getFinishTime()));
+        tvSignInTime.setText(Event.parseDateToDisplayTime(existingEvent.getSignInTime()));
+        etAttendees.setText(listToString(existingEvent.getAttendees()));
+        switchAttendanceRequired.setChecked(existingEvent.isAttendanceRequired());
 
     }
 
@@ -471,6 +482,7 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
                         }
                         else if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.UPDATE)){
                             event.setEventId(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID));
+                            event.setAttending(existingEvent.getAttending());
 
                             NetworkInterface.getInstance(CreateUpdateEventActivity.this).updateEvent(event, new EventCreateUpdateCallback() {
                                 @Override
