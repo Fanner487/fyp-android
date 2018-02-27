@@ -1,5 +1,7 @@
 package com.example.user.attendr.models;
 
+import android.util.Log;
+
 import com.example.user.attendr.constants.TimeFormats;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -278,6 +280,22 @@ public class Event {
             e.printStackTrace();
         }
         return newDate;
+    }
+
+    public static String parseToIsoTime(String time) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat(TimeFormats.DISPLAY_FORMAT, Locale.ENGLISH);
+
+        Date newTime = null;
+
+        try {
+            newTime = sdf.parse(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        SimpleDateFormat isoFormat = new SimpleDateFormat(TimeFormats.ISO_FORMAT, Locale.ENGLISH);
+
+        return isoFormat.format(newTime);
     }
 
     @Override

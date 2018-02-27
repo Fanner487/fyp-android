@@ -63,6 +63,8 @@
     <string name="sign_in_again">Please sign in again</string>
     <string name="ok">OK</string>
     <string name="are_you_sure">Are you sure?</string>
+    <string name="user_removed_from_event">User removed from event</string>
+    <string name="error_removing_user_from_event">Error removing user from event</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->

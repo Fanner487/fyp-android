@@ -42,6 +42,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -382,9 +383,9 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
                         String eventName = etEventName.getText().toString().trim();
                         String location = etLocation.getText().toString().trim();
                         ArrayList<String> attendees = toList(etAttendees.getText().toString().trim());
-                        String startTime = tvStartTime.getText().toString().trim();
-                        String finishTime = tvFinishTime.getText().toString().trim();
-                        String signInTime = tvSignInTime.getText().toString().trim();
+                        String startTime = Event.parseToIsoTime(tvStartTime.getText().toString().trim());
+                        String finishTime = Event.parseToIsoTime(tvFinishTime.getText().toString().trim());
+                        String signInTime = Event.parseToIsoTime(tvSignInTime.getText().toString().trim());
                         boolean attendanceRequired = switchAttendanceRequired.isChecked();
 
                         Log.d(TAG, eventName);

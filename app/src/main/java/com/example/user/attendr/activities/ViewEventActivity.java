@@ -62,7 +62,21 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
 
         if(NetworkCheck.isConnectedToInternet(ViewEventActivity.this)){
             NetworkCheck.redirectToLoginIfTokenExpired(ViewEventActivity.this);
+
+            NetworkInterface.getInstance(this).getEventsForUser(new EventApiCallback() {
+                @Override
+                public void onSuccess() {
+                    updateData();
+                }
+
+                @Override
+                public void onFailure() {
+
+                }
+            });
         }
+
+//        updateData();
     }
 
     @Override
@@ -108,7 +122,6 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
     private void updateData(){
 
         assignEvent();
-
         populateAdapter();
         setListeners();
         populateTextViews();
@@ -184,7 +197,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        AttendeesViewAdapter attendeesViewAdapter = new AttendeesViewAdapter(getApplicationContext(), event.getAttendees(), event.getAttending());
+        AttendeesViewAdapter attendeesViewAdapter = new AttendeesViewAdapter(getApplicationContext(), event);
 
         recyclerView.setAdapter(attendeesViewAdapter);
 

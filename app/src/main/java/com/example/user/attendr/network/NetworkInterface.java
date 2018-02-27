@@ -337,9 +337,9 @@ public class NetworkInterface {
             create.put("organiser", getLoggedInUser());
             create.put("event_name", event.getEventName());
             create.put("location", event.getLocation());
-            create.put("start_time", parseToIsoTime(event.getStartTime()));
-            create.put("finish_time", parseToIsoTime(event.getFinishTime()));
-            create.put("sign_in_time", parseToIsoTime(event.getSignInTime()));
+            create.put("start_time", event.getStartTime());
+            create.put("finish_time", event.getFinishTime());
+            create.put("sign_in_time", event.getSignInTime());
             create.put("attendance_required", Boolean.toString(event.isAttendanceRequired()));
 
             JSONArray jsonArray = new JSONArray();
@@ -407,25 +407,68 @@ public class NetworkInterface {
                 });
     }
 
+    public void removeUserFromAttendees(final Event event, String user, final EventCreateUpdateCallback eventCreateUpdateCallback){
+
+        Log.d(TAG, "Old attendees");
+        for(String name : event.getAttendees()){
+            Log.d(TAG, name);
+        }
+        ArrayList<String> newAttendees = new ArrayList<>();
+
+        for(String name : event.getAttendees()){
+            if(!name.equals(user)){
+                newAttendees.add(name);
+            }
+        }
+
+        Log.d(TAG, "New attendees");
+        for(String name : newAttendees){
+            Log.d(TAG, name);
+        }
+
+        event.setAttendees(newAttendees);
+
+        Log.d(TAG, "event to update with removing member");
+        Log.d(TAG, event.toString());
+
+        updateEvent(event, new EventCreateUpdateCallback() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                eventCreateUpdateCallback.onSuccess(response);
+            }
+
+            @Override
+            public void onFailure(ANError anError) {
+                eventCreateUpdateCallback.onFailure(anError);
+            }
+        });
+    }
+
     public void updateEvent(Event event, final EventCreateUpdateCallback eventCreateUpdateCallback) {
+
+        Log.d(TAG, "in UpdateEvent");
+        Log.d(TAG, event.toString());
 
         // JSON object to append event fields into for the request body
         JSONObject create = new JSONObject();
 
+
         Log.d(TAG, "Attending members");
-        for(String name : event.getAttending()){
-            Log.d(TAG, name);
+        if(event.getAttending() != null){
+
+            for(String name : event.getAttending()){
+                Log.d(TAG, name);
+            }
         }
+
 
         try {
             create.put("organiser", getLoggedInUser());
             create.put("event_name", event.getEventName());
             create.put("location", event.getLocation());
-            create.put("start_time", parseToIsoTime(event.getStartTime()));
-            create.put("finish_time", parseToIsoTime(event.getFinishTime()));
-            create.put("sign_in_time", parseToIsoTime(event.getSignInTime()));
-//            create.put("attendees", event.getAttendees());
-//            create.put("attending", event.getAttending());
+            create.put("start_time", event.getStartTime());
+            create.put("finish_time", event.getFinishTime());
+            create.put("sign_in_time", event.getSignInTime());
             create.put("attendance_required", Boolean.toString(event.isAttendanceRequired()));
             JSONArray jsonArray = new JSONArray();
 
@@ -564,6 +607,9 @@ public class NetworkInterface {
     * Converts times into a ISO-8601 standard so server can correctly read it
     * */
     private String parseToIsoTime(String time) {
+
+        Log.d(TAG, "in parseToIsoTime");
+        Log.d(TAG, time);
 
         SimpleDateFormat sdf = new SimpleDateFormat(TimeFormats.DISPLAY_FORMAT, Locale.ENGLISH);
 
