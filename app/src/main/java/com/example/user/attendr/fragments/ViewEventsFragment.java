@@ -76,9 +76,9 @@ public class ViewEventsFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if(NetworkCheck.isConnectedToInternet(getContext())){
-            NetworkCheck.redirectToLoginIfTokenExpired(getContext());
-        }
+//        if(NetworkCheck.isConnectedToInternet(getContext())){
+//            NetworkCheck.redirectToLoginIfTokenExpired(getContext());
+//        }
 
         // Refreshes data from the server when events updated/deleted
         NetworkInterface.getInstance(getContext()).getEventsForUser(new EventApiCallback() {
@@ -99,9 +99,9 @@ public class ViewEventsFragment extends Fragment {
 
         final View view = inflater.inflate(R.layout.fragment_view_events, container, false);
 
-        if(NetworkCheck.isConnectedToInternet(getContext())){
-            NetworkCheck.redirectToLoginIfTokenExpired(getContext());
-        }
+//        if(NetworkCheck.isConnectedToInternet(getContext())){
+//            NetworkCheck.redirectToLoginIfTokenExpired(getContext());
+//        }
 
 
         db = new DBManager(getContext()).open();

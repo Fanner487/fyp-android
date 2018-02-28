@@ -626,6 +626,37 @@ public class NetworkInterface {
         return isoFormat.format(newTime);
     }
 
+    public void manualSignInUser(String user, int eventId, final EventCreateUpdateCallback eventCreateUpdateCallback){
+
+        JSONObject jsonObject = new JSONObject();
+
+        try{
+
+            jsonObject.put("user", user);
+            jsonObject.put("event_id", eventId);
+        }
+        catch(JSONException e){
+            e.printStackTrace();
+        }
+
+        AndroidNetworking.post(ApiUrls.MANUAL_SIGN_IN)
+                .addJSONObjectBody(jsonObject)
+                .addHeaders(BundleAndSharedPreferencesConstants.AUTHORIZATION_HEADER, getAuthorizationHeaderToken())
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        eventCreateUpdateCallback.onSuccess(response);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        eventCreateUpdateCallback.onFailure(anError);
+                    }
+                });
+
+    }
+
     // Returns logged in user from shared preferences
     private String getLoggedInUser(){
         SharedPreferences userDetails = context.getSharedPreferences("", MODE_PRIVATE);

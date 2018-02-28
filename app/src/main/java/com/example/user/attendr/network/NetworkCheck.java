@@ -48,7 +48,11 @@ public class NetworkCheck {
 
         boolean connected = true;
 
-        if(!isConnectedToInternet(context)){
+
+        if(isConnectedToInternet(context)){
+           redirectToLoginIfTokenExpired(context);
+        }
+        else{
             Snackbar snackbar = Snackbar.make(view, context.getString(R.string.not_connected_to_internet), Snackbar.LENGTH_SHORT);
             snackbar.show();
             connected = false;
@@ -71,7 +75,7 @@ public class NetworkCheck {
                     AlertDialog alertDialog = new AlertDialog.Builder(context).create();
                     alertDialog.setTitle(context.getString(R.string.token_expired));
                     alertDialog.setMessage(context.getString(R.string.sign_in_again));
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, context.getString(R.string.ok),
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, context.getString(R.string.ok),
                             new DialogInterface.OnClickListener() {
 
                                 public void onClick(DialogInterface dialog, int which) {
@@ -88,6 +92,13 @@ public class NetworkCheck {
                                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     context.startActivity(i);
 
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, context.getString(R.string.cancel),
+                            new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
                                 }
                             });

@@ -31,17 +31,6 @@ public class ViewGroupsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        NetworkInterface.getInstance(this).testToken(new RegisterCallback() {
-            @Override
-            public void onSuccess() {
-                Toast.makeText(ViewGroupsActivity.this, "Success token", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(String response) {
-                Toast.makeText(ViewGroupsActivity.this, response, Toast.LENGTH_SHORT).show();
-            }
-        });
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_groups);
 

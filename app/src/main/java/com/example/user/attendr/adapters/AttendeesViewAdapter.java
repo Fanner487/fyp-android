@@ -84,20 +84,39 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
                     Log.d(TAG, "Current Event");
                     Log.d(TAG, currentEvent.toString());
 
-                    NetworkInterface.getInstance(view.getContext()).removeUserFromAttendees(currentEvent, tvAttendee.getText().toString(),
-                            new EventCreateUpdateCallback() {
-                                @Override
-                                public void onSuccess(JSONObject response) {
-                                    Toast.makeText(view.getContext(), view.getContext().getString(R.string.user_removed_from_event), Toast.LENGTH_SHORT).show();
+//                    NetworkInterface.getInstance(view.getContext()).removeUserFromAttendees(currentEvent, tvAttendee.getText().toString(),
+//                            new EventCreateUpdateCallback() {
+//                                @Override
+//                                public void onSuccess(JSONObject response) {
+//                                    Toast.makeText(view.getContext(), view.getContext().getString(R.string.user_removed_from_event), Toast.LENGTH_SHORT).show();
+//
+//                                }
+//
+//                                @Override
+//                                public void onFailure(ANError anError) {
+//                                    Toast.makeText(view.getContext(), view.getContext().getString(R.string.error_removing_user_from_event), Toast.LENGTH_SHORT).show();
+//
+//                                }
+//                            });
+                    if(NetworkCheck.alertIfNotConnectedToInternet(context, tvAttendee)){
+                        NetworkInterface.getInstance(view.getContext()).manualSignInUser(tvAttendee.getText().toString(), currentEvent.getEventId(),
+                                new EventCreateUpdateCallback() {
+                                    @Override
+                                    public void onSuccess(JSONObject response) {
+                                        Log.d(TAG, response.toString());
+                                        Toast.makeText(view.getContext(), view.getContext().getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
+                                    }
 
-                                }
+                                    @Override
+                                    public void onFailure(ANError anError) {
+                                        Log.d(TAG, anError.toString());
+                                        Toast.makeText(view.getContext(), view.getContext().getString(R.string.error_removing_user_from_event), Toast.LENGTH_SHORT).show();
 
-                                @Override
-                                public void onFailure(ANError anError) {
-                                    Toast.makeText(view.getContext(), view.getContext().getString(R.string.error_removing_user_from_event), Toast.LENGTH_SHORT).show();
 
-                                }
-                            });
+                                    }
+                                });
+                    }
+
                     return true;
                 }
             });

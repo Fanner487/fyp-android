@@ -16,6 +16,7 @@ import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.RegisterCallback;
 import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.models.UserGroup;
+import com.example.user.attendr.network.NetworkCheck;
 import com.example.user.attendr.network.NetworkInterface;
 
 import java.util.ArrayList;
@@ -72,46 +73,50 @@ public class RegisterActivity extends AppCompatActivity implements ListenerInter
             @Override
             public void onClick(View view) {
 
-                NetworkInterface.getInstance(getApplicationContext())
-                        .register(etUsername.getText().toString(), etEmail.getText().toString(), etPassword.getText().toString(),
-                                etPasswordConfirm.getText().toString(), etFirstName.getText().toString(), etLastName.getText().toString(),
-                                new RegisterCallback() {
-                                    @Override
-                                    public void onSuccess() {
-                                        Toast.makeText(RegisterActivity.this, R.string.account_made, Toast.LENGTH_SHORT).show();
+                if(NetworkCheck.alertIfNotConnectedToInternet(RegisterActivity.this, btnSubmit)){
 
-                                        // Redirect to login screen
-                                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                        getApplicationContext().startActivity(intent);
-                                    }
+                    NetworkInterface.getInstance(getApplicationContext())
+                            .register(etUsername.getText().toString(), etEmail.getText().toString(), etPassword.getText().toString(),
+                                    etPasswordConfirm.getText().toString(), etFirstName.getText().toString(), etLastName.getText().toString(),
+                                    new RegisterCallback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            Toast.makeText(RegisterActivity.this, R.string.account_made, Toast.LENGTH_SHORT).show();
 
-                                    @Override
-                                    public void onFailure(String response) {
+                                            // Redirect to login screen
+                                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                            getApplicationContext().startActivity(intent);
+                                        }
 
-                                        Log.d(TAG, response);
-                                        Toast.makeText(RegisterActivity.this, R.string.error_making_account, Toast.LENGTH_SHORT).show();
+                                        @Override
+                                        public void onFailure(String response) {
 
-                                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RegisterActivity.this);
-                                        alertDialogBuilder.setMessage(response);
-                                        alertDialogBuilder.setPositiveButton("yes",
-                                                new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface arg0, int arg1) {
-                                                        Toast.makeText(RegisterActivity.this,"You clicked yes button",Toast.LENGTH_LONG).show();
-                                                    }
-                                                });
+                                            Log.d(TAG, response);
+                                            Toast.makeText(RegisterActivity.this, R.string.error_making_account, Toast.LENGTH_SHORT).show();
 
-                                        alertDialogBuilder.setNegativeButton("No",new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                finish();
-                                            }
-                                        });
+                                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RegisterActivity.this);
+                                            alertDialogBuilder.setMessage(response);
+                                            alertDialogBuilder.setPositiveButton("yes",
+                                                    new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface arg0, int arg1) {
+                                                            Toast.makeText(RegisterActivity.this,"You clicked yes button",Toast.LENGTH_LONG).show();
+                                                        }
+                                                    });
 
-                                        AlertDialog alertDialog = alertDialogBuilder.create();
-                                        alertDialog.show();
-                                    }
-                                });
+                                            alertDialogBuilder.setNegativeButton("No",new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    finish();
+                                                }
+                                            });
+
+                                            AlertDialog alertDialog = alertDialogBuilder.create();
+                                            alertDialog.show();
+                                        }
+                                    });
+                }
+
             }
         });
     }

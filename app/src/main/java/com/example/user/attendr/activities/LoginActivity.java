@@ -17,6 +17,7 @@ import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.LoginCallback;
 import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.database.DBManager;
+import com.example.user.attendr.network.NetworkCheck;
 import com.example.user.attendr.network.NetworkInterface;
 
 /**
@@ -71,14 +72,15 @@ public class LoginActivity extends AppCompatActivity implements ListenerInterfac
                 Log.d(TAG, etUsername.getText().toString());
                 Log.d(TAG, etPassword.getText().toString());
 
-                NetworkInterface.getInstance(getApplicationContext()).login(etUsername.getText().toString().trim().toLowerCase(),
-                        etPassword.getText().toString(),
-                        new LoginCallback() {
-                            @Override
-                            public void onSuccess() {
-                                Toast.makeText(LoginActivity.this, getString(R.string.successful_login), Toast.LENGTH_SHORT).show();
+                if(NetworkCheck.alertIfNotConnectedToInternet(LoginActivity.this, btnSubmit)){
+                    NetworkInterface.getInstance(getApplicationContext()).login(etUsername.getText().toString().trim().toLowerCase(),
+                            etPassword.getText().toString(),
+                            new LoginCallback() {
+                                @Override
+                                public void onSuccess() {
+                                    Toast.makeText(LoginActivity.this, getString(R.string.successful_login), Toast.LENGTH_SHORT).show();
 
-                                setPreferences();
+                                    setPreferences();
 
 //                                NetworkInterface.getInstance(getApplicationContext()).getTokenForUser(etUsername.getText().toString().trim().toLowerCase(),
 //                                        etPassword.getText().toString(),
@@ -94,19 +96,20 @@ public class LoginActivity extends AppCompatActivity implements ListenerInterfac
 //
 //                                            }
 //                                        });
-                                // Redirect to MainActivity screen
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                getApplicationContext().startActivity(intent);
+                                    // Redirect to MainActivity screen
+                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                    getApplicationContext().startActivity(intent);
 
-                                // Removes activity from the stack
-                                finish();
-                            }
+                                    // Removes activity from the stack
+                                    finish();
+                                }
 
-                            @Override
-                            public void onFailure() {
-                                Toast.makeText(LoginActivity.this, getString(R.string.failure_login), Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                                @Override
+                                public void onFailure() {
+                                    Toast.makeText(LoginActivity.this, getString(R.string.failure_login), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
             }
         });
 

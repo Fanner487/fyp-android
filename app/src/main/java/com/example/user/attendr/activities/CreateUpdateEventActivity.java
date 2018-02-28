@@ -376,7 +376,7 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
             @Override
             public void onClick(View view) {
 
-                if(NetworkCheck.alertIfNotConnectedToInternet(getApplicationContext(), view)){
+                if(NetworkCheck.alertIfNotConnectedToInternet(CreateUpdateEventActivity.this, view)){
                     // Continues if all fields are filled
                     if (allFieldsFilled()) {
 

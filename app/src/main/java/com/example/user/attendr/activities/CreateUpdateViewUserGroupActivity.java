@@ -110,7 +110,7 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
             @Override
             public void onClick(View view) {
 
-                if(NetworkCheck.alertIfNotConnectedToInternet(getApplicationContext(), btnSubmit)){
+                if(NetworkCheck.alertIfNotConnectedToInternet(CreateUpdateViewUserGroupActivity.this, btnSubmit)){
 
                     final UserGroup group = new UserGroup(
                             etGroupName.getText().toString(),

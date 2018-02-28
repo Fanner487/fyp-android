@@ -60,21 +60,21 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
     protected void onResume() {
         super.onResume();
 
-        if(NetworkCheck.isConnectedToInternet(ViewEventActivity.this)){
-            NetworkCheck.redirectToLoginIfTokenExpired(ViewEventActivity.this);
-
-            NetworkInterface.getInstance(this).getEventsForUser(new EventApiCallback() {
-                @Override
-                public void onSuccess() {
-                    updateData();
-                }
-
-                @Override
-                public void onFailure() {
-
-                }
-            });
-        }
+//        if(NetworkCheck.isConnectedToInternet(ViewEventActivity.this)){
+//            NetworkCheck.redirectToLoginIfTokenExpired(ViewEventActivity.this);
+//
+//            NetworkInterface.getInstance(this).getEventsForUser(new EventApiCallback() {
+//                @Override
+//                public void onSuccess() {
+//                    updateData();
+//                }
+//
+//                @Override
+//                public void onFailure() {
+//
+//                }
+//            });
+//        }
 
 //        updateData();
     }
@@ -87,9 +87,9 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
         bundle = getIntent().getExtras();
         db = new DBManager(this).open();
 
-        if(NetworkCheck.isConnectedToInternet(ViewEventActivity.this)){
-            NetworkCheck.redirectToLoginIfTokenExpired(ViewEventActivity.this);
-        }
+//        if(NetworkCheck.isConnectedToInternet(ViewEventActivity.this)){
+//            NetworkCheck.redirectToLoginIfTokenExpired(ViewEventActivity.this);
+//        }
 
         eventId = bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID);
 
@@ -211,7 +211,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
             @Override
             public void onRefresh() {
 
-                if(NetworkCheck.alertIfNotConnectedToInternet(getApplicationContext(), swipeRefreshLayout)){
+                if(NetworkCheck.alertIfNotConnectedToInternet(ViewEventActivity.this, swipeRefreshLayout)){
 
                     NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
                         @Override
