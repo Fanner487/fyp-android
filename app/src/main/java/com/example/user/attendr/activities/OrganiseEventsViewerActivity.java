@@ -1,7 +1,6 @@
 package com.example.user.attendr.activities;
 
 import android.net.Uri;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +18,8 @@ import com.example.user.attendr.R;
 import com.example.user.attendr.adapters.SectionsPagerAdapter;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.fragments.ViewEventsFragment;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 
 public class OrganiseEventsViewerActivity extends AppCompatActivity
         implements ViewEventsFragment.OnFragmentInteractionListener, ListenerInterface{
@@ -39,7 +40,8 @@ public class OrganiseEventsViewerActivity extends AppCompatActivity
      */
     private ViewPager mViewPager;
     TabLayout tabLayout;
-    FloatingActionButton fab;
+    FloatingActionMenu fam;
+    FloatingActionButton fabCreateEvent, fabCreateGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,10 @@ public class OrganiseEventsViewerActivity extends AppCompatActivity
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        fabCreateEvent = findViewById(R.id.fab_create_event);
+        fabCreateGroup = findViewById(R.id.fab_create_group);
+        fam = findViewById(R.id.fab_menu);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,13 +109,7 @@ public class OrganiseEventsViewerActivity extends AppCompatActivity
 
     @Override
     public void setListeners() {
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
     }
 
 }
