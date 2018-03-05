@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity
 
             Intent intent = new Intent(this, AttendingEventsViewerActivity.class);
             startActivity(intent);
-            
+
         } else if (id == R.id.organised_events) {
 
             Intent intent = new Intent(this, OrganiseEventsViewerActivity.class);
@@ -169,22 +169,26 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void setListeners() {
 
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                SharedPreferences userDetails = getApplicationContext().getSharedPreferences("", MODE_PRIVATE);
-//                SharedPreferences.Editor edit = userDetails.edit();
-//                edit.putString(BundleAndSharedPreferencesConstants.USERNAME, "");
-//                edit.putString(BundleAndSharedPreferencesConstants.TOKEN, "");
-//                edit.putBoolean(BundleAndSharedPreferencesConstants.LOGGED_IN, false);
-//                edit.apply();
-//
-//                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-//                // set the new task and clear flags
-//                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                startActivity(i);
-//            }
-//        });
+        fabCreateEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, CreateUpdateEventActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
+        fabCreateGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, CreateUpdateViewUserGroupActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
     }
 }
