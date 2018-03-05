@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.example.user.attendr.interfaces.ListenerInterface;
 import com.example.user.attendr.R;
@@ -37,6 +38,9 @@ public class MainActivity extends AppCompatActivity
     Toolbar toolbar;
     FloatingActionMenu fam;
     com.github.clans.fab.FloatingActionButton fabCreateEvent, fabCreateGroup;
+
+    TextView tvName;
+    TextView tvEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +78,6 @@ public class MainActivity extends AppCompatActivity
             Log.d(TAG, g.toString());
         }
 
-//        fab = findViewById(R.id.fab);
-
-
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -86,6 +86,13 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View headerView = navigationView.getHeaderView(0);
+        tvEmail = headerView.findViewById(R.id.tvEmail);
+        tvName = headerView.findViewById(R.id.tvName);
+
+        tvEmail.setText("asadfasdfa");
+        tvName.setText("yo momma hot");
 
         setListeners();
     }
