@@ -177,6 +177,8 @@ public class MainActivity extends AppCompatActivity
                 bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
                 intent.putExtras(bundle);
                 startActivity(intent);
+                fam.close(true);
+
             }
         });
 
@@ -188,6 +190,8 @@ public class MainActivity extends AppCompatActivity
                 bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
                 intent.putExtras(bundle);
                 startActivity(intent);
+                fam.close(true);
+
             }
         });
     }

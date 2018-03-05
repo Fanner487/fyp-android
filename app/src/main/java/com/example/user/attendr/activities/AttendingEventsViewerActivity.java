@@ -123,6 +123,8 @@ public class AttendingEventsViewerActivity extends AppCompatActivity
                 bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
                 intent.putExtras(bundle);
                 startActivity(intent);
+                fam.close(true);
+
             }
         });
 
@@ -134,6 +136,8 @@ public class AttendingEventsViewerActivity extends AppCompatActivity
                 bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
                 intent.putExtras(bundle);
                 startActivity(intent);
+                fam.close(true);
+
             }
         });
 

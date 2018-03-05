@@ -1,5 +1,6 @@
 package com.example.user.attendr.activities;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -13,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.interfaces.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.adapters.SectionsPagerAdapter;
@@ -78,6 +80,7 @@ public class OrganiseEventsViewerActivity extends AppCompatActivity
 
 //        fab = findViewById(R.id.fab);
 
+        setListeners();
 
     }
 
@@ -110,6 +113,30 @@ public class OrganiseEventsViewerActivity extends AppCompatActivity
     @Override
     public void setListeners() {
 
+        fabCreateEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(OrganiseEventsViewerActivity.this, CreateUpdateEventActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
+                intent.putExtras(bundle);
+                startActivity(intent);
+
+                fam.close(true);
+            }
+        });
+
+        fabCreateGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(OrganiseEventsViewerActivity.this, CreateUpdateViewUserGroupActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                fam.close(true);
+            }
+        });
     }
 
 }
