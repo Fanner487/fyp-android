@@ -196,7 +196,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        AttendeesViewAdapter attendeesViewAdapter = new AttendeesViewAdapter(getApplicationContext(), event);
+        AttendeesViewAdapter attendeesViewAdapter = new AttendeesViewAdapter(ViewEventActivity.this, event);
 
         recyclerView.setAdapter(attendeesViewAdapter);
 
@@ -215,10 +215,6 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
                     NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
                         @Override
                         public void onSuccess() {
-//                            assignEvent();
-//                            populateAdapter();
-//                            setListeners();
-//                            populateTextViews();
                             updateData();
                             Toast.makeText(getApplicationContext(), getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
                             swipeRefreshLayout.setRefreshing(false);

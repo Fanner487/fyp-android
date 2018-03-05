@@ -3,12 +3,15 @@ package com.example.user.attendr.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +56,7 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
 
     public class AttendeesViewHolder extends RecyclerView.ViewHolder {
         TextView tvAttendee;
+        ImageView imageView;
 
         //Gets assigned to each view
 //        Event currentEvent;
@@ -60,6 +64,7 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
         public AttendeesViewHolder(View view) {
             super(view);
             tvAttendee = view.findViewById(R.id.tvAttendee);
+            imageView = view.findViewById(R.id.imageView);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -169,12 +174,12 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
         if(isAttending(attendees.get(position))){
 
             Log.d(TAG, "Setting " + attendees.get(position) + " to Attending");
-            //TODO: change background colour whenever it comes up
-            holder.tvAttendee.setBackgroundColor(Color.RED);
+            holder.imageView.setColorFilter(ContextCompat.getColor(context, R.color.attendee_green));
             holder.tvAttendee.setText(this.attendees.get(position));
         }
         else{
             Log.d(TAG, "Setting " + attendees.get(position) + " to NOT Attending");
+            holder.imageView.setColorFilter(ContextCompat.getColor(context, R.color.attendee_red));
             holder.tvAttendee.setText(this.attendees.get(position));
 
         }
