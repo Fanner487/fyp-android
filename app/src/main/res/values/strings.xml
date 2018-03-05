@@ -19,7 +19,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="attendane_required">Attendance Required</string>
+    <string name="attendance_required">Attendance Required</string>
     <string name="password">Password</string>
     <string name="username">Username</string>
     <string name="password_confirm">Confirm Password</string>
@@ -66,6 +66,12 @@
     <string name="user_removed_from_event">User removed from event</string>
     <string name="error_removing_user_from_event">Error removing user from event</string>
     <string name="cancel">Cancel</string>
+    <string name="other">Other</string>
+    <string name="create_group">Create Group</string>
+    <string name="create_event">Create Event</string>
+    <string name="attending_events">Attending Events</string>
+    <string name="organised_events">Organised Events</string>
+    <string name="groups">Groups</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -173,4 +179,6 @@
     <string name="events_attended">Events Attended</string>
     <string name="attended">Attended</string>
     <string name="not_attended">Not Attended</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
 </resources>

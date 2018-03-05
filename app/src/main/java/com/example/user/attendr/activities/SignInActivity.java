@@ -1,4 +1,4 @@
-package com.example.user.attendr;
+package com.example.user.attendr.activities;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextClock;
 import android.widget.TextView;
 
+import com.example.user.attendr.R;
 import com.example.user.attendr.constants.DbConstants;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;

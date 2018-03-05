@@ -46,6 +46,8 @@ public class RegisterActivity extends AppCompatActivity implements ListenerInter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        getSupportActionBar().setTitle(getString(R.string.register));
+
         etUsername = findViewById(R.id.etUsername);
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
@@ -54,15 +56,7 @@ public class RegisterActivity extends AppCompatActivity implements ListenerInter
         etLastName = findViewById(R.id.etLastName);
         btnSubmit = findViewById(R.id.btnSubmit);
 
-
         db = new DBManager(this).open();
-
-        ArrayList<UserGroup> groups = db.getGroups();
-
-        for(UserGroup g: groups){
-            Log.d(TAG, g.toString());
-        }
-
 
         setListeners();
     }
@@ -73,11 +67,15 @@ public class RegisterActivity extends AppCompatActivity implements ListenerInter
             @Override
             public void onClick(View view) {
 
-                if(NetworkCheck.alertIfNotConnectedToInternet(RegisterActivity.this, btnSubmit)){
-
+                if (NetworkCheck.isConnectedToInternet(RegisterActivity.this)) {
                     NetworkInterface.getInstance(getApplicationContext())
-                            .register(etUsername.getText().toString(), etEmail.getText().toString(), etPassword.getText().toString(),
-                                    etPasswordConfirm.getText().toString(), etFirstName.getText().toString(), etLastName.getText().toString(),
+                            .register(
+                                    etUsername.getText().toString().toLowerCase().trim(),
+                                    etEmail.getText().toString().trim(),
+                                    etPassword.getText().toString().trim(),
+                                    etPasswordConfirm.getText().toString().trim(),
+                                    etFirstName.getText().toString().trim(),
+                                    etLastName.getText().toString().trim(),
                                     new RegisterCallback() {
                                         @Override
                                         public void onSuccess() {
@@ -115,6 +113,10 @@ public class RegisterActivity extends AppCompatActivity implements ListenerInter
                                             alertDialog.show();
                                         }
                                     });
+
+                }
+                else{
+                    Toast.makeText(RegisterActivity.this, getString(R.string.not_connected_to_internet), Toast.LENGTH_SHORT).show();
                 }
 
             }

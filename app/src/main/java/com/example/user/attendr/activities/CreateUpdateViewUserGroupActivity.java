@@ -134,7 +134,7 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
                             @Override
                             public void onFailure(String response) {
                                 AlertDialog alertDialog = new AlertDialog.Builder(CreateUpdateViewUserGroupActivity.this).create();
-                                alertDialog.setTitle("Alert");
+                                alertDialog.setTitle(getString(R.string.alert));
                                 alertDialog.setMessage(response);
                                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                                         new DialogInterface.OnClickListener() {

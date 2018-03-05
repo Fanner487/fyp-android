@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
-import com.example.user.attendr.SignInActivity;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.enums.TimeType;
 import com.example.user.attendr.interfaces.ListenerInterface;

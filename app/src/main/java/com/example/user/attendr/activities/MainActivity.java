@@ -23,6 +23,7 @@ import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.models.UserGroup;
 import com.example.user.attendr.network.NetworkInterface;
+import com.github.clans.fab.FloatingActionMenu;
 
 import java.util.ArrayList;
 
@@ -32,8 +33,10 @@ public class MainActivity extends AppCompatActivity
     private final String TAG = MainActivity.class.getSimpleName();
 
     DBManager db;
-    FloatingActionButton fab;
+//    FloatingActionButton fab;
     Toolbar toolbar;
+    FloatingActionMenu fam;
+    com.github.clans.fab.FloatingActionButton fabCreateEvent, fabCreateGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,10 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        fabCreateEvent = findViewById(R.id.fab_create_event);
+        fabCreateGroup = findViewById(R.id.fab_create_group);
+        fam = findViewById(R.id.fab_menu);
 
         SharedPreferences userDetails = getSharedPreferences("", Context.MODE_PRIVATE);
         String username = userDetails.getString("username", "");
@@ -67,7 +74,7 @@ public class MainActivity extends AppCompatActivity
             Log.d(TAG, g.toString());
         }
 
-        fab = findViewById(R.id.fab);
+//        fab = findViewById(R.id.fab);
 
 
 
@@ -121,42 +128,37 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.attending_events) {
+
+            Intent intent = new Intent(this, AttendingEventsViewerActivity.class);
+            startActivity(intent);
+            
+        } else if (id == R.id.organised_events) {
+
+            Intent intent = new Intent(this, OrganiseEventsViewerActivity.class);
+            startActivity(intent);
+
+
+        } else if (id == R.id.groups) {
 
             Intent intent = new Intent(this, ViewGroupsActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
             intent.putExtras(bundle);
             startActivity(intent);
-        } else if (id == R.id.nav_gallery) {
 
+        } else if (id == R.id.logout) {
+            SharedPreferences userDetails = getApplicationContext().getSharedPreferences("", MODE_PRIVATE);
+            SharedPreferences.Editor edit = userDetails.edit();
+            edit.putString(BundleAndSharedPreferencesConstants.USERNAME, "");
+            edit.putString(BundleAndSharedPreferencesConstants.TOKEN, "");
+            edit.putBoolean(BundleAndSharedPreferencesConstants.LOGGED_IN, false);
+            edit.apply();
 
-            Intent intent = new Intent(this, RegisterActivity.class);
-            startActivity(intent);
-
-        } else if (id == R.id.nav_slideshow) {
-
-
-            Intent intent = new Intent(this, CreateUpdateEventActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
-            intent.putExtras(bundle);
-            startActivity(intent);
-
-        } else if (id == R.id.nav_manage) {
-
-            Intent intent = new Intent(this, CreateUpdateViewUserGroupActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
-            intent.putExtras(bundle);
-            startActivity(intent);
-        } else if (id == R.id.nav_share) {
-            Intent intent = new Intent(this, OrganiseEventsViewerActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_send) {
-            Intent intent = new Intent(this, AttendingEventsViewerActivity.class);
-            startActivity(intent);
-
+            Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+            // set the new task and clear flags
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -167,22 +169,22 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void setListeners() {
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                SharedPreferences userDetails = getApplicationContext().getSharedPreferences("", MODE_PRIVATE);
-                SharedPreferences.Editor edit = userDetails.edit();
-                edit.putString(BundleAndSharedPreferencesConstants.USERNAME, "");
-                edit.putString(BundleAndSharedPreferencesConstants.TOKEN, "");
-                edit.putBoolean(BundleAndSharedPreferencesConstants.LOGGED_IN, false);
-                edit.apply();
-
-                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-                // set the new task and clear flags
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(i);
-            }
-        });
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                SharedPreferences userDetails = getApplicationContext().getSharedPreferences("", MODE_PRIVATE);
+//                SharedPreferences.Editor edit = userDetails.edit();
+//                edit.putString(BundleAndSharedPreferencesConstants.USERNAME, "");
+//                edit.putString(BundleAndSharedPreferencesConstants.TOKEN, "");
+//                edit.putBoolean(BundleAndSharedPreferencesConstants.LOGGED_IN, false);
+//                edit.apply();
+//
+//                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+//                // set the new task and clear flags
+//                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                startActivity(i);
+//            }
+//        });
     }
 }

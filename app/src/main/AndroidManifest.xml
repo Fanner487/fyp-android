@@ -42,7 +42,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.ViewEventActivity" />
         <activity android:name=".activities.ViewGroupsActivity" />
-        <activity android:name=".SignInActivity" />
+        <activity android:name=".activities.SignInActivity" />
         <activity android:name=".activities.UserStatsActivity"></activity>
     </application>
 

@@ -1,7 +1,8 @@
 package com.example.user.attendr.activities;
 
+import android.content.Intent;
 import android.net.Uri;
-import android.support.design.widget.FloatingActionButton;
+
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -13,12 +14,16 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.interfaces.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.adapters.SectionsPagerAdapter;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.fragments.ViewEventsFragment;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 
 /**
  * Created by Eamon on 16/02/2018.
@@ -35,7 +40,8 @@ public class AttendingEventsViewerActivity extends AppCompatActivity
     private ViewPager mViewPager;
     TabLayout tabLayout;
     Toolbar toolbar;
-    FloatingActionButton fab;
+    FloatingActionMenu fam;
+    FloatingActionButton fabCreateEvent, fabCreateGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +52,11 @@ public class AttendingEventsViewerActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         toolbar.setTitle(R.string.attending);
+
+
+        fabCreateEvent = findViewById(R.id.fab_create_event);
+        fabCreateGroup = findViewById(R.id.fab_create_group);
+        fam = findViewById(R.id.fab_menu);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -61,9 +72,10 @@ public class AttendingEventsViewerActivity extends AppCompatActivity
         tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        fab = findViewById(R.id.fab);
+//        fab = findViewById(R.id.fab);
 
         setListeners();
+
     }
 
 
@@ -103,12 +115,34 @@ public class AttendingEventsViewerActivity extends AppCompatActivity
             }
         });
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        fabCreateEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(AttendingEventsViewerActivity.this, CreateUpdateEventActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
+
+        fabCreateGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AttendingEventsViewerActivity.this, CreateUpdateViewUserGroupActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
     }
 }
