@@ -113,7 +113,6 @@ public class RegisterActivity extends AppCompatActivity implements ListenerInter
                                             alertDialog.show();
                                         }
                                     });
-
                 }
                 else{
                     Toast.makeText(RegisterActivity.this, getString(R.string.not_connected_to_internet), Toast.LENGTH_SHORT).show();
