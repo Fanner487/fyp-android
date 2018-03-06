@@ -38,6 +38,7 @@ public class GroupsViewAdapter extends RecyclerView.Adapter<GroupsViewAdapter.Gr
 
     public class GroupsViewHolder extends RecyclerView.ViewHolder {
         TextView tvGroupName;
+        TextView tvNumberUsers;
 
         //Gets assigned to each card view
         UserGroup currentGroup;
@@ -46,6 +47,7 @@ public class GroupsViewAdapter extends RecyclerView.Adapter<GroupsViewAdapter.Gr
             super(view);
 
             tvGroupName = view.findViewById(R.id.tvGroupName);
+            tvNumberUsers = view.findViewById(R.id.tvNumberUsers);
 
 
             view.setOnClickListener(new View.OnClickListener() {
@@ -104,6 +106,7 @@ public class GroupsViewAdapter extends RecyclerView.Adapter<GroupsViewAdapter.Gr
     public void onBindViewHolder(GroupsViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder called");
         holder.tvGroupName.setText(groups.get(position).getGroupName());
+        holder.tvNumberUsers.setText(Integer.toString(groups.get(position).getUsers().size()));
 
         //Set the current event object for the card on click listener
         holder.currentGroup = groups.get(position);

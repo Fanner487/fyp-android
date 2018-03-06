@@ -22,11 +22,12 @@ public class DbConstants {
     public static final String GROUP_KEY_ROW_USERNAME = "username";
     public static final String GROUP_KEY_ROW_GROUP_NAME = "group_name";
     public static final String GROUP_KEY_ROW_USERS = "users";
+    public static final String GROUP_KEY_ROW_DESCRIPTION = "description";
 
     public static final String DATABASE_NAME = "fypDB";
     public static final String DATABASE_EVENTS_TABLE = "events";
     public static final String DATABASE_GROUPS_TABLE = "groups";
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 6;
 
     public static final String DATABASE_EVENTS_CREATE =
             "create table if not exists " + DATABASE_EVENTS_TABLE +
@@ -51,5 +52,6 @@ public class DbConstants {
                     GROUP_KEY_ROW_USERNAME + " text not null, " +
                     GROUP_KEY_ROW_GROUP_NAME + " text not null, " +
                     GROUP_KEY_ROW_USERS + " text not null " +
+                    GROUP_KEY_ROW_DESCRIPTION + " text not null " +
                     ");";
 }

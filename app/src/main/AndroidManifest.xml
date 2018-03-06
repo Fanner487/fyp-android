@@ -41,9 +41,11 @@
             android:label="@string/title_activity_attending_events_viewer"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.ViewEventActivity" />
-        <activity android:name=".activities.ViewGroupsActivity" />
+        <activity android:name=".activities.ViewGroupsActivity"
+            android:parentActivityName=".activities.MainActivity"
+            />
         <activity android:name=".activities.SignInActivity" />
-        <activity android:name=".activities.UserStatsActivity"></activity>
+        <activity android:name=".activities.UserStatsActivity" />
     </application>
 
 </manifest>

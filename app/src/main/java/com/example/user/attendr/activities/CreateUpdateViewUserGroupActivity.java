@@ -34,6 +34,7 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
 
     EditText etGroupName;
     EditText etUsers;
+    EditText etDescription;
     Button btnSubmit;
     Button btnDelete;
     Bundle bundle;
@@ -51,8 +52,19 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
         bundle = getIntent().getExtras();
 
         createOrUpdate = bundle.getString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE);
+
+        if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.CREATE)){
+            getSupportActionBar().setTitle(getString(R.string.create_group));
+
+        }
+        else if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.UPDATE)){
+            getSupportActionBar().setTitle(getString(R.string.update_group));
+        }
+
+
         etGroupName = findViewById(R.id.etGroupName);
         etUsers = findViewById(R.id.etUsers);
+        etDescription = findViewById(R.id.etDescription);
         btnSubmit = findViewById(R.id.btnSubmit);
         btnDelete = findViewById(R.id.btnDelete);
 
@@ -93,6 +105,7 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
         Log.d(TAG, existingGroup.toString());
         etGroupName.setText(existingGroup.getGroupName());
         etUsers.setText(listToString(existingGroup.getUsers()));
+        etDescription.setText(existingGroup.getDescription());
     }
 
     private ArrayList<String> toList(String value){
@@ -113,7 +126,8 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
                 if(NetworkCheck.alertIfNotConnectedToInternet(CreateUpdateViewUserGroupActivity.this, btnSubmit)){
 
                     final UserGroup group = new UserGroup(
-                            etGroupName.getText().toString(),
+                            etGroupName.getText().toString().trim(),
+                            etDescription.getText().toString(),
                             toList(etUsers.getText().toString().toLowerCase().trim())
                     );
                     /*

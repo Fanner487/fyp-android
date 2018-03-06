@@ -14,24 +14,31 @@ public class UserGroup {
     private String username;
     private String groupName;
     private ArrayList<String> users;
+    private String description;
 
-    public UserGroup(int id, String username, String groupName, ArrayList<String> users) {
+//    public UserGroup(int id, String username, String groupName, ArrayList<String> users) {
+//        this.id = id;
+//        this.username = username;
+//        this.groupName = groupName;
+//        this.users = users;
+//    }
+
+    public UserGroup(int id, String username, String groupName, ArrayList<String> users, String description) {
         this.id = id;
         this.username = username;
         this.groupName = groupName;
         this.users = users;
+        this.description = description;
+
     }
 
-    public UserGroup(String groupName, ArrayList<String> users) {
+    public UserGroup(String groupName, String description, ArrayList<String> users) {
         this.groupName = groupName;
+        this.description = description;
         this.users = users;
     }
 
-    public UserGroup(String username, String groupName, ArrayList<String> users) {
-        this.username = username;
-        this.groupName = groupName;
-        this.users = users;
-    }
+
 
     public UserGroup(){}
 
@@ -65,6 +72,14 @@ public class UserGroup {
 
     public void setUsers(ArrayList<String> users) {
         this.users = users;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

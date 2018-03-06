@@ -281,12 +281,14 @@ public class DBManager {
     }
 
     private UserGroup toUserGroup(Cursor c) {
+
         UserGroup group = new UserGroup(
                 c.getInt(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_ID)),
                 c.getString(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_USERNAME)),
                 c.getString(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_GROUP_NAME)),
-                stringToList(c.getString(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_USERS))
-                ));
+                stringToList(c.getString(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_USERS))),
+                c.getString(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_DESCRIPTION))
+        );
 
         return group;
     }
@@ -332,6 +334,7 @@ public class DBManager {
         contentValues.put(DbConstants.GROUP_KEY_ROW_USERNAME, group.getUsername());
         contentValues.put(DbConstants.GROUP_KEY_ROW_GROUP_NAME, group.getGroupName());
         contentValues.put(DbConstants.GROUP_KEY_ROW_USERS, listToString(group.getUsers()));
+        contentValues.put(DbConstants.GROUP_KEY_ROW_DESCRIPTION, group.getDescription());
 
         return contentValues;
     }

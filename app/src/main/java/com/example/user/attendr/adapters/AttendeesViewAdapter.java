@@ -89,38 +89,38 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
                         attendingEventListener(view);
                     }
 
-//                    final String[] choices = context.getResources().getStringArray(R.array.user_options);
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-//                    builder.setTitle(tvAttendee.getText().toString());
-//                    builder.setSingleChoiceItems(choices, -1, new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialogInterface, int i) {
-//                            switch (i) {
-//                                case 0:
-//                                    viewUserStatsActivity(tvAttendee.getText().toString());
-//                                    break;
-//
-//                                case 1:
-//                                    removeUserFromEvent(currentEvent, tvAttendee.getText().toString(), view);
-//                                    break;
-//
-//                                case 2:
-//                                    manualSignInUser(currentEvent.getEventId(), tvAttendee.getText().toString(), view);
-//                                    break;
-//
-//                                case 3:
-//                                    removeUserFromAttending(currentEvent.getEventId(), tvAttendee.getText().toString(), view);
-//                                    break;
-//                            }
-//
-//                            choiceDialog.dismiss();
-//                        }
-//
-//
-//                    });
-//
-//                    choiceDialog = builder.create();
-//                    choiceDialog.show();
+                    final String[] choices = context.getResources().getStringArray(R.array.user_options);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle(tvAttendee.getText().toString());
+                    builder.setSingleChoiceItems(choices, -1, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            switch (i) {
+                                case 0:
+                                    viewUserStatsActivity(tvAttendee.getText().toString());
+                                    break;
+
+                                case 1:
+                                    removeUserFromEvent(currentEvent, tvAttendee.getText().toString(), view);
+                                    break;
+
+                                case 2:
+                                    manualSignInUser(currentEvent.getEventId(), tvAttendee.getText().toString(), view);
+                                    break;
+
+                                case 3:
+                                    removeUserFromAttending(currentEvent.getEventId(), tvAttendee.getText().toString(), view);
+                                    break;
+                            }
+
+                            choiceDialog.dismiss();
+                        }
+
+
+                    });
+
+                    choiceDialog = builder.create();
+                    choiceDialog.show();
 
                     return true;
                 }
