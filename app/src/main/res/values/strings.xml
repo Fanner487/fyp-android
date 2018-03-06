@@ -72,12 +72,18 @@
     <string name="attending_events">Attending Events</string>
     <string name="organised_events">Organised Events</string>
     <string name="groups">Groups</string>
+    <string name="removed_user_from_attending">Removed user from attending</string>
+    <string name="error_removing_user_from_attending">User not in attending</string>
 
     <string-array name="user_options">
         <item>View User Attendance</item>
         <item>Remove From Event</item>
         <item>Manually Sign In</item>
         <item>Remove From Attending</item>
+    </string-array>
+
+    <string-array name="user_options_attending">
+        <item>View User Attendance</item>
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->

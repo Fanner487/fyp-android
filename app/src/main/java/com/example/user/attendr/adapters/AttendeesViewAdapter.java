@@ -23,6 +23,7 @@ import com.example.user.attendr.activities.UserStatsActivity;
 import com.example.user.attendr.callbacks.EventApiCallback;
 import com.example.user.attendr.callbacks.EventCreateUpdateCallback;
 import com.example.user.attendr.constants.DbConstants;
+import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.interfaces.ListenerInterface;
 import com.example.user.attendr.models.Event;
 import com.example.user.attendr.network.NetworkCheck;
@@ -49,17 +50,18 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
     private List<String> attending;
     private Event currentEvent;
     private AlertDialog choiceDialog;
+    private EventType eventType;
 
-    public AttendeesViewAdapter(Context context, Event event) {
+    public AttendeesViewAdapter(Context context, Event event, EventType eventType) {
 
         ArrayList<String> listOfAttending = sortAttendees(event.getAttendees(), event.getAttending());
         this.context = context;
         this.attendees = listOfAttending;
         this.attending = event.getAttending();
         this.currentEvent = event;
+        this.eventType = eventType;
 
     }
-
 
     public class AttendeesViewHolder extends RecyclerView.ViewHolder {
         TextView tvAttendee;
@@ -73,49 +75,121 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
             tvAttendee = view.findViewById(R.id.tvAttendee);
             imageView = view.findViewById(R.id.imageView);
 
+            /**
+             * Creates alert dialog for organiser to choose between
+             */
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(final View view) {
 
-//                    final String[] choices = {"View User Attendance", "Remove from Event", "Sign in user", "Remove user from attending"};
-                    final String[] choices = context.getResources().getStringArray(R.array.user_options);
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle(tvAttendee.getText().toString());
-                    builder.setSingleChoiceItems(choices, -1, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            switch (i) {
-                                case 0:
-                                    viewUserStatsActivity(tvAttendee.getText().toString());
-                                    break;
+                    if(eventType == EventType.ORGANISE){
+                        organiseEventListener(view);
+                    }
+                    else if(eventType == EventType.ATTEND){
+                        attendingEventListener(view);
+                    }
 
-                                case 1:
-                                    removeUserFromEvent(currentEvent, tvAttendee.getText().toString());
-                                    break;
-
-                                case 2:
-                                    manualSignInUser(currentEvent.getEventId(), tvAttendee.getText().toString());
-                                    break;
-
-                                case 3:
-                                    removeUserFromAttending(currentEvent.getEventId(), tvAttendee.getText().toString());
-                                    break;
-                            }
-
-                            choiceDialog.dismiss();
-                        }
-
-
-                    });
-
-                    choiceDialog = builder.create();
-                    choiceDialog.show();
+//                    final String[] choices = context.getResources().getStringArray(R.array.user_options);
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//                    builder.setTitle(tvAttendee.getText().toString());
+//                    builder.setSingleChoiceItems(choices, -1, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            switch (i) {
+//                                case 0:
+//                                    viewUserStatsActivity(tvAttendee.getText().toString());
+//                                    break;
+//
+//                                case 1:
+//                                    removeUserFromEvent(currentEvent, tvAttendee.getText().toString(), view);
+//                                    break;
+//
+//                                case 2:
+//                                    manualSignInUser(currentEvent.getEventId(), tvAttendee.getText().toString(), view);
+//                                    break;
+//
+//                                case 3:
+//                                    removeUserFromAttending(currentEvent.getEventId(), tvAttendee.getText().toString(), view);
+//                                    break;
+//                            }
+//
+//                            choiceDialog.dismiss();
+//                        }
+//
+//
+//                    });
+//
+//                    choiceDialog = builder.create();
+//                    choiceDialog.show();
 
                     return true;
                 }
             });
 
         }
+
+        boolean attendingEventListener(View view){
+            final String[] choices = context.getResources().getStringArray(R.array.user_options_attending);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle(tvAttendee.getText().toString());
+            builder.setSingleChoiceItems(choices, -1, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    switch (i) {
+                        case 0:
+                            viewUserStatsActivity(tvAttendee.getText().toString());
+                            break;
+                    }
+
+                    choiceDialog.dismiss();
+                }
+
+
+            });
+
+            choiceDialog = builder.create();
+            choiceDialog.show();
+
+            return true;
+        }
+
+        boolean organiseEventListener(final View view){
+            final String[] choices = context.getResources().getStringArray(R.array.user_options);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle(tvAttendee.getText().toString());
+            builder.setSingleChoiceItems(choices, -1, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    switch (i) {
+                        case 0:
+                            viewUserStatsActivity(tvAttendee.getText().toString());
+                            break;
+
+                        case 1:
+                            removeUserFromEvent(currentEvent, tvAttendee.getText().toString(), view);
+                            break;
+
+                        case 2:
+                            manualSignInUser(currentEvent.getEventId(), tvAttendee.getText().toString(), view);
+                            break;
+
+                        case 3:
+                            removeUserFromAttending(currentEvent.getEventId(), tvAttendee.getText().toString(), view);
+                            break;
+                    }
+
+                    choiceDialog.dismiss();
+                }
+
+
+            });
+
+            choiceDialog = builder.create();
+            choiceDialog.show();
+
+            return true;
+        }
+
     }
 
 
@@ -200,58 +274,62 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
         extras.putString(DbConstants.GROUP_KEY_ROW_USERNAME, user);
         intent.putExtras(extras);
         context.startActivity(intent);
-
-
     }
 
-    private void removeUserFromAttending(int eventId, String user) {
+    private void removeUserFromAttending(int eventId, String user, View view) {
 
-        NetworkInterface.getInstance(context).removeUserFromAttending(user, eventId, new EventCreateUpdateCallback() {
-            @Override
-            public void onSuccess(JSONObject response) {
-                Toast.makeText(context, "Removed user from attending", Toast.LENGTH_SHORT).show();
-            }
+        if(NetworkCheck.alertIfNotConnectedToInternet(context, view)){
+            NetworkInterface.getInstance(context).removeUserFromAttending(user, eventId, new EventCreateUpdateCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    Toast.makeText(context, context.getString(R.string.removed_user_from_attending), Toast.LENGTH_SHORT).show();
+                }
 
-            @Override
-            public void onFailure(ANError anError) {
-                Toast.makeText(context, "Uh oh spaghettio", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(ANError anError) {
+                    Toast.makeText(context, context.getString(R.string.error_removing_user_from_attending), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
-    private void removeUserFromEvent(Event event, String user) {
-        NetworkInterface.getInstance(context).removeUserFromAttendees(event, user, new EventCreateUpdateCallback() {
-            @Override
-            public void onSuccess(JSONObject response) {
-                Toast.makeText(context, context.getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
-            }
+    private void removeUserFromEvent(Event event, String user, View view) {
 
-            @Override
-            public void onFailure(ANError anError) {
-                Toast.makeText(context, context.getString(R.string.error_removing_user_from_event), Toast.LENGTH_SHORT).show();
-            }
-        });
+        if(NetworkCheck.alertIfNotConnectedToInternet(context, view)){
+            NetworkInterface.getInstance(context).removeUserFromAttendees(event, user, new EventCreateUpdateCallback() {
+                @Override
+                public void onSuccess(JSONObject response) {
+                    Toast.makeText(context, context.getString(R.string.user_removed_from_event), Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(ANError anError) {
+                    Toast.makeText(context, context.getString(R.string.error_removing_user_from_event), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
-    private void manualSignInUser(int eventId, String user) {
-        NetworkInterface.getInstance(context).manualSignInUser(user, eventId,
-                new EventCreateUpdateCallback() {
-                    @Override
-                    public void onSuccess(JSONObject response) {
-                        Log.d(TAG, response.toString());
-//
-//                        TODO: make data get updated
-                        Toast.makeText(context, context.getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
-                    }
+    private void manualSignInUser(int eventId, String user, View view) {
 
-                    @Override
-                    public void onFailure(ANError anError) {
-                        Log.d(TAG, anError.toString());
-                        Toast.makeText(context, context.getString(R.string.error_removing_user_from_event), Toast.LENGTH_SHORT).show();
+        if(NetworkCheck.alertIfNotConnectedToInternet(context, view)){
 
+            NetworkInterface.getInstance(context).manualSignInUser(user, eventId,
+                    new EventCreateUpdateCallback() {
+                        @Override
+                        public void onSuccess(JSONObject response) {
+                            Log.d(TAG, response.toString());
+                            Toast.makeText(context, context.getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
+                        }
 
-                    }
-                });
+                        @Override
+                        public void onFailure(ANError anError) {
+                            Log.d(TAG, anError.toString());
+                            Toast.makeText(context, context.getString(R.string.error_removing_user_from_event), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+
     }
 
 
