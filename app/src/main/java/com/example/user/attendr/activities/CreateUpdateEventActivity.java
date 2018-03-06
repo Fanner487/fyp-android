@@ -23,6 +23,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.androidnetworking.error.ANError;
+import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.interfaces.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.EventApiCallback;
@@ -382,7 +383,7 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
 
                         String eventName = etEventName.getText().toString().trim();
                         String location = etLocation.getText().toString().trim();
-                        ArrayList<String> attendees = toList(etAttendees.getText().toString().trim());
+                        ArrayList<String> attendees = toList(etAttendees.getText().toString().trim().toLowerCase());
                         String startTime = Event.parseToIsoTime(tvStartTime.getText().toString().trim());
                         String finishTime = Event.parseToIsoTime(tvFinishTime.getText().toString().trim());
                         String signInTime = Event.parseToIsoTime(tvSignInTime.getText().toString().trim());
@@ -425,6 +426,7 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
                                                     Intent intent = new Intent(CreateUpdateEventActivity.this, ViewEventActivity.class);
                                                     Bundle bundle = new Bundle();
                                                     bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, (response.getInt("id")));
+                                                    bundle.putSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE, EventType.ORGANISE);
                                                     intent.putExtras(bundle);
                                                     startActivity(intent);
                                                     finish();
@@ -493,6 +495,7 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
                                     Intent intent = new Intent(CreateUpdateEventActivity.this, ViewEventActivity.class);
                                     Bundle bundle = new Bundle();
                                     bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, event.getEventId());
+                                    bundle.putSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE, EventType.ORGANISE);
                                     intent.putExtras(bundle);
                                     startActivity(intent);
                                     finish();
@@ -524,7 +527,6 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
                 builder.setTitle(getString(R.string.are_you_sure));
                 builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        //TODO
 
                         if(NetworkCheck.alertIfNotConnectedToInternet(getApplicationContext(), view)){
 
@@ -533,6 +535,12 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
                                         @Override
                                         public void onSuccess() {
                                             Toast.makeText(CreateUpdateEventActivity.this, getString(R.string.event_deleted), Toast.LENGTH_SHORT).show();
+
+                                            Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                                            // set the new task and clear flags
+                                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(i);
+
                                             finish();
                                         }
 

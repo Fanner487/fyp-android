@@ -61,7 +61,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
 
 
 
-//        updateData();
+        updateData();
     }
 
     @Override
