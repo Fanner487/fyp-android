@@ -12,6 +12,9 @@ public class BundleAndSharedPreferencesConstants {
     public static final String TIME_TYPE = "time_type";
     public static final String LOGGED_IN = "logged_in";
     public static final String USERNAME = "username";
+    public static final String FIRST_NAME = "first_name";
+    public static final String LAST_NAME = "last_name";
+    public static final String EMAIL = "email";
     public static final String CREATE_OR_UPDATE = "create_or_update";
     public static final String CREATE = "create";
     public static final String UPDATE= "update";

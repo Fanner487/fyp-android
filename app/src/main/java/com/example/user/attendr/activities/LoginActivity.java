@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.user.attendr.credentials.CredentialManager;
 import com.example.user.attendr.interfaces.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.LoginCallback;
@@ -54,15 +55,6 @@ public class LoginActivity extends AppCompatActivity implements ListenerInterfac
 
     }
 
-    private void setPreferences() {
-        // Assign SharedPreferences username to the login
-        SharedPreferences userDetails = getApplicationContext().getSharedPreferences("", MODE_PRIVATE);
-        SharedPreferences.Editor edit = userDetails.edit();
-        edit.putString(BundleAndSharedPreferencesConstants.USERNAME, etUsername.getText().toString().trim().toLowerCase());
-        edit.putBoolean(BundleAndSharedPreferencesConstants.LOGGED_IN, true);
-        edit.apply();
-    }
-
     @Override
     public void setListeners() {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
@@ -77,7 +69,6 @@ public class LoginActivity extends AppCompatActivity implements ListenerInterfac
                                 public void onSuccess() {
                                     Toast.makeText(LoginActivity.this, getString(R.string.successful_login), Toast.LENGTH_SHORT).show();
 
-                                    setPreferences();
 
                                     // Redirect to MainActivity screen
                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -119,8 +110,9 @@ public class LoginActivity extends AppCompatActivity implements ListenerInterfac
     }
 
     private void redirectUserIfLoggedIn() {
-        SharedPreferences userDetails = getSharedPreferences("", Context.MODE_PRIVATE);
-        boolean loggedIn = userDetails.getBoolean(BundleAndSharedPreferencesConstants.LOGGED_IN, false);
+//        SharedPreferences userDetails = getSharedPreferences("", Context.MODE_PRIVATE);
+//        boolean loggedIn = userDetails.getBoolean(BundleAndSharedPreferencesConstants.LOGGED_IN, false);
+        boolean loggedIn = CredentialManager.getLoggedInCredential(getApplicationContext());
 
         if (loggedIn) {
             // Redirect to MainActivity screen

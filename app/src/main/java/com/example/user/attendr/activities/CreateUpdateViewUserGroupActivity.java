@@ -314,8 +314,4 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
         return result;
     }
 
-    private String getLoggedInUser(){
-        SharedPreferences userDetails = getSharedPreferences("", MODE_PRIVATE);
-        return userDetails.getString(BundleAndSharedPreferencesConstants.USERNAME, "");
-    }
 }

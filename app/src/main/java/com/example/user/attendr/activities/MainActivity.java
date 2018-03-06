@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.user.attendr.credentials.CredentialManager;
 import com.example.user.attendr.interfaces.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.EventApiCallback;
@@ -53,8 +54,7 @@ public class MainActivity extends AppCompatActivity
         fabCreateGroup = findViewById(R.id.fab_create_group);
         fam = findViewById(R.id.fab_menu);
 
-        SharedPreferences userDetails = getSharedPreferences("", Context.MODE_PRIVATE);
-        String username = userDetails.getString("username", "");
+        String username = CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.USERNAME);
 
         getSupportActionBar().setTitle(getString(R.string.welcome_user) + " " + username);
 
@@ -91,8 +91,9 @@ public class MainActivity extends AppCompatActivity
         tvEmail = headerView.findViewById(R.id.tvEmail);
         tvName = headerView.findViewById(R.id.tvName);
 
-        tvEmail.setText("asadfasdfa");
-        tvName.setText("yo momma hot");
+        tvEmail.setText(CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.EMAIL));
+        tvName.setText(CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.FIRST_NAME) + " "
+                + CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.LAST_NAME));
 
         setListeners();
     }
@@ -155,12 +156,7 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
 
         } else if (id == R.id.logout) {
-            SharedPreferences userDetails = getApplicationContext().getSharedPreferences("", MODE_PRIVATE);
-            SharedPreferences.Editor edit = userDetails.edit();
-            edit.putString(BundleAndSharedPreferencesConstants.USERNAME, "");
-            edit.putString(BundleAndSharedPreferencesConstants.TOKEN, "");
-            edit.putBoolean(BundleAndSharedPreferencesConstants.LOGGED_IN, false);
-            edit.apply();
+            CredentialManager.clearCredentials(getApplicationContext());
 
             Intent i = new Intent(getApplicationContext(), LoginActivity.class);
             // set the new task and clear flags

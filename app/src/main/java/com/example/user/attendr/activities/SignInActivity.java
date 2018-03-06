@@ -13,7 +13,9 @@ import android.widget.TextClock;
 import android.widget.TextView;
 
 import com.example.user.attendr.R;
+import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.constants.DbConstants;
+import com.example.user.attendr.credentials.CredentialManager;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -58,9 +60,7 @@ public class SignInActivity extends AppCompatActivity {
 
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
 
-        SharedPreferences userDetails = getSharedPreferences("", Context.MODE_PRIVATE);
-
-        String username = userDetails.getString("username", "");
+        String username = CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.USERNAME);
         String eventId = Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID));
         String encodeMessage = username + " " + eventId;
 

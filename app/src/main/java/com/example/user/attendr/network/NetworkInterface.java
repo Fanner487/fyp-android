@@ -23,6 +23,7 @@ import com.example.user.attendr.callbacks.UserGroupCreateCallback;
 import com.example.user.attendr.constants.ApiUrls;
 import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.constants.TimeFormats;
+import com.example.user.attendr.credentials.CredentialManager;
 import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.models.Event;
@@ -249,57 +250,103 @@ public class NetworkInterface {
                 .addBodyParameter("password", password)
                 .setPriority(Priority.MEDIUM)
                 .build()
-                .getAsOkHttpResponse(new OkHttpResponseListener() {
+                .getAsOkHttpResponseAndJSONObject(new OkHttpResponseAndJSONObjectRequestListener() {
                     @Override
-                    public void onResponse(Response response) {
+                    public void onResponse(Response okHttpResponse, final JSONObject loginResponse) {
+                        Log.d(TAG, "login status: " + okHttpResponse.code());
 
-                        Log.d(TAG, "login status: " + response.code());
-//                        Log.d(TAG, "body: " + response.);
-//                        Log.d(TAG, "login status: " + response.code);
+                        getTokenForUser(username, password, new TokenCallback() {
+                            @Override
+                            public void onSuccess(JSONObject response) {
 
-                        if (response.code() == 200) {
+                                String token;
+                                try {
+                                    token = response.getString(BundleAndSharedPreferencesConstants.TOKEN);
 
-                            getTokenForUser(username, password, new TokenCallback() {
-                                @Override
-                                public void onSuccess(JSONObject response) {
+                                    Log.d(TAG, "login Token callback");
 
-                                    String token;
-                                    try{
-                                        token = response.getString(BundleAndSharedPreferencesConstants.TOKEN);
+                                    String firstName = loginResponse.getString(BundleAndSharedPreferencesConstants.FIRST_NAME);
+                                    String lastName = loginResponse.getString(BundleAndSharedPreferencesConstants.LAST_NAME);
+                                    String email = loginResponse.getString(BundleAndSharedPreferencesConstants.EMAIL);
 
-                                        Log.d(TAG, "login Token callback");
-                                        Log.d(TAG, token);
 
-                                        SharedPreferences userDetails = context.getSharedPreferences("", MODE_PRIVATE);
-                                        SharedPreferences.Editor edit = userDetails.edit();
-                                        edit.putString(BundleAndSharedPreferencesConstants.TOKEN, token);
-                                        edit.apply();
 
-                                        callback.onSuccess();
+                                    CredentialManager.setCredentials(context, username, firstName, lastName, email, token);
+//
+//                                    SharedPreferences userDetails = context.getSharedPreferences("", MODE_PRIVATE);
+//                                    SharedPreferences.Editor edit = userDetails.edit();
+//                                    edit.putString(BundleAndSharedPreferencesConstants.TOKEN, token);
+//                                    edit.apply();
 
-                                    }
-                                    catch (JSONException e){
-                                        e.printStackTrace();
-                                    }
+                                    callback.onSuccess();
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
+                            }
 
-                                @Override
-                                public void onFailure() {
-                                    Log.d(TAG, "login Token callback failure");
-                                }
-                            });
-
-//                            callback.onSuccess();
-                        } else {
-                            callback.onFailure();
-                        }
+                            @Override
+                            public void onFailure() {
+                                Log.d(TAG, "login Token callback failure");
+                            }
+                        });
                     }
-
                     @Override
                     public void onError(ANError anError) {
+                        Log.d(TAG, "in OnError");
                         callback.onFailure();
                     }
                 });
+//                .getAsOkHttpResponse(new OkHttpResponseListener() {
+//                    @Override
+//                    public void onResponse(Response response) {
+//
+//                        Log.d(TAG, "login status: " + response.code());
+//
+//                        Log.d(TAG, response.body().toString());
+//                        if (response.code() == 200) {
+//
+//                            getTokenForUser(username, password, new TokenCallback() {
+//                                @Override
+//                                public void onSuccess(JSONObject response) {
+//
+//                                    String token;
+//                                    try{
+//                                        token = response.getString(BundleAndSharedPreferencesConstants.TOKEN);
+//
+//                                        Log.d(TAG, "login Token callback");
+//                                        Log.d(TAG, token);
+//
+//                                        SharedPreferences userDetails = context.getSharedPreferences("", MODE_PRIVATE);
+//                                        SharedPreferences.Editor edit = userDetails.edit();
+//                                        edit.putString(BundleAndSharedPreferencesConstants.TOKEN, token);
+//                                        edit.apply();
+//
+//                                        callback.onSuccess();
+//
+//                                    }
+//                                    catch (JSONException e){
+//                                        e.printStackTrace();
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onFailure() {
+//                                    Log.d(TAG, "login Token callback failure");
+//                                }
+//                            });
+//
+////                            callback.onSuccess();
+//                        } else {
+//                            callback.onFailure();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError(ANError anError) {
+//                        callback.onFailure();
+//                    }
+//                });
     }
 
     public void register(String username, String email, String password,

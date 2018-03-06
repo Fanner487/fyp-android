@@ -8,7 +8,9 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.constants.DbConstants;
+import com.example.user.attendr.credentials.CredentialManager;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.enums.TimeType;
 import com.example.user.attendr.models.Event;
@@ -130,7 +132,7 @@ public class DBManager {
 
             if (eventType == EventType.ORGANISE) {
 
-                if (event.getOrganiser().equals(getLoggedInUser())) {
+                if (event.getOrganiser().equals(CredentialManager.getCredential(context, BundleAndSharedPreferencesConstants.USERNAME))) {
                     Log.d(TAG, "Adding organise event");
                     filteredEvents.add(event);
                 }
@@ -138,7 +140,7 @@ public class DBManager {
 
                 for (String name : event.getAttendees()) {
 
-                    if (name.equals(getLoggedInUser())) {
+                    if (name.equals(CredentialManager.getCredential(context, BundleAndSharedPreferencesConstants.USERNAME))) {
                         Log.d(TAG, "Adding attend event");
                         filteredEvents.add(event);
                     }
@@ -239,7 +241,7 @@ public class DBManager {
                 DbConstants.DATABASE_GROUPS_TABLE,
                 null,
                 DbConstants.GROUP_KEY_ROW_USERNAME + "=?",
-                new String[]{getLoggedInUser()},
+                new String[]{CredentialManager.getCredential(context, BundleAndSharedPreferencesConstants.USERNAME)},
                 null,
                 null,
                 DbConstants.GROUP_KEY_ROW_GROUP_NAME + " ASC",
@@ -421,10 +423,5 @@ public class DBManager {
             return false;
         }
     }
-
-    // Returns logged in user from shared preferences
-    private String getLoggedInUser() {
-        SharedPreferences userDetails = context.getSharedPreferences("", Context.MODE_PRIVATE);
-        return userDetails.getString("username", "");
-    }
+    
 }
