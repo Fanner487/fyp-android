@@ -14,6 +14,7 @@ import com.example.user.attendr.R;
 import com.example.user.attendr.activities.LoginActivity;
 import com.example.user.attendr.callbacks.TokenVerifyCallback;
 import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
+import com.example.user.attendr.credentials.CredentialManager;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -80,12 +81,7 @@ public class NetworkCheck {
 
                                 public void onClick(DialogInterface dialog, int which) {
 
-                                    SharedPreferences userDetails = context.getSharedPreferences("", MODE_PRIVATE);
-                                    SharedPreferences.Editor edit = userDetails.edit();
-                                    edit.putString(BundleAndSharedPreferencesConstants.USERNAME, "");
-                                    edit.putString(BundleAndSharedPreferencesConstants.TOKEN, "");
-                                    edit.putBoolean(BundleAndSharedPreferencesConstants.LOGGED_IN, false);
-                                    edit.apply();
+                                    CredentialManager.clearCredentials(context);
 
                                     Intent i = new Intent(context, LoginActivity.class);
                                     // set the new task and clear flags
