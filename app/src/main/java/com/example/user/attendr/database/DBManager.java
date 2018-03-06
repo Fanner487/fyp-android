@@ -270,14 +270,13 @@ public class DBManager {
     }
 
     private ArrayList<UserGroup> toUserGroups(Cursor c) {
-        ArrayList<UserGroup> events = new ArrayList<>();
+        ArrayList<UserGroup> groups = new ArrayList<>();
 
         while (c.moveToNext()) {
 
-            events.add(toUserGroup(c));
-            //TODO: add button stuff
+            groups.add(toUserGroup(c));
         }
-        return events;
+        return groups;
     }
 
     private UserGroup toUserGroup(Cursor c) {
@@ -289,6 +288,9 @@ public class DBManager {
                 stringToList(c.getString(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_USERS))),
                 c.getString(c.getColumnIndexOrThrow(DbConstants.GROUP_KEY_ROW_DESCRIPTION))
         );
+
+        Log.d(TAG, "Group");
+        Log.d(TAG, group.toString());
 
         return group;
     }

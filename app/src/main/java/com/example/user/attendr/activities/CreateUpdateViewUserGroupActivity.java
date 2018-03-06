@@ -161,6 +161,7 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
                         });
                     }
                     else if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.UPDATE)){
+
                         NetworkInterface.getInstance(CreateUpdateViewUserGroupActivity.this).verifyGroup(group, createOrUpdate, new UserGroupCreateCallback() {
                             @Override
                             public void onSuccess() {
@@ -178,7 +179,7 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
                             @Override
                             public void onFailure(String response) {
                                 AlertDialog alertDialog = new AlertDialog.Builder(CreateUpdateViewUserGroupActivity.this).create();
-                                alertDialog.setTitle("Alert");
+                                alertDialog.setTitle(R.string.alert);
                                 alertDialog.setMessage(response);
                                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
                                         new DialogInterface.OnClickListener() {

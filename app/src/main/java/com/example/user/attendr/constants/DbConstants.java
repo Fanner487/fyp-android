@@ -51,7 +51,7 @@ public class DbConstants {
                     GROUP_KEY_ROW_ID + " integer primary key autoincrement, " +
                     GROUP_KEY_ROW_USERNAME + " text not null, " +
                     GROUP_KEY_ROW_GROUP_NAME + " text not null, " +
-                    GROUP_KEY_ROW_USERS + " text not null " +
+                    GROUP_KEY_ROW_USERS + " text not null, " +
                     GROUP_KEY_ROW_DESCRIPTION + " text not null " +
                     ");";
 }

@@ -39,6 +39,7 @@ public class GroupsViewAdapter extends RecyclerView.Adapter<GroupsViewAdapter.Gr
     public class GroupsViewHolder extends RecyclerView.ViewHolder {
         TextView tvGroupName;
         TextView tvNumberUsers;
+        TextView tvDescription;
 
         //Gets assigned to each card view
         UserGroup currentGroup;
@@ -48,19 +49,11 @@ public class GroupsViewAdapter extends RecyclerView.Adapter<GroupsViewAdapter.Gr
 
             tvGroupName = view.findViewById(R.id.tvGroupName);
             tvNumberUsers = view.findViewById(R.id.tvNumberUsers);
-
+            tvDescription = view.findViewById(R.id.tvDescription);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
-                    Toast.makeText(view.getContext(), currentGroup.getGroupName(), Toast.LENGTH_SHORT).show();
-
-                    Log.d(TAG, "-----");
-                    for(UserGroup group: groups){
-                        Log.d(TAG, group.toString());
-                    }
-                    Log.d(TAG, "-----");
 
                     Intent intent = new Intent(view.getContext(), CreateUpdateViewUserGroupActivity.class);
                     Bundle bundle = new Bundle();
@@ -70,22 +63,6 @@ public class GroupsViewAdapter extends RecyclerView.Adapter<GroupsViewAdapter.Gr
                     view.getContext().startActivity(intent);
                 }
             });
-
-//            view.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    Toast.makeText(view.getContext(), currentEvent.getEventName(), Toast.LENGTH_SHORT).show();
-//                    Log.d(TAG, currentEvent.toString());
-//
-//                    Intent intent = new Intent(view.getContext(), ViewEventActivity.class);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, currentEvent.getEventId());
-//                    intent.putExtras(bundle);
-//                    view.getContext().startActivity(intent);
-//                }
-//            });
-
-
         }
     }
 
@@ -107,6 +84,7 @@ public class GroupsViewAdapter extends RecyclerView.Adapter<GroupsViewAdapter.Gr
         Log.d(TAG, "onBindViewHolder called");
         holder.tvGroupName.setText(groups.get(position).getGroupName());
         holder.tvNumberUsers.setText(Integer.toString(groups.get(position).getUsers().size()));
+        holder.tvDescription.setText(groups.get(position).getDescription() );
 
         //Set the current event object for the card on click listener
         holder.currentGroup = groups.get(position);

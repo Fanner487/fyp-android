@@ -89,6 +89,7 @@ public class UserGroup {
                 ", username='" + username + '\'' +
                 ", groupName='" + groupName + '\'' +
                 ", users=" + users +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

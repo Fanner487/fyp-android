@@ -21,7 +21,7 @@
             android:layout_marginTop="32dp"
             android:ems="10"
             android:hint="@string/group_name"
-            android:inputType="text"
+            android:inputType="textPersonName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -30,11 +30,12 @@
             android:layout_width="368dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:ems="10"
             android:hint="@string/create_group_attendees"
             android:inputType="textMultiLine"
             app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="152dp" />
+            app:layout_constraintTop_toBottomOf="@+id/etDescription" />
 
         <Button
             android:id="@+id/btnSubmit"
@@ -72,15 +73,14 @@
             android:id="@+id/etDescription"
             android:layout_width="368dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:ems="10"
             android:hint="@string/description"
-            android:inputType="textPersonName"
-            app:layout_constraintBottom_toTopOf="@+id/etUsers"
+            android:inputType="textCapSentences"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etGroupName" />
     </android.support.constraint.ConstraintLayout>
