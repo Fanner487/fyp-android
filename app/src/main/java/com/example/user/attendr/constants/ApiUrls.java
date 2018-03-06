@@ -16,5 +16,6 @@ public class ApiUrls {
     public static final String EVENTS_FOR_USER = BASE_URL + "{username}/events/";
     public static final String VERIFY_GROUP = BASE_URL + "verify_group/";
     public static final String MANUAL_SIGN_IN = BASE_URL + "manual_sign_in/";
+    public static final String REMOVE_USER_FROM_ATTENDING = BASE_URL + "remove_user_from_attending/";
 
 }

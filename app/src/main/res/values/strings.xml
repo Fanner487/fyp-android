@@ -73,6 +73,12 @@
     <string name="organised_events">Organised Events</string>
     <string name="groups">Groups</string>
 
+    <string-array name="user_options">
+        <item>View User Attendance</item>
+        <item>Remove From Event</item>
+        <item>Manually Sign In</item>
+        <item>Remove From Attending</item>
+    </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

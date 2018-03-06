@@ -1,6 +1,8 @@
 package com.example.user.attendr.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.Image;
@@ -18,8 +20,10 @@ import android.widget.Toast;
 import com.androidnetworking.error.ANError;
 import com.example.user.attendr.R;
 import com.example.user.attendr.activities.UserStatsActivity;
+import com.example.user.attendr.callbacks.EventApiCallback;
 import com.example.user.attendr.callbacks.EventCreateUpdateCallback;
 import com.example.user.attendr.constants.DbConstants;
+import com.example.user.attendr.interfaces.ListenerInterface;
 import com.example.user.attendr.models.Event;
 import com.example.user.attendr.network.NetworkCheck;
 import com.example.user.attendr.network.NetworkInterface;
@@ -32,7 +36,7 @@ import java.util.List;
 
 /**
  * Created by Eamon on 15/02/2018.
- *
+ * <p>
  * Array adapter for viewing attendees in a list of the ViewEventActivity
  */
 
@@ -44,6 +48,7 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
     private List<String> attendees;
     private List<String> attending;
     private Event currentEvent;
+    private AlertDialog choiceDialog;
 
     public AttendeesViewAdapter(Context context, Event event) {
 
@@ -52,7 +57,9 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
         this.attendees = listOfAttending;
         this.attending = event.getAttending();
         this.currentEvent = event;
+
     }
+
 
     public class AttendeesViewHolder extends RecyclerView.ViewHolder {
         TextView tvAttendee;
@@ -66,61 +73,43 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
             tvAttendee = view.findViewById(R.id.tvAttendee);
             imageView = view.findViewById(R.id.imageView);
 
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-//                    Toast.makeText(view.getContext(), tvAttendee.getText(), Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(view.getContext(), UserStatsActivity.class);
-                    Bundle extras = new Bundle();
-                    extras.putString(DbConstants.GROUP_KEY_ROW_USERNAME, tvAttendee.getText().toString());
-                    intent.putExtras(extras);
-                    view.getContext().startActivity(intent);
-                }
-
-
-            });
-
-            // Delete from list
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(final View view) {
 
-                    Log.d(TAG, "Current Event");
-                    Log.d(TAG, currentEvent.toString());
+//                    final String[] choices = {"View User Attendance", "Remove from Event", "Sign in user", "Remove user from attending"};
+                    final String[] choices = context.getResources().getStringArray(R.array.user_options);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle(tvAttendee.getText().toString());
+                    builder.setSingleChoiceItems(choices, -1, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            switch (i) {
+                                case 0:
+                                    viewUserStatsActivity(tvAttendee.getText().toString());
+                                    break;
 
-//                    NetworkInterface.getInstance(view.getContext()).removeUserFromAttendees(currentEvent, tvAttendee.getText().toString(),
-//                            new EventCreateUpdateCallback() {
-//                                @Override
-//                                public void onSuccess(JSONObject response) {
-//                                    Toast.makeText(view.getContext(), view.getContext().getString(R.string.user_removed_from_event), Toast.LENGTH_SHORT).show();
-//
-//                                }
-//
-//                                @Override
-//                                public void onFailure(ANError anError) {
-//                                    Toast.makeText(view.getContext(), view.getContext().getString(R.string.error_removing_user_from_event), Toast.LENGTH_SHORT).show();
-//
-//                                }
-//                            });
-                    if(NetworkCheck.alertIfNotConnectedToInternet(context, tvAttendee)){
-                        NetworkInterface.getInstance(view.getContext()).manualSignInUser(tvAttendee.getText().toString(), currentEvent.getEventId(),
-                                new EventCreateUpdateCallback() {
-                                    @Override
-                                    public void onSuccess(JSONObject response) {
-                                        Log.d(TAG, response.toString());
-                                        Toast.makeText(view.getContext(), view.getContext().getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
-                                    }
+                                case 1:
+                                    removeUserFromEvent(currentEvent, tvAttendee.getText().toString());
+                                    break;
 
-                                    @Override
-                                    public void onFailure(ANError anError) {
-                                        Log.d(TAG, anError.toString());
-                                        Toast.makeText(view.getContext(), view.getContext().getString(R.string.error_removing_user_from_event), Toast.LENGTH_SHORT).show();
+                                case 2:
+                                    manualSignInUser(currentEvent.getEventId(), tvAttendee.getText().toString());
+                                    break;
+
+                                case 3:
+                                    removeUserFromAttending(currentEvent.getEventId(), tvAttendee.getText().toString());
+                                    break;
+                            }
+
+                            choiceDialog.dismiss();
+                        }
 
 
-                                    }
-                                });
-                    }
+                    });
+
+                    choiceDialog = builder.create();
+                    choiceDialog.show();
 
                     return true;
                 }
@@ -130,18 +119,17 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
     }
 
 
-
     // Sort attendees by all attending alphabetically, then all other attendees
     // then by all other attendees alphabetically
-    private ArrayList<String> sortAttendees(List<String> attendees, List<String> attending){
+    private ArrayList<String> sortAttendees(List<String> attendees, List<String> attending) {
         ArrayList<String> result = new ArrayList<>();
         List<String> newAttendees = new ArrayList<>();
 
-        if(attending != null){
+        if (attending != null) {
             Collections.sort(attending);
 
-            for(String name: attendees){
-                if(!attending.contains(name)){
+            for (String name : attendees) {
+                if (!attending.contains(name)) {
                     newAttendees.add(name);
                 }
             }
@@ -150,8 +138,7 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
 
             result.addAll(attending);
             result.addAll(newAttendees);
-        }
-        else{
+        } else {
             Collections.sort(attendees);
             result.addAll(attendees);
         }
@@ -171,13 +158,12 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
     public void onBindViewHolder(AttendeesViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder called: " + attendees.get(position));
 
-        if(isAttending(attendees.get(position))){
+        if (isAttending(attendees.get(position))) {
 
             Log.d(TAG, "Setting " + attendees.get(position) + " to Attending");
             holder.imageView.setColorFilter(ContextCompat.getColor(context, R.color.attendee_green));
             holder.tvAttendee.setText(this.attendees.get(position));
-        }
-        else{
+        } else {
             Log.d(TAG, "Setting " + attendees.get(position) + " to NOT Attending");
             holder.imageView.setColorFilter(ContextCompat.getColor(context, R.color.attendee_red));
             holder.tvAttendee.setText(this.attendees.get(position));
@@ -191,14 +177,14 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
     }
 
     // Checks to see if attendee is in attendee list
-    private boolean isAttending(String attendee){
+    private boolean isAttending(String attendee) {
 
         boolean result = false;
 
-        if(attending != null){
-            for(String name : attending){
+        if (attending != null) {
+            for (String name : attending) {
 
-                if(name.trim().toLowerCase().equals(attendee.trim().toLowerCase())){
+                if (name.trim().toLowerCase().equals(attendee.trim().toLowerCase())) {
                     result = true;
                 }
             }
@@ -206,4 +192,67 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
 
         return result;
     }
+
+    private void viewUserStatsActivity(String user) {
+
+        Intent intent = new Intent(context, UserStatsActivity.class);
+        Bundle extras = new Bundle();
+        extras.putString(DbConstants.GROUP_KEY_ROW_USERNAME, user);
+        intent.putExtras(extras);
+        context.startActivity(intent);
+
+
+    }
+
+    private void removeUserFromAttending(int eventId, String user) {
+
+        NetworkInterface.getInstance(context).removeUserFromAttending(user, eventId, new EventCreateUpdateCallback() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                Toast.makeText(context, "Removed user from attending", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(ANError anError) {
+                Toast.makeText(context, "Uh oh spaghettio", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void removeUserFromEvent(Event event, String user) {
+        NetworkInterface.getInstance(context).removeUserFromAttendees(event, user, new EventCreateUpdateCallback() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                Toast.makeText(context, context.getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(ANError anError) {
+                Toast.makeText(context, context.getString(R.string.error_removing_user_from_event), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void manualSignInUser(int eventId, String user) {
+        NetworkInterface.getInstance(context).manualSignInUser(user, eventId,
+                new EventCreateUpdateCallback() {
+                    @Override
+                    public void onSuccess(JSONObject response) {
+                        Log.d(TAG, response.toString());
+//
+//                        TODO: make data get updated
+                        Toast.makeText(context, context.getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(ANError anError) {
+                        Log.d(TAG, anError.toString());
+                        Toast.makeText(context, context.getString(R.string.error_removing_user_from_event), Toast.LENGTH_SHORT).show();
+
+
+                    }
+                });
+    }
+
+
 }

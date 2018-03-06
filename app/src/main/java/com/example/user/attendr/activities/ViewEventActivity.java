@@ -217,6 +217,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
                         public void onSuccess() {
                             updateData();
                             Toast.makeText(getApplicationContext(), getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
+                            updateData();
                             swipeRefreshLayout.setRefreshing(false);
                         }
 
