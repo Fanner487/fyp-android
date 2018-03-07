@@ -54,9 +54,8 @@ public class MainActivity extends AppCompatActivity
         fabCreateGroup = findViewById(R.id.fab_create_group);
         fam = findViewById(R.id.fab_menu);
 
-        String username = CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.USERNAME);
 
-        getSupportActionBar().setTitle(getString(R.string.welcome_user) + " " + username);
+        getSupportActionBar().setTitle(getString(R.string.welcome_user) + " " + CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.FIRST_NAME));
 
         NetworkInterface.getInstance(this).getEventsForUser(new EventApiCallback() {
             @Override
