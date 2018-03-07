@@ -214,6 +214,9 @@ public class Event {
 
     @JsonProperty("attending")
     public ArrayList<String> getAttending() {
+        if(attending == null){
+            return new ArrayList<String>();
+        }
         return attending;
     }
 

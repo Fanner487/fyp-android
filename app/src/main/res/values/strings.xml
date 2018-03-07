@@ -196,4 +196,9 @@
     <string name="login">Login</string>
     <string name="create_group_attendees">Users (separated by return key)</string>
     <string name="description">Description</string>
+    <string name="sign_in_time_display">Sign In:</string>
+    <string name="finish_time_display">Finish:</string>
+    <string name="start_time_display">Start:</string>
+    <string name="attending_display">Attending:</string>
+    <string name="percentage_display">Percentage:</string>
 </resources>

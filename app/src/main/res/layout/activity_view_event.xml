@@ -27,15 +27,17 @@ android:layout_height="wrap_content">
             <android.support.v7.widget.CardView
                 android:id="@+id/cardView"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <RelativeLayout
-                    android:layout_width="360dp"
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
                     tools:layout_editor_absoluteX="8dp"
@@ -47,8 +49,14 @@ android:layout_height="wrap_content">
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
                         android:layout_centerHorizontal="true"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
                         android:text="@string/event_name"
-                        android:textAlignment="center" />
+                        android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tvLocation"
@@ -56,9 +64,14 @@ android:layout_height="wrap_content">
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tvEventName"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
                         android:text="@string/location"
-                        android:textAlignment="center" />
+                        android:textAlignment="center"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvEventName" />
 
                     <TextView
                         android:id="@+id/tvOrganiser"
@@ -66,11 +79,15 @@ android:layout_height="wrap_content">
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/tvLocation"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
+
+                        android:layout_marginTop="8dp"
                         android:text="@string/organiser"
                         android:textAlignment="center"
-
-                        />
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvLocation" />
 
                     <TextView
                         android:id="@+id/tvStartTime"
@@ -78,9 +95,12 @@ android:layout_height="wrap_content">
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/tvOrganiser"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="8dp"
                         android:text="@string/start_time"
-                        android:textAlignment="center" />
+                        android:textAlignment="center"
+                        app:layout_constraintStart_toEndOf="@+id/tvStartDisplay"
+                        app:layout_constraintTop_toBottomOf="@+id/tvOrganiser" />
 
                     <TextView
                         android:id="@+id/tvSignInTime"
@@ -89,9 +109,12 @@ android:layout_height="wrap_content">
                         android:layout_alignEnd="@+id/tvEventName"
                         android:layout_alignRight="@+id/tvEventName"
                         android:layout_below="@+id/tvStartTime"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="8dp"
                         android:text="@string/sign_in_time"
-                        android:textAlignment="center" />
+                        android:textAlignment="center"
+                        app:layout_constraintStart_toEndOf="@+id/tvSignInDisplay"
+                        app:layout_constraintTop_toBottomOf="@+id/tvFinishTime" />
 
                     <TextView
                         android:id="@+id/tvFinishTime"
@@ -100,9 +123,12 @@ android:layout_height="wrap_content">
                         android:layout_alignLeft="@+id/tvStartTime"
                         android:layout_alignStart="@+id/tvStartTime"
                         android:layout_below="@+id/tvSignInTime"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="8dp"
                         android:text="@string/finish_time"
-                        android:textAlignment="center" />
+                        android:textAlignment="center"
+                        app:layout_constraintStart_toEndOf="@+id/tvFinishDisplay"
+                        app:layout_constraintTop_toBottomOf="@+id/tvStartTime" />
 
                     <Button
                         android:id="@+id/btnUpdate"
@@ -111,9 +137,13 @@ android:layout_height="wrap_content">
                         android:layout_alignParentBottom="true"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
-                        android:layout_marginLeft="13dp"
-                        android:layout_marginStart="13dp"
-                        android:text="@string/update" />
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/update"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvPercentageDisplay" />
 
                     <Button
                         android:id="@+id/btnSignIn"
@@ -121,19 +151,66 @@ android:layout_height="wrap_content">
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="19dp"
-                        android:text="@string/sign_in" />
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:text="@string/sign_in"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
 
                     <TextView
-                        android:id="@+id/tvPercentage"
+                        android:id="@+id/tvStartDisplay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_above="@+id/btnSignIn"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginBottom="11dp"
-                        android:text="@string/percentage"
-                        android:textAlignment="center"
-                        tools:text="@string/percentage" />
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/start_time_display"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvOrganiser" />
+
+                    <TextView
+                        android:id="@+id/tvFinishDisplay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/finish_time_display"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvStartDisplay" />
+
+                    <TextView
+                        android:id="@+id/tvSignInDisplay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/sign_in_time_display"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvFinishDisplay" />
+
+                    <TextView
+                        android:id="@+id/tvPeopleAttendedDisplay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:textStyle="bold"
+                        android:text="@string/attending_display"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvSignInDisplay" />
+
+                    <TextView
+                        android:id="@+id/tvPercentageDisplay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:textStyle="bold"
+                        android:text="@string/percentage_display"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvPeopleAttendedDisplay" />
 
                     <TextView
                         android:id="@+id/tvAttended"
@@ -141,9 +218,27 @@ android:layout_height="wrap_content">
                         android:layout_height="wrap_content"
                         android:layout_alignEnd="@+id/tvOrganiser"
                         android:layout_alignTop="@+id/btnSignIn"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="8dp"
                         android:text="@string/attended"
-                        android:textAlignment="center" />
-                </RelativeLayout>
+                        android:textAlignment="center"
+                        app:layout_constraintStart_toEndOf="@+id/tvPeopleAttendedDisplay"
+                        app:layout_constraintTop_toBottomOf="@+id/tvSignInTime" />
+
+                    <TextView
+                        android:id="@+id/tvPercentage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@+id/btnSignIn"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/percentage"
+                        android:textAlignment="center"
+                        app:layout_constraintStart_toEndOf="@+id/tvPercentageDisplay"
+                        app:layout_constraintTop_toBottomOf="@+id/tvAttended"
+                        tools:text="@string/percentage" />
+                </android.support.constraint.ConstraintLayout>
 
             </android.support.v7.widget.CardView>
 

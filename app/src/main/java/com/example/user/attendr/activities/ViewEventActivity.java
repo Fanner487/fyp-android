@@ -59,8 +59,6 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
     protected void onResume() {
         super.onResume();
 
-
-
         updateData();
     }
 
@@ -72,12 +70,8 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
         bundle = getIntent().getExtras();
         db = new DBManager(this).open();
 
-//        if(NetworkCheck.isConnectedToInternet(ViewEventActivity.this)){
-//            NetworkCheck.redirectToLoginIfTokenExpired(ViewEventActivity.this);
-//        }
 
         eventId = bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID);
-
 
         tvEventName = findViewById(R.id.tvEventName);
         tvLocation = findViewById(R.id.tvLocation);
@@ -98,9 +92,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
 
         updateData();
 
-        Log.d(TAG, "Size of attendees");
-        Log.d(TAG, Integer.toString(event.getAttendees().size()));
-
+        getSupportActionBar().setTitle(event.getEventName());
 
     }
 
