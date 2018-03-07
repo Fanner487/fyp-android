@@ -6,23 +6,33 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/attending_events"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/icon_event_attending"
             android:title="@string/attending_events" />
         <item
             android:id="@+id/organised_events"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/icon_event_organise"
             android:title="@string/organised_events" />
         <item
             android:id="@+id/groups"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/icon_group_black"
             android:title="@string/groups" />
     </group>
+
+    <!--<item android:title="@string/op">-->
+        <!--<menu>-->
+            <!--<item-->
+                <!--android:id="@+id/logout"-->
+                <!--android:icon="@drawable/icon_logout"-->
+                <!--android:title="@string/logout" />-->
+
+        <!--</menu>-->
+    <!--</item>-->
 
     <item android:title="@string/other">
         <menu>
             <item
                 android:id="@+id/logout"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/icon_logout"
                 android:title="@string/logout" />
 
         </menu>

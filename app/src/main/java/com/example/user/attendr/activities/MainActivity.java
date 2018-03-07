@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity
 
     TextView tvName;
     TextView tvEmail;
+    TextView tvUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,11 +72,6 @@ public class MainActivity extends AppCompatActivity
 
         db = new DBManager(this).open();
 
-        ArrayList<UserGroup> groups = db.getGroups();
-        Log.d(TAG, "Groups");
-        for (UserGroup g : groups) {
-            Log.d(TAG, g.toString());
-        }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -89,10 +85,12 @@ public class MainActivity extends AppCompatActivity
         View headerView = navigationView.getHeaderView(0);
         tvEmail = headerView.findViewById(R.id.tvEmail);
         tvName = headerView.findViewById(R.id.tvName);
+        tvUsername = headerView.findViewById(R.id.tvUsername);
 
         tvEmail.setText(CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.EMAIL));
         tvName.setText(CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.FIRST_NAME) + " "
                 + CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.LAST_NAME));
+        tvUsername.setText(CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.USERNAME));
 
         setListeners();
     }
