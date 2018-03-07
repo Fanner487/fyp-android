@@ -15,11 +15,8 @@ import com.example.user.attendr.interfaces.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.RegisterCallback;
 import com.example.user.attendr.database.DBManager;
-import com.example.user.attendr.models.UserGroup;
 import com.example.user.attendr.network.NetworkCheck;
 import com.example.user.attendr.network.NetworkInterface;
-
-import java.util.ArrayList;
 
 /**
  * Created by Eamon on 06/02/2018.

@@ -81,9 +81,9 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
         tvFinishTime = findViewById(R.id.tvFinishTime);
         tvPercentage = findViewById(R.id.tvPercentage);
         tvAttended = findViewById(R.id.tvAttended);
-        btnUpdate = findViewById(R.id.btnUpdate);
+        btnUpdate = findViewById(R.id.btnUpdateOrSignIn);
         swipeRefreshLayout = findViewById(R.id.swipe_container);
-        btnSignIn = findViewById(R.id.btnSignIn);
+//        btnSignIn = findViewById(R.id.btnSignIn);
 
         timeType = (TimeType) bundle.getSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE);
         eventType = (EventType) bundle.getSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE);
@@ -153,15 +153,16 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
     // Hides update button if the event is not an attending one
     private void setButtonVisibilities(){
 
-        if(timeType == TimeType.ONGOING && eventType == EventType.ATTEND){
-            btnSignIn.setVisibility(View.VISIBLE);
+        if(eventType.equals(EventType.ORGANISE)){
+            btnUpdate.setVisibility(View.VISIBLE);
+            btnUpdate.setText(R.string.update);
+        }
+        else if(timeType.equals(TimeType.ONGOING) && eventType.equals(EventType.ATTEND)){
+            btnUpdate.setVisibility(View.VISIBLE);
+            btnUpdate.setText(R.string.sign_in);
         }
         else{
-            btnSignIn.setVisibility(View.INVISIBLE);
-        }
-
-        if(eventType == EventType.ATTEND){
-            btnUpdate.setVisibility(View.INVISIBLE);
+            btnUpdate.setVisibility(View.GONE);
         }
     }
 
@@ -218,27 +219,36 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
             @Override
             public void onClick(View view) {
 
-                Log.d(TAG, "clicked update listener");
-                Log.d(TAG, "Event ID: " + Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID)));
+                if(eventType.equals(EventType.ORGANISE)){
+                    Log.d(TAG, "In update event");
 
-                Bundle bundle = new Bundle();
-                bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.UPDATE);
-                bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, eventId);
-                startNewActivity(CreateUpdateEventActivity.class, bundle);
-                finish();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.UPDATE);
+                    bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, eventId);
+                    startNewActivity(CreateUpdateEventActivity.class, bundle);
+                    finish();
+                }
+                else if(eventType.equals(EventType.ATTEND)){
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, eventId);
+
+                    startNewActivity(SignInActivity.class, bundle);
+                }
+
+
             }
         });
 
-        btnSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "Event ID: " + Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID)));
-                Bundle bundle = new Bundle();
-                bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, eventId);
-
-                startNewActivity(SignInActivity.class, bundle);
-            }
-        });
+//        btnSignIn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d(TAG, "Event ID: " + Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID)));
+//                Bundle bundle = new Bundle();
+//                bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, eventId);
+//
+//                startNewActivity(SignInActivity.class, bundle);
+//            }
+//        });
     }
 
     public void startNewActivity(Class<?> cls, Bundle bundle){
