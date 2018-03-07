@@ -38,8 +38,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
     TextView tvFinishTime;
     TextView tvPercentage;
     TextView tvAttended;
-    Button btnUpdate;
-    Button btnSignIn;
+    Button btnUpdateOrSignIn;
 
     int eventId;
     Event event;
@@ -48,7 +47,6 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
     LinearLayoutManager linearLayoutManager;
     DBManager db;
     Bundle bundle;
-    Toolbar toolbar;
 
     SwipeRefreshLayout swipeRefreshLayout;
 
@@ -81,9 +79,8 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
         tvFinishTime = findViewById(R.id.tvFinishTime);
         tvPercentage = findViewById(R.id.tvPercentage);
         tvAttended = findViewById(R.id.tvAttended);
-        btnUpdate = findViewById(R.id.btnUpdateOrSignIn);
+        btnUpdateOrSignIn = findViewById(R.id.btnUpdateOrSignIn);
         swipeRefreshLayout = findViewById(R.id.swipe_container);
-//        btnSignIn = findViewById(R.id.btnSignIn);
 
         timeType = (TimeType) bundle.getSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE);
         eventType = (EventType) bundle.getSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE);
@@ -154,15 +151,15 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
     private void setButtonVisibilities(){
 
         if(eventType.equals(EventType.ORGANISE)){
-            btnUpdate.setVisibility(View.VISIBLE);
-            btnUpdate.setText(R.string.update);
+            btnUpdateOrSignIn.setVisibility(View.VISIBLE);
+            btnUpdateOrSignIn.setText(R.string.update);
         }
         else if(timeType.equals(TimeType.ONGOING) && eventType.equals(EventType.ATTEND)){
-            btnUpdate.setVisibility(View.VISIBLE);
-            btnUpdate.setText(R.string.sign_in);
+            btnUpdateOrSignIn.setVisibility(View.VISIBLE);
+            btnUpdateOrSignIn.setText(R.string.sign_in);
         }
         else{
-            btnUpdate.setVisibility(View.GONE);
+            btnUpdateOrSignIn.setVisibility(View.GONE);
         }
     }
 
@@ -215,7 +212,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
             }
         });
 
-        btnUpdate.setOnClickListener(new View.OnClickListener() {
+        btnUpdateOrSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
