@@ -209,6 +209,8 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
                     swipeRefreshLayout.setRefreshing(false);
 
                 }
+                swipeRefreshLayout.setRefreshing(false);
+
             }
         });
 
