@@ -3,21 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <!--<group android:checkableBehavior="single">-->
-        <!--<item-->
-            <!--android:id="@+id/attending_events"-->
-            <!--android:icon="@drawable/icon_event_attending"-->
-            <!--android:title="@string/attending_events" />-->
-        <!--<item-->
-            <!--android:id="@+id/organised_events"-->
-            <!--android:icon="@drawable/icon_event_organise"-->
-            <!--android:title="@string/organised_events" />-->
-        <!--<item-->
-            <!--android:id="@+id/groups"-->
-            <!--android:icon="@drawable/icon_group_black"-->
-            <!--android:title="@string/groups" />-->
-    <!--</group>-->
-
     <item android:title="@string/options">
         <menu>
             <item

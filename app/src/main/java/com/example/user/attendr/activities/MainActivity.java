@@ -1,11 +1,7 @@
 package com.example.user.attendr.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,11 +19,9 @@ import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.EventApiCallback;
 import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.database.DBManager;
-import com.example.user.attendr.models.UserGroup;
 import com.example.user.attendr.network.NetworkInterface;
+import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ListenerInterface {
@@ -35,10 +29,12 @@ public class MainActivity extends AppCompatActivity
     private final String TAG = MainActivity.class.getSimpleName();
 
     DBManager db;
-//    FloatingActionButton fab;
     Toolbar toolbar;
     FloatingActionMenu fam;
-    com.github.clans.fab.FloatingActionButton fabCreateEvent, fabCreateGroup;
+    DrawerLayout drawer;
+    NavigationView navigationView;
+    ActionBarDrawerToggle toggle;
+    FloatingActionButton fabCreateEvent, fabCreateGroup;
 
     TextView tvName;
     TextView tvEmail;
@@ -55,9 +51,6 @@ public class MainActivity extends AppCompatActivity
         fabCreateGroup = findViewById(R.id.fab_create_group);
         fam = findViewById(R.id.fab_menu);
 
-
-        getSupportActionBar().setTitle(getString(R.string.welcome_user) + " " + CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.FIRST_NAME));
-
         NetworkInterface.getInstance(this).getEventsForUser(new EventApiCallback() {
             @Override
             public void onSuccess() {
@@ -72,26 +65,22 @@ public class MainActivity extends AppCompatActivity
 
         db = new DBManager(this).open();
 
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        drawer = findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // Get navigation header to populate text in there
         View headerView = navigationView.getHeaderView(0);
         tvEmail = headerView.findViewById(R.id.tvEmail);
         tvName = headerView.findViewById(R.id.tvName);
         tvUsername = headerView.findViewById(R.id.tvUsername);
 
-        tvEmail.setText(CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.EMAIL));
-        tvName.setText(CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.FIRST_NAME) + " "
-                + CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.LAST_NAME));
-        tvUsername.setText(CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.USERNAME));
-
+        setNavBarHeadersWithUserDetails();
         setListeners();
     }
 
@@ -153,10 +142,11 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
 
         } else if (id == R.id.logout) {
-            CredentialManager.clearCredentials(getApplicationContext());
 
             Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-            // set the new task and clear flags
+
+            // Clear all activities and credentials from SharedPreferences before going back to login screen
+            CredentialManager.clearCredentials(getApplicationContext());
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
         }
@@ -194,5 +184,18 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+    }
+
+    private void setNavBarHeadersWithUserDetails(){
+
+        String fullName = CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.FIRST_NAME) + " "
+                + CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.LAST_NAME);
+        String greeting = getString(R.string.welcome_user) + " " + CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.FIRST_NAME);
+
+        tvName.setText(fullName);
+        tvEmail.setText(CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.EMAIL));
+        tvUsername.setText(CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.USERNAME));
+        getSupportActionBar().setTitle(greeting);
+
     }
 }
