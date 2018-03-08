@@ -2,6 +2,8 @@ package com.example.user.attendr.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,15 +15,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.user.attendr.adapters.EventsViewAdapter;
 import com.example.user.attendr.credentials.CredentialManager;
+import com.example.user.attendr.enums.TimeType;
 import com.example.user.attendr.interfaces.ListenerInterface;
 import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.EventApiCallback;
 import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.database.DBManager;
+import com.example.user.attendr.models.Event;
 import com.example.user.attendr.network.NetworkInterface;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ListenerInterface {
@@ -40,6 +47,11 @@ public class MainActivity extends AppCompatActivity
     TextView tvEmail;
     TextView tvUsername;
 
+    RecyclerView rvOngoing;
+    RecyclerView rvUpcoming;
+    LinearLayoutManager linearLayoutManagerOngoing;
+    LinearLayoutManager linearLayoutManagerUpcoming;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +62,9 @@ public class MainActivity extends AppCompatActivity
         fabCreateEvent = findViewById(R.id.fab_create_event);
         fabCreateGroup = findViewById(R.id.fab_create_group);
         fam = findViewById(R.id.fab_menu);
+
+        rvOngoing = findViewById(R.id.rvOngoing);
+        rvUpcoming = findViewById(R.id.rvUpcoming);
 
         NetworkInterface.getInstance(this).getEventsForUser(new EventApiCallback() {
             @Override
@@ -80,8 +95,37 @@ public class MainActivity extends AppCompatActivity
         tvName = headerView.findViewById(R.id.tvName);
         tvUsername = headerView.findViewById(R.id.tvUsername);
 
+
+
         setNavBarHeadersWithUserDetails();
         setListeners();
+
+        setAdaptersWithData();
+    }
+
+    private void setAdaptersWithData(){
+        ArrayList<Event> ongoingEvents = db.getEvents(TimeType.ONGOING);
+        ArrayList<Event> upcomingEvents = db.getEvents(TimeType.FUTURE);
+        // TODO: determine bundle
+
+        linearLayoutManagerOngoing = new LinearLayoutManager(MainActivity.this);
+        linearLayoutManagerUpcoming = new LinearLayoutManager(MainActivity.this);
+
+        Bundle extras = new Bundle();
+
+
+        rvOngoing.setLayoutManager(linearLayoutManagerOngoing);
+        rvUpcoming.setLayoutManager(linearLayoutManagerUpcoming);
+
+        EventsViewAdapter eventsViewAdapterOngoing = new EventsViewAdapter(MainActivity.this, ongoingEvents, extras);
+        EventsViewAdapter eventsViewAdapterUpcoming = new EventsViewAdapter(MainActivity.this, upcomingEvents, extras);
+
+        rvOngoing.setAdapter(eventsViewAdapterOngoing);
+        rvUpcoming.setAdapter(eventsViewAdapterUpcoming);
+
+        eventsViewAdapterOngoing.notifyDataSetChanged();
+        eventsViewAdapterUpcoming.notifyDataSetChanged();
+
     }
 
     @Override

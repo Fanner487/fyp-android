@@ -90,6 +90,18 @@ public class DBManager {
         return eventsOfTime;
     }
 
+    public ArrayList<Event> getEvents(TimeType timeType) {
+
+
+        ArrayList<Event> eventsOfTime = getEventsOfTime(getAllEvents(), timeType);
+
+        for (Event event : eventsOfTime) {
+            Log.d(TAG, event.toString());
+        }
+
+        return eventsOfTime;
+    }
+
     private ArrayList<Event> getEventsOfTime(ArrayList<Event> events, TimeType timeType) {
 
         ArrayList<Event> filteredEvents = new ArrayList<>();
