@@ -76,6 +76,7 @@
     <string name="removed_user_from_attending">Removed user from attending</string>
     <string name="error_removing_user_from_attending">User not in attending</string>
     <string name="options">Options</string>
+    <string name="upcoming">Upcoming</string>
 
     <string-array name="user_options">
         <item>View User Attendance</item>
