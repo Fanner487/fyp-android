@@ -1,8 +1,12 @@
 package com.example.user.attendr.models;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.constants.TimeFormats;
+import com.example.user.attendr.credentials.CredentialManager;
+import com.example.user.attendr.enums.EventType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.sql.Time;
@@ -235,7 +239,19 @@ public class Event {
         this.attendanceRequired = attendanceRequired;
     }
 
+    public EventType getEventType(Context context){
 
+        EventType eventType;
+        String loggedInUser = CredentialManager.getCredential(context, BundleAndSharedPreferencesConstants.USERNAME);
+        if(getOrganiser().equals(loggedInUser)){
+            eventType = EventType.ORGANISE;
+        }
+        else{
+            eventType = EventType.ATTEND;
+        }
+
+        return eventType;
+    }
 
     public Date getFormattedStartTime() {
         return parseDateTimeField(this.getStartTime());

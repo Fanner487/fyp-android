@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.example.user.attendr.credentials.CredentialManager;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.enums.TimeType;
 import com.example.user.attendr.interfaces.ListenerInterface;
@@ -85,12 +86,30 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
         timeType = (TimeType) bundle.getSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE);
         eventType = (EventType) bundle.getSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE);
 
+        assignEvent();
+        eventType = getEventType(event);
+
         setButtonVisibilities();
 
         updateData();
 
         getSupportActionBar().setTitle(event.getEventName());
 
+    }
+
+    private EventType getEventType(Event event){
+
+        String username = CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.USERNAME);
+        EventType eventType;
+
+        if(username.equals(event.getOrganiser())){
+            eventType = EventType.ORGANISE;
+        }
+        else{
+            eventType = EventType.ATTEND;
+        }
+
+        return eventType;
     }
 
     private void updateData(){

@@ -17,6 +17,8 @@ import com.example.user.attendr.R;
 import com.example.user.attendr.activities.ViewEventActivity;
 import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.constants.DbConstants;
+import com.example.user.attendr.credentials.CredentialManager;
+import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.models.Event;
 
 import java.util.List;
@@ -78,7 +80,7 @@ public class EventsViewAdapter extends RecyclerView.Adapter<EventsViewAdapter.Ev
 
                     Bundle extras = new Bundle();
                     extras.putInt(DbConstants.EVENT_KEY_EVENT_ID, currentEvent.getEventId());
-                    extras.putSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE, bundle.getSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE));
+                    extras.putSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE, currentEvent.getEventType(context));
                     extras.putSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE, bundle.getSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE));
                     intent.putExtras(extras);
 
@@ -87,6 +89,21 @@ public class EventsViewAdapter extends RecyclerView.Adapter<EventsViewAdapter.Ev
                 }
             });
         }
+    }
+
+    private EventType getEventType(Event event){
+
+        String username = CredentialManager.getCredential(context, BundleAndSharedPreferencesConstants.USERNAME);
+        EventType eventType;
+
+        if(username.equals(event.getOrganiser())){
+            eventType = EventType.ORGANISE;
+        }
+        else{
+            eventType = EventType.ATTEND;
+        }
+
+        return eventType;
     }
 
     public EventsViewAdapter(Context context, List<Event> eventList, Bundle bundle) {

@@ -111,14 +111,18 @@ public class MainActivity extends AppCompatActivity
         linearLayoutManagerOngoing = new LinearLayoutManager(MainActivity.this);
         linearLayoutManagerUpcoming = new LinearLayoutManager(MainActivity.this);
 
-        Bundle extras = new Bundle();
+        Bundle ongoingExtras = new Bundle();
+        ongoingExtras.putSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE, TimeType.ONGOING);
+
+        Bundle upcomingExtras = new Bundle();
+        upcomingExtras.putSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE, TimeType.FUTURE);
 
 
         rvOngoing.setLayoutManager(linearLayoutManagerOngoing);
         rvUpcoming.setLayoutManager(linearLayoutManagerUpcoming);
 
-        EventsViewAdapter eventsViewAdapterOngoing = new EventsViewAdapter(MainActivity.this, ongoingEvents, extras);
-        EventsViewAdapter eventsViewAdapterUpcoming = new EventsViewAdapter(MainActivity.this, upcomingEvents, extras);
+        EventsViewAdapter eventsViewAdapterOngoing = new EventsViewAdapter(MainActivity.this, ongoingEvents, ongoingExtras);
+        EventsViewAdapter eventsViewAdapterUpcoming = new EventsViewAdapter(MainActivity.this, upcomingEvents, upcomingExtras);
 
         rvOngoing.setAdapter(eventsViewAdapterOngoing);
         rvUpcoming.setAdapter(eventsViewAdapterUpcoming);
