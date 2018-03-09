@@ -117,7 +117,6 @@ public class MainActivity extends AppCompatActivity
         Bundle upcomingExtras = new Bundle();
         upcomingExtras.putSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE, TimeType.FUTURE);
 
-
         rvOngoing.setLayoutManager(linearLayoutManagerOngoing);
         rvUpcoming.setLayoutManager(linearLayoutManagerUpcoming);
 
@@ -244,6 +243,5 @@ public class MainActivity extends AppCompatActivity
         tvEmail.setText(CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.EMAIL));
         tvUsername.setText(CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.USERNAME));
         getSupportActionBar().setTitle(greeting);
-
     }
 }

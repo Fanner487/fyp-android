@@ -49,7 +49,6 @@ public class EventsViewAdapter extends RecyclerView.Adapter<EventsViewAdapter.Ev
         ImageView ivNotAttending;
         ImageView ivAttendanceRequired;
 
-
         //Gets assigned to each card view
         Event currentEvent;
 
@@ -66,9 +65,6 @@ public class EventsViewAdapter extends RecyclerView.Adapter<EventsViewAdapter.Ev
             ivAttending = view.findViewById(R.id.ivAttending);
             ivNotAttending = view.findViewById(R.id.ivNotAttending);
             ivAttendanceRequired = view.findViewById(R.id.ivAttendanceRequired);
-
-
-
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -89,21 +85,6 @@ public class EventsViewAdapter extends RecyclerView.Adapter<EventsViewAdapter.Ev
                 }
             });
         }
-    }
-
-    private EventType getEventType(Event event){
-
-        String username = CredentialManager.getCredential(context, BundleAndSharedPreferencesConstants.USERNAME);
-        EventType eventType;
-
-        if(username.equals(event.getOrganiser())){
-            eventType = EventType.ORGANISE;
-        }
-        else{
-            eventType = EventType.ATTEND;
-        }
-
-        return eventType;
     }
 
     public EventsViewAdapter(Context context, List<Event> eventList, Bundle bundle) {
