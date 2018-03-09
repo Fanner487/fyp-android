@@ -47,6 +47,7 @@ public class UserStatsActivity extends AppCompatActivity {
     RecyclerView rvAttended;
     RecyclerView rvNotAttended;
     DonutProgress donutProgress;
+    int percentage;
 
     LinearLayoutManager linearLayoutManagerAttended;
     LinearLayoutManager linearLayoutManagerNotAttended;
@@ -58,6 +59,7 @@ public class UserStatsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_stats);
+        Log.d(TAG, "onCreate called");
 
         db = new DBManager(getApplicationContext()).open();
         bundle = getIntent().getExtras();
@@ -74,7 +76,7 @@ public class UserStatsActivity extends AppCompatActivity {
         scrollView = findViewById(R.id.scrollView);
 
 
-
+        percentage = getPercentageAttendanceForUser(username);
 
 //        donutProgress.setProgress(getPercentageAttendanceForUser(username));
 
@@ -99,7 +101,7 @@ public class UserStatsActivity extends AppCompatActivity {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if(donutProgress.getProgress() < getPercentageAttendanceForUser(username)){
+                if(donutProgress.getProgress() < percentage){
                     donutProgress.setProgress(donutProgress.getProgress() + 0.5f);
                 }
                 else{
@@ -107,7 +109,7 @@ public class UserStatsActivity extends AppCompatActivity {
                 }
 
             }
-        }, 100, 15);
+        }, 100, 5);
     }
 
     /**
