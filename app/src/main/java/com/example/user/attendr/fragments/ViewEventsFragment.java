@@ -81,15 +81,15 @@ public class ViewEventsFragment extends Fragment {
 //        }
 
         // Refreshes data from the server when events updated/deleted
-        NetworkInterface.getInstance(getContext()).getEventsForUser(new EventApiCallback() {
-            @Override
-            public void onSuccess() {
-                setAdapterWithData();
-            }
-
-            @Override
-            public void onFailure() {}
-        });
+//        NetworkInterface.getInstance(getContext()).getEventsForUser(swipeRefreshLayout, new EventApiCallback() {
+//            @Override
+//            public void onSuccess() {
+//                setAdapterWithData();
+//            }
+//
+//            @Override
+//            public void onFailure() {}
+//        });
 
     }
 
@@ -112,29 +112,47 @@ public class ViewEventsFragment extends Fragment {
             @Override
             public void onRefresh() {
 
-                if(NetworkCheck.alertIfNotConnectedToInternet(getContext(), swipeRefreshLayout)){
+                NetworkInterface.getInstance(swipeRefreshLayout.getContext()).getEventsForUser(swipeRefreshLayout, new EventApiCallback() {
+                    @Override
+                    public void onSuccess() {
+                        setAdapterWithData();
+                        Toast.makeText(view.getContext(), getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
 
-                    NetworkInterface.getInstance(getContext()).getEventsForUser(new EventApiCallback() {
-                        @Override
-                        public void onSuccess() {
-                            setAdapterWithData();
-                            Toast.makeText(view.getContext(), getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
+                    @Override
+                    public void onFailure() {
+//                        setAdapterWithData();
+                        Toast.makeText(view.getContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
 
-                        @Override
-                        public void onFailure() {
-                            setAdapterWithData();
-                            Toast.makeText(view.getContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-                    });
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-                else{
-                    swipeRefreshLayout.setRefreshing(false);
+//                if(NetworkCheck.alertIfNotConnectedToInternet(getContext(), swipeRefreshLayout)){
+//
+//                    NetworkInterface.getInstance(getContext()).getEventsForUser(new EventApiCallback() {
+//                        @Override
+//                        public void onSuccess() {
+//                            setAdapterWithData();
+//                            Toast.makeText(view.getContext(), getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
+//                            swipeRefreshLayout.setRefreshing(false);
+//                        }
+//
+//                        @Override
+//                        public void onFailure() {
+//                            setAdapterWithData();
+//                            Toast.makeText(view.getContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+//                            swipeRefreshLayout.setRefreshing(false);
+//                        }
+//                    });
+//                    swipeRefreshLayout.setRefreshing(false);
+//                }
+//                else{
+//                    swipeRefreshLayout.setRefreshing(false);
+//
+//                }
 
-                }
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
 

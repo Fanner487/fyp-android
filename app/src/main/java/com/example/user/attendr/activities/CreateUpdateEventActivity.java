@@ -320,13 +320,13 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
         super.onDestroy();
 
         // Syncs database with server when after event creation/update
-        NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
-            @Override
-            public void onSuccess() {}
-
-            @Override
-            public void onFailure() {}
-        });
+//        NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
+//            @Override
+//            public void onSuccess() {}
+//
+//            @Override
+//            public void onFailure() {}
+//        });
     }
 
     private void setTimeListeners(){
@@ -374,7 +374,7 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
 
                 if(NetworkCheck.alertIfNotConnectedToInternet(CreateUpdateEventActivity.this, view)){
                     // Continues if all fields are filled
@@ -417,7 +417,7 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
                                         Log.d(TAG, "New event ID: " + Integer.toString(response.getInt("id")));
 
                                         // Sync DB with server do get new event passed off into the new viewing activity
-                                        NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
+                                        NetworkInterface.getInstance(CreateUpdateEventActivity.this).getEventsForUser(view, new EventApiCallback() {
                                             @Override
                                             public void onSuccess() {
 

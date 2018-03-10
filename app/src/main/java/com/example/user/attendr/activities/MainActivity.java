@@ -2,6 +2,7 @@ package com.example.user.attendr.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.user.attendr.adapters.EventsViewAdapter;
 import com.example.user.attendr.credentials.CredentialManager;
@@ -24,6 +26,7 @@ import com.example.user.attendr.callbacks.EventApiCallback;
 import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.models.Event;
+import com.example.user.attendr.network.NetworkCheck;
 import com.example.user.attendr.network.NetworkInterface;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
     FloatingActionButton fabCreateEvent, fabCreateGroup;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     TextView tvName;
     TextView tvEmail;
@@ -62,21 +66,22 @@ public class MainActivity extends AppCompatActivity
         fabCreateEvent = findViewById(R.id.fab_create_event);
         fabCreateGroup = findViewById(R.id.fab_create_group);
         fam = findViewById(R.id.fab_menu);
+        swipeRefreshLayout = findViewById(R.id.swipe_container);
 
         rvOngoing = findViewById(R.id.rvOngoing);
         rvUpcoming = findViewById(R.id.rvUpcoming);
 
-        NetworkInterface.getInstance(this).getEventsForUser(new EventApiCallback() {
-            @Override
-            public void onSuccess() {
-
-            }
-
-            @Override
-            public void onFailure() {
-
-            }
-        });
+//        NetworkInterface.getInstance(this).getEventsForUser(toolbar, new EventApiCallback() {
+//            @Override
+//            public void onSuccess() {
+//
+//            }
+//
+//            @Override
+//            public void onFailure() {
+//
+//            }
+//        });
 
         db = new DBManager(this).open();
 
@@ -231,6 +236,58 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                NetworkInterface.getInstance(MainActivity.this).getEventsForUser(swipeRefreshLayout, new EventApiCallback() {
+                    @Override
+                    public void onSuccess() {
+                        setAdaptersWithData();
+                        Toast.makeText(MainActivity.this, getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        setAdaptersWithData();
+                        Toast.makeText(MainActivity.this, getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+
+                swipeRefreshLayout.setRefreshing(false);
+
+//                if(NetworkCheck.alertIfNotConnectedToInternet(MainActivity.this, swipeRefreshLayout)){
+//
+//                    NetworkInterface.getInstance(MainActivity.this).getEventsForUser(swipeRefreshLayout, new EventApiCallback() {
+//                        @Override
+//                        public void onSuccess() {
+//                            setAdaptersWithData();
+//                            Toast.makeText(MainActivity.this, getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
+//                            swipeRefreshLayout.setRefreshing(false);
+//                        }
+//
+//                        @Override
+//                        public void onFailure() {
+//                            setAdaptersWithData();
+//                            Toast.makeText(MainActivity.this, getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+//                            swipeRefreshLayout.setRefreshing(false);
+//                        }
+//                    });
+//                    swipeRefreshLayout.setRefreshing(false);
+//                }
+//                else{
+//                    swipeRefreshLayout.setRefreshing(false);
+//
+//                }
+            }
+        });
+    }
+
+    private void updateData(){
+
     }
 
     private void setNavBarHeadersWithUserDetails(){

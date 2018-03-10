@@ -85,6 +85,7 @@ public class EventsViewAdapter extends RecyclerView.Adapter<EventsViewAdapter.Ev
                 }
             });
         }
+
     }
 
     public EventsViewAdapter(Context context, List<Event> eventList, Bundle bundle) {
