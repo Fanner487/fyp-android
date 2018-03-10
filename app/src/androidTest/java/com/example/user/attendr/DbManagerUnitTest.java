@@ -1,5 +1,6 @@
 package com.example.user.attendr;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.test.RenamingDelegatingContext;
@@ -115,6 +116,7 @@ public class DbManagerUnitTest {
         long delete = db.deleteGroup(fetchedGroup);
 
         assertTrue(delete > 0);
+
     }
 
     @Test
@@ -145,6 +147,34 @@ public class DbManagerUnitTest {
 
         assertEquals(updatedRows, 1);
         assertEquals(db.getGroupWithId((int)insert).getDescription(), updateMessageDescription);
+    }
+
+    @Test
+    public void testGroupAlreadyExistsWithUser(){
+
+        String groupName = "group duplicate";
+        ArrayList<String> users = new ArrayList<>();
+        users.add("a");
+        users.add("b");
+        String description = "dup";
+
+        UserGroup userGroup = new UserGroup(groupName, description, users);
+
+        userGroup.setUsername("testDuplicate");
+
+        UserGroup userGroup2 = new UserGroup(groupName, description, users);
+
+        userGroup2.setUsername("testDuplicate");
+
+        long insert1 = db.insertUserGroup(userGroup);
+        long insert2 = db.insertUserGroup(userGroup2);
+        assertTrue(insert1 > 0);
+        assertTrue(insert2 > 0);
+
+        boolean groupsAlreadyExists = db.groupAlreadyExistsWithUser(userGroup2);
+
+        assertTrue(groupsAlreadyExists);
+
     }
 
     @Test

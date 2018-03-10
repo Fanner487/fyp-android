@@ -761,7 +761,6 @@ public class NetworkInterface {
 
     public void removeUserFromAttending(String user, int eventId, final EventCreateUpdateCallback eventCreateUpdateCallback){
 
-
         JSONObject jsonObject = new JSONObject();
 
         try{
