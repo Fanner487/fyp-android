@@ -126,6 +126,7 @@ public class DbManagerUnitTest {
         ArrayList<String> users = new ArrayList<>();
         users.add("a");
         users.add("b");
+        users.add("test");
         String description = "update";
 
         UserGroup userGroup = new UserGroup(groupName, description, users);

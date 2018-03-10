@@ -78,13 +78,6 @@ public class UserStatsActivity extends AppCompatActivity {
 
         percentage = getPercentageAttendanceForUser(username);
 
-//        donutProgress.setProgress(getPercentageAttendanceForUser(username));
-
-//        ObjectAnimator animator = ObjectAnimator.ofFloat(donutProgress, "progress", 0, getPercentageAttendanceForUser(username));
-//        animator.setDuration(55 * 25);
-//        animator.setInterpolator(new DecelerateInterpolator());
-//        animator.start();
-
 
         setAdaptersWithData();
         setTextViews();

@@ -78,8 +78,6 @@ public class OrganiseEventsViewerActivity extends AppCompatActivity
         tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-//        fab = findViewById(R.id.fab);
-
         setListeners();
 
     }

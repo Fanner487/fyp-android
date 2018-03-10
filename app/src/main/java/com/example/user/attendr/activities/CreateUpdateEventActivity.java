@@ -100,13 +100,9 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
         Log.d(TAG, "Create or update: " + bundle.getString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE));
         Log.d(TAG, "Event ID: " + Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID)));
 
-
         createOrUpdate = bundle.getString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE);
 
-
-
         prepareGroups();
-
 
         etEventName = findViewById(R.id.tvEventName);
         etLocation = findViewById(R.id.etLocation);
