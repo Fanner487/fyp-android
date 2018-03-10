@@ -35,7 +35,6 @@ public class ViewGroupsActivityTest {
 
             Bundle bundle = new Bundle();
             bundle.putString(DbConstants.GROUP_KEY_ROW_USERNAME, "test");
-//            result.putExtra(DbConstants.EVENT_KEY_EVENT_ID, 1);
             result.putExtras(bundle);
             return result;
         }
