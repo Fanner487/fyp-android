@@ -101,16 +101,17 @@ public class EventUnitTest {
 //        ArrayList<String> attending = new ArrayList<>();
 //        boolean attendanceRequired = true;
 //
+//        Event eventClass = spy(Event.class);
+//
 //        Event event = new Event(id, eventId, organiser, eventName, location, startTime, finishTime, signInTime, attendees, attending, attendanceRequired);
 //
-//        Context context = mock(MainActivity.class, Mockito.RETURNS_DEEP_STUBS);
-////
-//        CredentialManager.setCredentials(context, organiser, "", "", "", "");
-//        when(CredentialManager.getCredential(context, BundleAndSharedPreferencesConstants.USERNAME)).thenReturn(organiser);
+//        Context context = mock(MainActivity.class);
+//        CredentialManager credentialManager = mock(CredentialManager.class);
+////        when(event.getEventType(context)).then(EventType.ORGANISE);
 //
-//        when(event.getEventType(context)).thenReturn(EventType.ORGANISE);
-//
-//        doReturn(EventType.ORGANISE).when(CredentialManager).
+////        doReturn(EventType.ORGANISE).when(CredentialManager.getCredential(context, BundleAndSharedPreferencesConstants.USERNAME));
+//        doReturn(EventType.ORGANISE).when(eventClass).getEventType(context);
+////        doReturn(EventType.ORGANISE).when(Event.class).(context);
 //
 //        assertEquals(event.getEventType(context), EventType.ORGANISE);
 //    }

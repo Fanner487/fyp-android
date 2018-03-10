@@ -264,6 +264,23 @@ public class DBManager {
         return toUserGroups(c);
     }
 
+    public ArrayList<UserGroup> getGroupsForUser(String user) {
+        Cursor c = db.query(
+                false,
+                DbConstants.DATABASE_GROUPS_TABLE,
+                null,
+                DbConstants.GROUP_KEY_ROW_USERNAME + "=?",
+                new String[]{user},
+                null,
+                null,
+                DbConstants.GROUP_KEY_ROW_GROUP_NAME + " ASC",
+                null,
+                null
+        );
+
+        return toUserGroups(c);
+    }
+
     public UserGroup getGroupWithId(int id) {
         Cursor c = db.query(
                 false,
@@ -348,6 +365,7 @@ public class DBManager {
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(DbConstants.GROUP_KEY_ROW_USERNAME, group.getUsername());
+        contentValues.put(DbConstants.GROUP_KEY_ROW_GROUP_NAME, group.getGroupName());
         contentValues.put(DbConstants.GROUP_KEY_ROW_GROUP_NAME, group.getGroupName());
         contentValues.put(DbConstants.GROUP_KEY_ROW_USERS, listToString(group.getUsers()));
         contentValues.put(DbConstants.GROUP_KEY_ROW_DESCRIPTION, group.getDescription());

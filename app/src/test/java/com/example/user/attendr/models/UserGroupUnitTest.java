@@ -18,6 +18,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -43,6 +45,24 @@ public class UserGroupUnitTest {
 
         assertEquals(userGroup.getId(), id);
         assertEquals(userGroup.getUsername(), username);
+        assertEquals(userGroup.getGroupName(), groupName);
+        assertEquals(userGroup.getUsers(), users);
+        assertEquals(userGroup.getDescription(), description);
+    }
+
+    @Test
+    public void testAlternateCreate(){
+
+        String groupName = "test";
+        ArrayList<String> users = new ArrayList<>();
+        users.add("a");
+        users.add("b");
+        String description = "test";
+
+        UserGroup userGroup = new UserGroup(groupName, description, users);
+
+        assertEquals(userGroup.getId(), 0);
+        assertNull(userGroup.getUsername());
         assertEquals(userGroup.getGroupName(), groupName);
         assertEquals(userGroup.getUsers(), users);
         assertEquals(userGroup.getDescription(), description);
