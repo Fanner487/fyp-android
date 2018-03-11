@@ -205,46 +205,46 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
             @Override
             public void onRefresh() {
 
-                NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(swipeRefreshLayout, new EventApiCallback() {
-                    @Override
-                    public void onSuccess() {
-                        updateData();
-                        Toast.makeText(getApplicationContext(), getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
-                        updateData();
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
+//                NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(swipeRefreshLayout, new EventApiCallback() {
+//                    @Override
+//                    public void onSuccess() {
+//                        updateData();
+//                        Toast.makeText(getApplicationContext(), getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
+//                        updateData();
+//                        swipeRefreshLayout.setRefreshing(false);
+//                    }
+//
+//                    @Override
+//                    public void onFailure() {
+//                        populateAdapter();
+//                        Toast.makeText(getApplicationContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+//                        swipeRefreshLayout.setRefreshing(false);
+//                    }
+//                });
+//
+                if(NetworkCheck.alertIfNotConnectedToInternet(ViewEventActivity.this, swipeRefreshLayout)){
 
-                    @Override
-                    public void onFailure() {
-                        populateAdapter();
-                        Toast.makeText(getApplicationContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
-//
-//                if(NetworkCheck.alertIfNotConnectedToInternet(ViewEventActivity.this, swipeRefreshLayout)){
-//
-//                    NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
-//                        @Override
-//                        public void onSuccess() {
-//                            updateData();
-//                            Toast.makeText(getApplicationContext(), getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
-//                            updateData();
-//                            swipeRefreshLayout.setRefreshing(false);
-//                        }
-//
-//                        @Override
-//                        public void onFailure() {
-//                            populateAdapter();
-//                            Toast.makeText(getApplicationContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
-//                            swipeRefreshLayout.setRefreshing(false);
-//                        }
-//                    });
-//                }
-//                else{
-//                    swipeRefreshLayout.setRefreshing(false);
-//
-//                }
+                    NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
+                        @Override
+                        public void onSuccess() {
+                            updateData();
+                            Toast.makeText(getApplicationContext(), getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
+                            updateData();
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            populateAdapter();
+                            Toast.makeText(getApplicationContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    });
+                }
+                else{
+                    swipeRefreshLayout.setRefreshing(false);
+
+                }
                 swipeRefreshLayout.setRefreshing(false);
 
             }

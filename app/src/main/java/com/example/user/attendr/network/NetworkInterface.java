@@ -79,108 +79,108 @@ public class NetworkInterface {
         return instance;
     }
 
-//    public void getEventsForUser(final EventApiCallback eventApiCallback){
-//
-//        AndroidNetworking.get(ApiUrls.EVENTS_FOR_USER)
-//                .addPathParameter("username", getLoggedInUser())
-//                .addHeaders(BundleAndSharedPreferencesConstants.AUTHORIZATION_HEADER, getAuthorizationHeaderToken())
-//                .setPriority(Priority.MEDIUM)
-//                .build()
-//                .getAsObjectList(Event.class, new ParsedRequestListener<List<Event>>() {
-//                    @Override
-//                    public void onResponse(List<Event> events) {
-//                        // do anything with response
-//                        Log.d(TAG, "Events size : " + events.size());
-//
-//                        for (Event event : events) {
-//                            Log.d(TAG, event.toString());
-//                        }
-//
-//                        /*
-//                        * Adding to DB
-//                        * */
-//
-//                        db = new DBManager(context.getApplicationContext()).open();
-//                        ArrayList<Event> newEvents = new ArrayList<>(events);
-//
-//                        db.deleteAllEvents();
-//                        db.insertEvents(newEvents);
-//
-//                        ArrayList<Event> dbList = db.getAllEvents();
-//
-//                        for(Event eventDb: dbList){
-//                            Log.d(TAG, eventDb.toString());
-//                        }
-//
-//                        eventApiCallback.onSuccess();
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(ANError anError) {
-//                        // handle error
-//                        Log.d(TAG, anError.getErrorDetail());
-//                        Log.d(TAG, anError.getMessage());
-//                        Log.d(TAG, Integer.toString(anError.getErrorCode()));
-//
-//                        eventApiCallback.onFailure();
-//                    }
-//                });
-//    }
+    public void getEventsForUser(final EventApiCallback eventApiCallback){
 
-    public void getEventsForUser(View view, final EventApiCallback eventApiCallback){
+        AndroidNetworking.get(ApiUrls.EVENTS_FOR_USER)
+                .addPathParameter("username", getLoggedInUser())
+                .addHeaders(BundleAndSharedPreferencesConstants.AUTHORIZATION_HEADER, getAuthorizationHeaderToken())
+                .setPriority(Priority.MEDIUM)
+                .build()
+                .getAsObjectList(Event.class, new ParsedRequestListener<List<Event>>() {
+                    @Override
+                    public void onResponse(List<Event> events) {
+                        // do anything with response
+                        Log.d(TAG, "Events size : " + events.size());
 
-        if(NetworkCheck.alertIfNotConnectedToInternet(context, view)){
-            AndroidNetworking.get(ApiUrls.EVENTS_FOR_USER)
-                    .addPathParameter("username", getLoggedInUser())
-                    .addHeaders(BundleAndSharedPreferencesConstants.AUTHORIZATION_HEADER, getAuthorizationHeaderToken())
-                    .setPriority(Priority.MEDIUM)
-                    .build()
-                    .getAsObjectList(Event.class, new ParsedRequestListener<List<Event>>() {
-                        @Override
-                        public void onResponse(List<Event> events) {
-                            // do anything with response
-                            Log.d(TAG, "Events size : " + events.size());
-
-                            for (Event event : events) {
-                                Log.d(TAG, event.toString());
-                            }
+                        for (Event event : events) {
+                            Log.d(TAG, event.toString());
+                        }
 
                         /*
                         * Adding to DB
                         * */
 
-                            db = new DBManager(context.getApplicationContext()).open();
-                            ArrayList<Event> newEvents = new ArrayList<>(events);
+                        db = new DBManager(context.getApplicationContext()).open();
+                        ArrayList<Event> newEvents = new ArrayList<>(events);
 
-                            db.deleteAllEvents();
-                            db.insertEvents(newEvents);
+                        db.deleteAllEvents();
+                        db.insertEvents(newEvents);
 
-                            ArrayList<Event> dbList = db.getAllEvents();
+                        ArrayList<Event> dbList = db.getAllEvents();
 
-                            for(Event eventDb: dbList){
-                                Log.d(TAG, eventDb.toString());
-                            }
-
-                            eventApiCallback.onSuccess();
-
+                        for(Event eventDb: dbList){
+                            Log.d(TAG, eventDb.toString());
                         }
 
-                        @Override
-                        public void onError(ANError anError) {
-                            // handle error
-                            Log.d(TAG, anError.getErrorDetail());
-                            Log.d(TAG, anError.getMessage());
-                            Log.d(TAG, Integer.toString(anError.getErrorCode()));
+                        eventApiCallback.onSuccess();
 
-                            eventApiCallback.onFailure();
-                        }
-                    });
-        }
-        else{
-            eventApiCallback.onFailure();
-        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        // handle error
+                        Log.d(TAG, anError.getErrorDetail());
+                        Log.d(TAG, anError.getMessage());
+                        Log.d(TAG, Integer.toString(anError.getErrorCode()));
+
+                        eventApiCallback.onFailure();
+                    }
+                });
     }
+
+//    public void getEventsForUser(View view, final EventApiCallback eventApiCallback){
+//
+//        if(NetworkCheck.alertIfNotConnectedToInternet(context, view)){
+//            AndroidNetworking.get(ApiUrls.EVENTS_FOR_USER)
+//                    .addPathParameter("username", getLoggedInUser())
+//                    .addHeaders(BundleAndSharedPreferencesConstants.AUTHORIZATION_HEADER, getAuthorizationHeaderToken())
+//                    .setPriority(Priority.MEDIUM)
+//                    .build()
+//                    .getAsObjectList(Event.class, new ParsedRequestListener<List<Event>>() {
+//                        @Override
+//                        public void onResponse(List<Event> events) {
+//                            // do anything with response
+//                            Log.d(TAG, "Events size : " + events.size());
+//
+//                            for (Event event : events) {
+//                                Log.d(TAG, event.toString());
+//                            }
+//
+//                        /*
+//                        * Adding to DB
+//                        * */
+//
+//                            db = new DBManager(context.getApplicationContext()).open();
+//                            ArrayList<Event> newEvents = new ArrayList<>(events);
+//
+//                            db.deleteAllEvents();
+//                            db.insertEvents(newEvents);
+//
+//                            ArrayList<Event> dbList = db.getAllEvents();
+//
+//                            for(Event eventDb: dbList){
+//                                Log.d(TAG, eventDb.toString());
+//                            }
+//
+//                            eventApiCallback.onSuccess();
+//
+//                        }
+//
+//                        @Override
+//                        public void onError(ANError anError) {
+//                            // handle error
+//                            Log.d(TAG, anError.getErrorDetail());
+//                            Log.d(TAG, anError.getMessage());
+//                            Log.d(TAG, Integer.toString(anError.getErrorCode()));
+//
+//                            eventApiCallback.onFailure();
+//                        }
+//                    });
+//        }
+//        else{
+//            eventApiCallback.onFailure();
+//        }
+//    }
 
     public void getTokenForUser(String username, String password, final TokenCallback tokenCallback){
 

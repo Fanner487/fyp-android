@@ -413,7 +413,7 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
                                         Log.d(TAG, "New event ID: " + Integer.toString(response.getInt("id")));
 
                                         // Sync DB with server do get new event passed off into the new viewing activity
-                                        NetworkInterface.getInstance(CreateUpdateEventActivity.this).getEventsForUser(view, new EventApiCallback() {
+                                        NetworkInterface.getInstance(CreateUpdateEventActivity.this).getEventsForUser(new EventApiCallback() {
                                             @Override
                                             public void onSuccess() {
 

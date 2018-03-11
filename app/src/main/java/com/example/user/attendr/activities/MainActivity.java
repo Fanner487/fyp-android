@@ -241,47 +241,47 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onRefresh() {
 
-                NetworkInterface.getInstance(MainActivity.this).getEventsForUser(swipeRefreshLayout, new EventApiCallback() {
-                    @Override
-                    public void onSuccess() {
-                        setAdaptersWithData();
-                        Toast.makeText(MainActivity.this, getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-
-                    @Override
-                    public void onFailure() {
-                        setAdaptersWithData();
-                        Toast.makeText(MainActivity.this, getString(R.string.network_error), Toast.LENGTH_SHORT).show();
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
-
-                swipeRefreshLayout.setRefreshing(false);
-
-//                if(NetworkCheck.alertIfNotConnectedToInternet(MainActivity.this, swipeRefreshLayout)){
+//                NetworkInterface.getInstance(MainActivity.this).getEventsForUser(swipeRefreshLayout, new EventApiCallback() {
+//                    @Override
+//                    public void onSuccess() {
+//                        setAdaptersWithData();
+//                        Toast.makeText(MainActivity.this, getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
+//                        swipeRefreshLayout.setRefreshing(false);
+//                    }
 //
-//                    NetworkInterface.getInstance(MainActivity.this).getEventsForUser(swipeRefreshLayout, new EventApiCallback() {
-//                        @Override
-//                        public void onSuccess() {
-//                            setAdaptersWithData();
-//                            Toast.makeText(MainActivity.this, getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
-//                            swipeRefreshLayout.setRefreshing(false);
-//                        }
+//                    @Override
+//                    public void onFailure() {
+//                        setAdaptersWithData();
+//                        Toast.makeText(MainActivity.this, getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+//                        swipeRefreshLayout.setRefreshing(false);
+//                    }
+//                });
 //
-//                        @Override
-//                        public void onFailure() {
-//                            setAdaptersWithData();
-//                            Toast.makeText(MainActivity.this, getString(R.string.network_error), Toast.LENGTH_SHORT).show();
-//                            swipeRefreshLayout.setRefreshing(false);
-//                        }
-//                    });
-//                    swipeRefreshLayout.setRefreshing(false);
-//                }
-//                else{
-//                    swipeRefreshLayout.setRefreshing(false);
-//
-//                }
+//                swipeRefreshLayout.setRefreshing(false);
+
+                if(NetworkCheck.alertIfNotConnectedToInternet(MainActivity.this, swipeRefreshLayout)){
+
+                    NetworkInterface.getInstance(MainActivity.this).getEventsForUser(new EventApiCallback() {
+                        @Override
+                        public void onSuccess() {
+                            setAdaptersWithData();
+                            Toast.makeText(MainActivity.this, getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            setAdaptersWithData();
+                            Toast.makeText(MainActivity.this, getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    });
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+                else{
+                    swipeRefreshLayout.setRefreshing(false);
+
+                }
             }
         });
     }
