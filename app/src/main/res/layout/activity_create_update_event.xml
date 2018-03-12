@@ -44,41 +44,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvEventName" />
 
-        <TextView
-            android:id="@+id/tvStartTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="24dp"
-            android:textSize="20sp"
-            android:textColor="@color/primary_text"
-            android:text="@string/choose_time"
-            app:layout_constraintStart_toEndOf="@+id/tvStartTimeDisplay"
-            app:layout_constraintTop_toBottomOf="@+id/etLocation" />
-
-        <TextView
-            android:id="@+id/tvFinishTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:textSize="20sp"
-            android:textColor="@color/primary_text"
-            android:text="@string/choose_time"
-            app:layout_constraintStart_toEndOf="@+id/tvFinishTimeDisplay"
-            app:layout_constraintTop_toBottomOf="@+id/btnStartTime" />
-
-        <TextView
-            android:id="@+id/tvSignInTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:textSize="20sp"
-            android:textColor="@color/primary_text"
-            android:text="@string/choose_time"
-            app:layout_constraintStart_toEndOf="@+id/tvSignInDisplay"
-            app:layout_constraintTop_toBottomOf="@+id/btnFinishTime" />
+        <!--<TextView-->
+            <!--android:id="@+id/tvSignInTime"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginStart="8dp"-->
+            <!--android:layout_marginTop="16dp"-->
+            <!--android:textSize="20sp"-->
+            <!--android:textColor="@color/primary_text"-->
+            <!--android:text="@string/choose_time"-->
+            <!--app:layout_constraintStart_toEndOf="@+id/tvSignInDisplay"-->
+            <!--app:layout_constraintTop_toBottomOf="@+id/cvFinishTime" />-->
 
         <EditText
             android:id="@+id/etAttendees"
@@ -136,58 +112,207 @@
 
         <android.support.v7.widget.CardView
             android:id="@+id/cvStartTime"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            app:cardElevation="5dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etLocation">
 
-            android:layout_height="50dp">
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
+                <TextView
+                    android:id="@+id/tvStartTimeDisplay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/start_time_display"
+                    android:textColor="@color/primary_text"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvStartTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/choose_time"
+                    android:textColor="@color/primary_text"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toEndOf="@+id/tvStartTimeDisplay"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/btnStartTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginEnd="32dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/button_colour"
+                    android:text="@string/choose_start_time"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvStartTimeDisplay" />
+
+            </android.support.constraint.ConstraintLayout>
         </android.support.v7.widget.CardView>
-        <Button
-            android:id="@+id/btnStartTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="32dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/button_colour"
-            android:text="@string/choose_start_time"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvStartTimeDisplay" />
 
-        <Button
-            android:id="@+id/btnSignInTime"
+        <android.support.v7.widget.CardView
+            android:id="@+id/cvFinishTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="32dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/button_colour"
-            android:text="@string/choose_sign_in_time"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="20sp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            app:cardElevation="5dp"
+            app:cardUseCompatPadding="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvSignInDisplay" />
+            app:layout_constraintTop_toBottomOf="@id/cvStartTime">
 
-        <Button
-            android:id="@+id/btnFinishTime"
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tvFinishTimeDisplay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/finish_time_display"
+                    android:textColor="@color/primary_text"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvFinishTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/choose_time"
+                    android:textColor="@color/primary_text"
+                    android:textSize="20sp"
+
+                    app:layout_constraintStart_toEndOf="@+id/tvFinishTimeDisplay"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/btnFinishTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginEnd="32dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/button_colour"
+                    android:text="@string/choose_finish_time"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvFinishTimeDisplay"
+                    app:layout_constraintVertical_bias="0.0" />
+
+            </android.support.constraint.ConstraintLayout>
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cvSignInTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="32dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/button_colour"
-            android:text="@string/choose_finish_time"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="20sp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            app:cardElevation="5dp"
+            app:cardUseCompatPadding="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvFinishTimeDisplay" />
+            app:layout_constraintTop_toBottomOf="@id/cvFinishTime">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tvSignInDisplay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/sign_in_time_display"
+                    android:textColor="@color/primary_text"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvSignInTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/choose_time"
+                    android:textColor="@color/primary_text"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toEndOf="@id/tvSignInDisplay"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/btnSignInTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginEnd="32dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/button_colour"
+                    android:text="@string/choose_sign_in_time"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvSignInDisplay" />
+
+            </android.support.constraint.ConstraintLayout>
+        </android.support.v7.widget.CardView>
+
+        <!--<Button-->
+            <!--android:id="@+id/btnSignInTime"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginEnd="32dp"-->
+            <!--android:layout_marginStart="32dp"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:background="@color/button_colour"-->
+            <!--android:text="@string/choose_sign_in_time"-->
+            <!--android:textAllCaps="false"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:textSize="20sp"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toBottomOf="@+id/tvSignInDisplay" />-->
 
         <Spinner
             android:id="@+id/spinner"
@@ -198,7 +323,7 @@
             android:layout_marginTop="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnSignInTime" />
+            app:layout_constraintTop_toBottomOf="@+id/cvSignInTime" />
 
         <Button
             android:id="@+id/btnDelete"
@@ -216,41 +341,17 @@
             android:textColor="@color/white"
             android:textSize="20sp"/>
 
-        <TextView
-            android:id="@+id/tvStartTimeDisplay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:textSize="20sp"
-            android:textColor="@color/primary_text"
-            android:text="@string/start_time_display"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etLocation" />
-
-        <TextView
-            android:id="@+id/tvFinishTimeDisplay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:textSize="20sp"
-            android:layout_marginTop="16dp"
-            android:text="@string/finish_time_display"
-            android:textColor="@color/primary_text"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnStartTime" />
-
-        <TextView
-            android:id="@+id/tvSignInDisplay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
-            android:textSize="20sp"
-            android:textColor="@color/primary_text"
-            android:text="@string/sign_in_time_display"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnFinishTime" />
+        <!--<TextView-->
+            <!--android:id="@+id/tvSignInDisplay"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginStart="24dp"-->
+            <!--android:layout_marginTop="16dp"-->
+            <!--android:textSize="20sp"-->
+            <!--android:textColor="@color/primary_text"-->
+            <!--android:text="@string/sign_in_time_display"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toBottomOf="@id/cvFinishTime"/>-->
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

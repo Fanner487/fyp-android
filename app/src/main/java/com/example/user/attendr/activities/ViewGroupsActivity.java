@@ -35,14 +35,16 @@ public class ViewGroupsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_groups);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         getSupportActionBar().setTitle(R.string.groups);
 
         db = new DBManager(this).open();
         recyclerView = findViewById(R.id.recyclerView);
 
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
 
         setAdapterWithData();
 
@@ -75,20 +77,17 @@ public class ViewGroupsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.home) {
-            Log.d(TAG, "home presssed");
-            onBackPressed();
+            Log.d(TAG, "Home pressed");
+            finish();
             return true;
         }
 
-
         return super.onOptionsItemSelected(item);
     }
+
+
 
 }

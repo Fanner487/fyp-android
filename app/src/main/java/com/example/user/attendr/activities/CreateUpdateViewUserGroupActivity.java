@@ -46,11 +46,16 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_update_view_user_group);
 
+        // Shows back button on top of activity
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         db = new DBManager(this).open();
         bundle = getIntent().getExtras();
 
         createOrUpdate = bundle.getString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE);
 
+        // Sets title of activity based on if it is to create or update group
         if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.CREATE)){
             getSupportActionBar().setTitle(getString(R.string.create_group));
 
@@ -66,6 +71,8 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
         btnSubmit = findViewById(R.id.btnSubmit);
         btnDelete = findViewById(R.id.btnDelete);
 
+        // populate fields with existing data for update
+        // Hide delete button if it is update group
         if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.UPDATE)){
             btnSubmit.setText(getString(R.string.update));
             populateWithExistingData();
@@ -75,29 +82,11 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
             btnDelete.setVisibility(View.INVISIBLE);
         }
 
-        ArrayList<Event> eventsUserSignedIn = getEventsOrganisedWithUserInAttendees("r", AttendanceType.ATTENDING);
-        ArrayList<Event> eventsUserNotSignedIn = getEventsOrganisedWithUserInAttendees("r", AttendanceType.NOT_ATTENDING);
-
-        Log.d(TAG, "-------------------");
-        Log.d(TAG, "eventsUserSignedIn");
-        for(Event event : eventsUserSignedIn){
-            Log.d(TAG, event.toString());
-        }
-
-        Log.d(TAG, "-------------------");
-        Log.d(TAG, "eventsUserNotSignedIn");
-        for(Event event : eventsUserNotSignedIn){
-            Log.d(TAG, event.toString());
-        }
-
-        Log.d(TAG, "-------------------");
-        Log.d(TAG, "Percentage");
-        Log.d(TAG, Integer.toString(getPercentageAttendanceForUser("r")));
-
         setListeners();
     }
 
     public void populateWithExistingData(){
+
         existingGroup = db.getGroupWithId(bundle.getInt(DbConstants.GROUP_KEY_ROW_ID));
 
         Log.d(TAG, existingGroup.toString());
@@ -128,66 +117,17 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
                             etDescription.getText().toString(),
                             toList(etUsers.getText().toString().toLowerCase().trim())
                     );
+                    
                     /*
                     * Perform either create or update on group
                     * */
                     if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.CREATE)){
 
-                        NetworkInterface.getInstance(CreateUpdateViewUserGroupActivity.this).verifyGroup(group, createOrUpdate, new UserGroupCreateCallback() {
-                            @Override
-                            public void onSuccess() {
-
-                                if(db.insertUserGroup(group) > 0){
-                                    Toast.makeText(CreateUpdateViewUserGroupActivity.this, getString(R.string.verified_group), Toast.LENGTH_SHORT).show();
-                                    finish();
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(String response) {
-                                AlertDialog alertDialog = new AlertDialog.Builder(CreateUpdateViewUserGroupActivity.this).create();
-                                alertDialog.setTitle(getString(R.string.alert));
-                                alertDialog.setMessage(response);
-                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                            }
-                                        });
-                                alertDialog.show();
-                            }
-                        });
+                        createUserGroup(group);
                     }
                     else if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.UPDATE)){
 
-                        NetworkInterface.getInstance(CreateUpdateViewUserGroupActivity.this).verifyGroup(group, createOrUpdate, new UserGroupCreateCallback() {
-                            @Override
-                            public void onSuccess() {
-                                // Sets ID of group to be group ID passed in
-                                group.setId(bundle.getInt(DbConstants.GROUP_KEY_ROW_ID));
-
-                                if(db.updateGroup(group) > 0 ){
-
-                                    Toast.makeText(CreateUpdateViewUserGroupActivity.this, getString(R.string.group_updated), Toast.LENGTH_SHORT).show();
-
-                                    finish();
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(String response) {
-                                AlertDialog alertDialog = new AlertDialog.Builder(CreateUpdateViewUserGroupActivity.this).create();
-                                alertDialog.setTitle(R.string.alert);
-                                alertDialog.setMessage(response);
-                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                            }
-                                        });
-                                alertDialog.show();
-                            }
-                        });
+                        updateUserGroup(group);
                     }
                 }
             }
@@ -247,69 +187,49 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
         return result;
     }
 
+    private void createUserGroup(final UserGroup group){
 
-    public int getPercentageAttendanceForUser(String user){
+        NetworkInterface.getInstance(CreateUpdateViewUserGroupActivity.this).verifyGroup(group, createOrUpdate, new UserGroupCreateCallback() {
 
-        ArrayList<Event> eventsOrganised = getEventsWithUserInAttendees(db.getEvents(EventType.ORGANISE, TimeType.PAST), user);
-        ArrayList<Event> eventsWithUserInAttending = getEventsOrganisedWithUserInAttendees(user, AttendanceType.ATTENDING);
+            @Override
+            public void onSuccess() {
 
+                if(db.insertUserGroup(group) > 0){
 
-        float result;
-
-        if(eventsOrganised.size() < 1){
-            result = 0f;
-        }
-        else{
-            result = ((float) eventsWithUserInAttending.size() / (float) eventsOrganised.size() * 100.0f);
-        }
-
-        return (int)Math.floor(result);
-
-    }
-
-    private ArrayList<Event> getEventsWithUserInAttendees(ArrayList<Event> events, String user){
-
-        ArrayList<Event> result = new ArrayList<>();
-
-        for(Event event : events){
-
-            if(event.getAttendees().contains(user)) {
-                result.add(event);
-            }
-        }
-
-        return result;
-    }
-
-
-
-    private ArrayList<Event> getEventsOrganisedWithUserInAttendees(String user, AttendanceType type){
-        ArrayList<Event> events = getEventsWithUserInAttendees(db.getEvents(EventType.ORGANISE, TimeType.PAST), user);
-        ArrayList<Event> result = new ArrayList<>();
-
-
-        for(Event event : events){
-
-            if (event.getAttending() != null) {
-
-                if(type == AttendanceType.ATTENDING){
-
-                    if (event.getAttending().contains(user)) {
-
-                        result.add(event);
-                    }
-                }
-                else if(type == AttendanceType.NOT_ATTENDING){
-
-                    if (! event.getAttending().contains(user)) {
-
-                        result.add(event);
-                    }
+                    Toast.makeText(CreateUpdateViewUserGroupActivity.this, getString(R.string.verified_group), Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             }
-        }
 
-        return result;
+            @Override
+            public void onFailure(String response) {
+
+                Toast.makeText(CreateUpdateViewUserGroupActivity.this, response, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void updateUserGroup(final UserGroup group){
+
+        NetworkInterface.getInstance(CreateUpdateViewUserGroupActivity.this).verifyGroup(group, createOrUpdate, new UserGroupCreateCallback() {
+            @Override
+            public void onSuccess() {
+                // Sets ID of group to be group ID passed in
+                group.setId(bundle.getInt(DbConstants.GROUP_KEY_ROW_ID));
+
+                if(db.updateGroup(group) > 0 ){
+
+                    Toast.makeText(CreateUpdateViewUserGroupActivity.this, getString(R.string.group_updated), Toast.LENGTH_SHORT).show();
+
+                    finish();
+                }
+            }
+
+            @Override
+            public void onFailure(String response) {
+                Toast.makeText(CreateUpdateViewUserGroupActivity.this, response, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }

@@ -77,6 +77,10 @@
     <string name="error_removing_user_from_attending">User not in attending</string>
     <string name="options">Options</string>
     <string name="upcoming">Upcoming</string>
+    <string name="fill_all_fields">Fill all fields</string>
+    <string name="error_creating_group">Error creating group</string>
+    <string name="error_updating_group">Error updating group</string>
+    <string name="group_exists_with_same_name">Group already exists with same name</string>
 
     <string-array name="user_options">
         <item>View User Attendance</item>

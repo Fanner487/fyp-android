@@ -5,10 +5,12 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -91,6 +93,9 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_update_event);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         db = new DBManager(this).open();
 
@@ -504,7 +509,7 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
                         }
 
                     } else {
-                        Toast.makeText(CreateUpdateEventActivity.this, "Fill all fields", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateUpdateEventActivity.this, R.string.fill_all_fields, Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -560,6 +565,18 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
 
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

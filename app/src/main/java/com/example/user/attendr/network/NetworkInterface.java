@@ -13,6 +13,7 @@ import com.androidnetworking.interfaces.OkHttpResponseAndJSONObjectRequestListen
 import com.androidnetworking.interfaces.OkHttpResponseAndStringRequestListener;
 import com.androidnetworking.interfaces.OkHttpResponseListener;
 import com.androidnetworking.interfaces.ParsedRequestListener;
+import com.example.user.attendr.R;
 import com.example.user.attendr.callbacks.EventApiCallback;
 import com.example.user.attendr.callbacks.EventCreateUpdateCallback;
 import com.example.user.attendr.callbacks.EventDeleteCallback;
@@ -678,18 +679,16 @@ public class NetworkInterface {
                     @Override
                     public void onResponse(Response okHttpResponse, String response) {
 
-
                         // Sets username of current logged in user to be stored in DB
                         group.setUsername(getLoggedInUser());
 
                         if(type.equals(BundleAndSharedPreferencesConstants.CREATE)){
                             if(!db.groupAlreadyExistsWithUser(group)){
-//                            db.insertUserGroup(group);
 
                                 callback.onSuccess();
                             }
                             else{
-                                callback.onFailure("Group already exists with same name");
+                                callback.onFailure(context.getString(R.string.group_exists_with_same_name));
 
                             }
                         }
