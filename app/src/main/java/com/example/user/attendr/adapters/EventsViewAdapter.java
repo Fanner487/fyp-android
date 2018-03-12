@@ -69,11 +69,8 @@ public class EventsViewAdapter extends RecyclerView.Adapter<EventsViewAdapter.Ev
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    
-                    Log.d(TAG, currentEvent.toString());
 
                     Intent intent = new Intent(view.getContext(), ViewEventActivity.class);
-
                     Bundle extras = new Bundle();
                     extras.putInt(DbConstants.EVENT_KEY_EVENT_ID, currentEvent.getEventId());
                     extras.putSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE, currentEvent.getEventType(context));

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.example.user.attendr.R;
 import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.constants.DbConstants;
+import com.example.user.attendr.constants.TimeFormats;
 import com.example.user.attendr.credentials.CredentialManager;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -37,23 +38,24 @@ public class SignInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //Hides Activity bar
         try
         {
             this.getSupportActionBar().hide();
         }
         catch (NullPointerException e){e.fillInStackTrace();}
+
+
         setContentView(R.layout.activity_sign_in);
 
         bundle = getIntent().getExtras();
-
 
         tClock = findViewById(R.id.textClock1);
         qrCodeView = findViewById(R.id.qrCodeView);
         tvDate = findViewById(R.id.tvDate);
 
-
         Date date = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+        SimpleDateFormat format = new SimpleDateFormat(TimeFormats.DATE_DISPLAY_FORMAT, Locale.ENGLISH);
         String formattedDate = format.format(date);
 
         tvDate.setText(formattedDate);
