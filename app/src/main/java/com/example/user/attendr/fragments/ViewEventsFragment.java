@@ -20,6 +20,7 @@ import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.enums.TimeType;
+import com.example.user.attendr.interfaces.ListenerInterface;
 import com.example.user.attendr.models.Event;
 import com.example.user.attendr.network.NetworkCheck;
 import com.example.user.attendr.network.NetworkInterface;
@@ -27,7 +28,7 @@ import com.example.user.attendr.network.NetworkInterface;
 import java.util.ArrayList;
 
 
-public class ViewEventsFragment extends Fragment {
+public class ViewEventsFragment extends Fragment implements ListenerInterface{
     private static final String TAG = ViewEventsFragment.class.getSimpleName();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,6 +42,7 @@ public class ViewEventsFragment extends Fragment {
 
     SwipeRefreshLayout swipeRefreshLayout;
 
+    private View view;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -97,65 +99,15 @@ public class ViewEventsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final View view = inflater.inflate(R.layout.fragment_view_events, container, false);
-
-//        if(NetworkCheck.isConnectedToInternet(getContext())){
-//            NetworkCheck.redirectToLoginIfTokenExpired(getContext());
-//        }
-
+        view = inflater.inflate(R.layout.fragment_view_events, container, false);
 
         db = new DBManager(getContext()).open();
         bundle = getArguments();
 
         swipeRefreshLayout = view.findViewById(R.id.swipe_container);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
 
-//                NetworkInterface.getInstance(swipeRefreshLayout.getContext()).getEventsForUser(swipeRefreshLayout, new EventApiCallback() {
-//                    @Override
-//                    public void onSuccess() {
-//                        setAdapterWithData();
-//                        Toast.makeText(view.getContext(), getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
-//                        swipeRefreshLayout.setRefreshing(false);
-//                    }
-//
-//                    @Override
-//                    public void onFailure() {
-////                        setAdapterWithData();
-//                        Toast.makeText(view.getContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
-//                        swipeRefreshLayout.setRefreshing(false);
-//                    }
-//                });
 
-                if(NetworkCheck.alertIfNotConnectedToInternet(getContext(), swipeRefreshLayout)){
-
-                    NetworkInterface.getInstance(getContext()).getEventsForUser(new EventApiCallback() {
-                        @Override
-                        public void onSuccess() {
-                            setAdapterWithData();
-                            Toast.makeText(view.getContext(), getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-
-                        @Override
-                        public void onFailure() {
-                            setAdapterWithData();
-                            Toast.makeText(view.getContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-                    });
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-                else{
-                    swipeRefreshLayout.setRefreshing(false);
-
-                }
-
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
-
+        setListeners();
 
         recyclerView = view.findViewById(R.id.recyclerView);
 
@@ -210,6 +162,48 @@ public class ViewEventsFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void setListeners() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                if(NetworkCheck.alertIfNotConnectedToInternet(getContext(), swipeRefreshLayout)){
+
+                    NetworkInterface.getInstance(getContext()).getEventsForUser(new EventApiCallback() {
+
+                        @Override
+                        public void onSuccess() {
+                            setAdapterWithData();
+                            Toast.makeText(view.getContext(), getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            setAdapterWithData();
+                            Toast.makeText(view.getContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    });
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+                else{
+                    swipeRefreshLayout.setRefreshing(false);
+
+                }
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+    }
+
+    // Fetch events from DB according bundle parameters passed into fragment
+    private ArrayList<Event> getEventsWithParameters(Bundle bundle){
+
+        return db.getEvents((EventType) bundle.getSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE),
+                (TimeType)bundle.getSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE));
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -225,20 +219,6 @@ public class ViewEventsFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    // Fetch events from DB according bundle parameters passed into fragment
-    private ArrayList<Event> getEventsWithParameters(Bundle bundle){
-
-        return db.getEvents((EventType) bundle.getSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE),
-                (TimeType)bundle.getSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE));
-    }
-
-    private void displayEvents(ArrayList<Event> events){
-        Log.d(TAG, "-------------");
-        for(Event event: events){
-            Log.d(TAG, event.toString());
-        }
-        Log.d(TAG, "-------------");
-    }
 
 
 }

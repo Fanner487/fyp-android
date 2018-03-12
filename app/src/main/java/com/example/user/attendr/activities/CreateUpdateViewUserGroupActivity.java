@@ -117,7 +117,7 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
                             etDescription.getText().toString(),
                             toList(etUsers.getText().toString().toLowerCase().trim())
                     );
-                    
+
                     /*
                     * Perform either create or update on group
                     * */

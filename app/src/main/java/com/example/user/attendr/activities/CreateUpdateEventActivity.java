@@ -314,21 +314,6 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
 
     }
 
-    @Override
-    protected void onDestroy() {
-
-        Log.d(TAG, "in onDestroy");
-        super.onDestroy();
-
-        // Syncs database with server when after event creation/update
-//        NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
-//            @Override
-//            public void onSuccess() {}
-//
-//            @Override
-//            public void onFailure() {}
-//        });
-    }
 
     private void setTimeListeners(){
         // Opens date and time alert dialogs for the user to pick the times
@@ -389,17 +374,17 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
                         String signInTime = Event.parseToIsoTime(tvSignInTime.getText().toString().trim());
                         boolean attendanceRequired = switchAttendanceRequired.isChecked();
 
-                        Log.d(TAG, eventName);
-                        Log.d(TAG, location);
-                        Log.d(TAG, startTime);
-                        Log.d(TAG, finishTime);
-                        Log.d(TAG, signInTime);
-                        Log.d(TAG, Boolean.toString(attendanceRequired));
-                        Log.d(TAG, "Attendees");
-
-                        for (String attendee : attendees) {
-                            Log.d(TAG, attendee);
-                        }
+//                        Log.d(TAG, eventName);
+//                        Log.d(TAG, location);
+//                        Log.d(TAG, startTime);
+//                        Log.d(TAG, finishTime);
+//                        Log.d(TAG, signInTime);
+//                        Log.d(TAG, Boolean.toString(attendanceRequired));
+//                        Log.d(TAG, "Attendees");
+//
+//                        for (String attendee : attendees) {
+//                            Log.d(TAG, attendee);
+//                        }
 
                         final Event event = new Event(eventName, location, startTime, finishTime, signInTime, attendees, attendanceRequired);
 
@@ -409,103 +394,11 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
                         * */
                         if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.CREATE)){
 
-                            NetworkInterface.getInstance(CreateUpdateEventActivity.this).createEvent(event, new EventCreateUpdateCallback() {
-                                @Override
-                                public void onSuccess(final JSONObject response) {
-                                    try {
-                                        Toast.makeText(CreateUpdateEventActivity.this, getString(R.string.created_event) + response.get("event_name"), Toast.LENGTH_SHORT).show();
-
-                                        Log.d(TAG, "New event ID: " + Integer.toString(response.getInt("id")));
-
-                                        // Sync DB with server do get new event passed off into the new viewing activity
-                                        NetworkInterface.getInstance(CreateUpdateEventActivity.this).getEventsForUser(new EventApiCallback() {
-                                            @Override
-                                            public void onSuccess() {
-
-                                                try{
-                                                    Intent intent = new Intent(CreateUpdateEventActivity.this, ViewEventActivity.class);
-                                                    Bundle bundle = new Bundle();
-                                                    bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, (response.getInt("id")));
-                                                    bundle.putSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE, EventType.ORGANISE);
-                                                    intent.putExtras(bundle);
-                                                    startActivity(intent);
-                                                    finish();
-                                                }
-                                                catch (JSONException e){
-                                                    e.printStackTrace();
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onFailure() {}
-                                        });
-
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(ANError anError) {
-//                            Toast.makeText(CreateUpdateEventActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
-                                    final StringBuilder errorMessage = new StringBuilder();
-                                    try{
-
-                                        //TODO: change this
-                                        String jsonString = anError.getErrorBody();
-                                        JSONObject error = new JSONObject(jsonString);
-
-                                        Log.d(TAG, error.getString("non_field_errors"));
-                                        JSONArray jsonArray= error.getJSONArray("non_field_errors");
-
-
-
-                                        for(int i = 0; i < jsonArray.length(); i++){
-                                            errorMessage.append(jsonArray.get(i));
-                                        }
-                                        Log.d(TAG, errorMessage.toString());
-
-                                    }
-                                    catch(JSONException e){
-                                        e.printStackTrace();
-                                    }
-
-                                    AlertDialog alertDialog = new AlertDialog.Builder(CreateUpdateEventActivity.this).create();
-                                    alertDialog.setTitle(getString(R.string.alert));
-                                    alertDialog.setMessage(errorMessage.toString());
-                                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                            new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    dialog.dismiss();
-                                                }
-                                            });
-                                    alertDialog.show();
-                                }
-                            });
+                            createEvent(event);
                         }
                         else if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.UPDATE)){
-                            event.setEventId(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID));
-                            event.setAttending(existingEvent.getAttending());
 
-                            NetworkInterface.getInstance(CreateUpdateEventActivity.this).updateEvent(event, new EventCreateUpdateCallback() {
-                                @Override
-                                public void onSuccess(JSONObject response) {
-                                    Toast.makeText(CreateUpdateEventActivity.this, getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
-
-                                    Intent intent = new Intent(CreateUpdateEventActivity.this, ViewEventActivity.class);
-                                    Bundle bundle = new Bundle();
-                                    bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, event.getEventId());
-                                    bundle.putSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE, EventType.ORGANISE);
-                                    intent.putExtras(bundle);
-                                    startActivity(intent);
-                                    finish();
-                                }
-
-                                @Override
-                                public void onFailure(ANError anError) {
-                                    Toast.makeText(CreateUpdateEventActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                            updateEvent(event);
                         }
 
                     } else {
@@ -561,8 +454,109 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
                 });
                 AlertDialog dialog = builder.create();
                 dialog.show();
+            }
+        });
+    }
+
+    private void createEvent(Event event){
+
+        NetworkInterface.getInstance(CreateUpdateEventActivity.this).createEvent(event, new EventCreateUpdateCallback() {
+            @Override
+            public void onSuccess(final JSONObject response) {
+                try {
+                    Toast.makeText(CreateUpdateEventActivity.this, getString(R.string.created_event) + response.get("event_name"), Toast.LENGTH_SHORT).show();
+
+                    Log.d(TAG, "New event ID: " + Integer.toString(response.getInt("id")));
+
+                    // Sync DB with server do get new event passed off into the new viewing activity
+                    NetworkInterface.getInstance(CreateUpdateEventActivity.this).getEventsForUser(new EventApiCallback() {
+                        @Override
+                        public void onSuccess() {
+
+                            try{
+                                Intent intent = new Intent(CreateUpdateEventActivity.this, ViewEventActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, (response.getInt("id")));
+                                bundle.putSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE, EventType.ORGANISE);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                                finish();
+                            }
+                            catch (JSONException e){
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure() {}
+                    });
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(ANError anError) {
+//                            Toast.makeText(CreateUpdateEventActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
+                final StringBuilder errorMessage = new StringBuilder();
+                try{
+
+                    //TODO: change this
+                    String jsonString = anError.getErrorBody();
+                    JSONObject error = new JSONObject(jsonString);
+
+                    Log.d(TAG, error.getString("non_field_errors"));
+                    JSONArray jsonArray= error.getJSONArray("non_field_errors");
 
 
+
+                    for(int i = 0; i < jsonArray.length(); i++){
+                        errorMessage.append(jsonArray.get(i));
+                    }
+                    Log.d(TAG, errorMessage.toString());
+
+                }
+                catch(JSONException e){
+                    e.printStackTrace();
+                }
+
+                AlertDialog alertDialog = new AlertDialog.Builder(CreateUpdateEventActivity.this).create();
+                alertDialog.setTitle(getString(R.string.alert));
+                alertDialog.setMessage(errorMessage.toString());
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            }
+        });
+    }
+
+    private void updateEvent(final Event event){
+
+        event.setEventId(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID));
+        event.setAttending(existingEvent.getAttending());
+
+        NetworkInterface.getInstance(CreateUpdateEventActivity.this).updateEvent(event, new EventCreateUpdateCallback() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                Toast.makeText(CreateUpdateEventActivity.this, getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(CreateUpdateEventActivity.this, ViewEventActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, event.getEventId());
+                bundle.putSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE, EventType.ORGANISE);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onFailure(ANError anError) {
+                Toast.makeText(CreateUpdateEventActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
             }
         });
     }
