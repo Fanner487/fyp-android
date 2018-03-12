@@ -64,58 +64,61 @@ public class RegisterActivity extends AppCompatActivity implements ListenerInter
             @Override
             public void onClick(View view) {
 
-                if (NetworkCheck.isConnectedToInternet(RegisterActivity.this)) {
-                    NetworkInterface.getInstance(getApplicationContext())
-                            .register(
-                                    etUsername.getText().toString().toLowerCase().trim(),
-                                    etEmail.getText().toString().trim(),
-                                    etPassword.getText().toString().trim(),
-                                    etPasswordConfirm.getText().toString().trim(),
-                                    etFirstName.getText().toString().trim(),
-                                    etLastName.getText().toString().trim(),
-                                    new RegisterCallback() {
-                                        @Override
-                                        public void onSuccess() {
-                                            Toast.makeText(RegisterActivity.this, R.string.account_made, Toast.LENGTH_SHORT).show();
+                registerUser();
+            }
+        });
+    }
 
-                                            // Redirect to login screen
-                                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                            getApplicationContext().startActivity(intent);
-                                        }
+    private void registerUser(){
+        if (NetworkCheck.isConnectedToInternet(RegisterActivity.this)) {
+            NetworkInterface.getInstance(getApplicationContext())
+                    .register(
+                            etUsername.getText().toString().toLowerCase().trim(),
+                            etEmail.getText().toString().trim(),
+                            etPassword.getText().toString().trim(),
+                            etPasswordConfirm.getText().toString().trim(),
+                            etFirstName.getText().toString().trim(),
+                            etLastName.getText().toString().trim(),
+                            new RegisterCallback() {
+                                @Override
+                                public void onSuccess() {
+                                    Toast.makeText(RegisterActivity.this, R.string.account_made, Toast.LENGTH_SHORT).show();
 
-                                        @Override
-                                        public void onFailure(String response) {
+                                    // Redirect to login screen
+                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                    getApplicationContext().startActivity(intent);
+                                }
 
-                                            Log.d(TAG, response);
-                                            Toast.makeText(RegisterActivity.this, R.string.error_making_account, Toast.LENGTH_SHORT).show();
+                                @Override
+                                public void onFailure(String response) {
 
-                                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RegisterActivity.this);
-                                            alertDialogBuilder.setMessage(response);
-                                            alertDialogBuilder.setPositiveButton("yes",
-                                                    new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface arg0, int arg1) {
-                                                            Toast.makeText(RegisterActivity.this,"You clicked yes button",Toast.LENGTH_LONG).show();
-                                                        }
-                                                    });
+                                    Log.d(TAG, response);
+                                    Toast.makeText(RegisterActivity.this, R.string.error_making_account, Toast.LENGTH_SHORT).show();
 
-                                            alertDialogBuilder.setNegativeButton("No",new DialogInterface.OnClickListener() {
+                                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RegisterActivity.this);
+                                    alertDialogBuilder.setMessage(response);
+                                    alertDialogBuilder.setPositiveButton(R.string.yes,
+                                            new DialogInterface.OnClickListener() {
                                                 @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    finish();
+                                                public void onClick(DialogInterface arg0, int arg1) {
+                                                    Toast.makeText(RegisterActivity.this,"You clicked yes button",Toast.LENGTH_LONG).show();
                                                 }
                                             });
 
-                                            AlertDialog alertDialog = alertDialogBuilder.create();
-                                            alertDialog.show();
+                                    alertDialogBuilder.setNegativeButton(R.string.no,new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            finish();
                                         }
                                     });
-                }
-                else{
-                    Toast.makeText(RegisterActivity.this, getString(R.string.not_connected_to_internet), Toast.LENGTH_SHORT).show();
-                }
 
-            }
-        });
+                                    AlertDialog alertDialog = alertDialogBuilder.create();
+                                    alertDialog.show();
+                                }
+                            });
+        }
+        else{
+            Toast.makeText(RegisterActivity.this, getString(R.string.not_connected_to_internet), Toast.LENGTH_SHORT).show();
+        }
     }
 }

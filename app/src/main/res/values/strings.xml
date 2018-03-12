@@ -81,6 +81,8 @@
     <string name="error_creating_group">Error creating group</string>
     <string name="error_updating_group">Error updating group</string>
     <string name="group_exists_with_same_name">Group already exists with same name</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <string-array name="user_options">
         <item>View User Attendance</item>

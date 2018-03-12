@@ -100,8 +100,6 @@ public class MainActivity extends AppCompatActivity
         tvName = headerView.findViewById(R.id.tvName);
         tvUsername = headerView.findViewById(R.id.tvUsername);
 
-
-
         setNavBarHeadersWithUserDetails();
         setListeners();
 
@@ -109,9 +107,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setAdaptersWithData(){
+
         ArrayList<Event> ongoingEvents = db.getEvents(TimeType.ONGOING);
         ArrayList<Event> upcomingEvents = db.getEvents(TimeType.FUTURE);
-        // TODO: determine bundle
 
         linearLayoutManagerOngoing = new LinearLayoutManager(MainActivity.this);
         linearLayoutManagerUpcoming = new LinearLayoutManager(MainActivity.this);
@@ -134,6 +132,78 @@ public class MainActivity extends AppCompatActivity
         eventsViewAdapterOngoing.notifyDataSetChanged();
         eventsViewAdapterUpcoming.notifyDataSetChanged();
 
+    }
+
+    @Override
+    public void setListeners() {
+
+        fabCreateEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, CreateUpdateEventActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                fam.close(true);
+
+            }
+        });
+
+        fabCreateGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, CreateUpdateViewUserGroupActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                fam.close(true);
+
+            }
+        });
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                if(NetworkCheck.alertIfNotConnectedToInternet(MainActivity.this, swipeRefreshLayout)){
+
+                    NetworkInterface.getInstance(MainActivity.this).getEventsForUser(new EventApiCallback() {
+                        @Override
+                        public void onSuccess() {
+                            setAdaptersWithData();
+                            Toast.makeText(MainActivity.this, getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            setAdaptersWithData();
+                            Toast.makeText(MainActivity.this, getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    });
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+                else{
+                    swipeRefreshLayout.setRefreshing(false);
+
+                }
+            }
+        });
+    }
+
+    private void setNavBarHeadersWithUserDetails(){
+
+        String fullName = CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.FIRST_NAME) + " "
+                + CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.LAST_NAME);
+        String greeting = getString(R.string.welcome_user) + " " + CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.FIRST_NAME);
+
+        tvName.setText(fullName);
+        tvEmail.setText(CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.EMAIL));
+        tvUsername.setText(CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.USERNAME));
+        getSupportActionBar().setTitle(greeting);
     }
 
     @Override
@@ -206,99 +276,5 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    public void setListeners() {
-
-        fabCreateEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, CreateUpdateEventActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
-                intent.putExtras(bundle);
-                startActivity(intent);
-                fam.close(true);
-
-            }
-        });
-
-        fabCreateGroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, CreateUpdateViewUserGroupActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE, BundleAndSharedPreferencesConstants.CREATE);
-                intent.putExtras(bundle);
-                startActivity(intent);
-                fam.close(true);
-
-            }
-        });
-
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-
-//                NetworkInterface.getInstance(MainActivity.this).getEventsForUser(swipeRefreshLayout, new EventApiCallback() {
-//                    @Override
-//                    public void onSuccess() {
-//                        setAdaptersWithData();
-//                        Toast.makeText(MainActivity.this, getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
-//                        swipeRefreshLayout.setRefreshing(false);
-//                    }
-//
-//                    @Override
-//                    public void onFailure() {
-//                        setAdaptersWithData();
-//                        Toast.makeText(MainActivity.this, getString(R.string.network_error), Toast.LENGTH_SHORT).show();
-//                        swipeRefreshLayout.setRefreshing(false);
-//                    }
-//                });
-//
-//                swipeRefreshLayout.setRefreshing(false);
-
-                if(NetworkCheck.alertIfNotConnectedToInternet(MainActivity.this, swipeRefreshLayout)){
-
-                    NetworkInterface.getInstance(MainActivity.this).getEventsForUser(new EventApiCallback() {
-                        @Override
-                        public void onSuccess() {
-                            setAdaptersWithData();
-                            Toast.makeText(MainActivity.this, getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-
-                        @Override
-                        public void onFailure() {
-                            setAdaptersWithData();
-                            Toast.makeText(MainActivity.this, getString(R.string.network_error), Toast.LENGTH_SHORT).show();
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-                    });
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-                else{
-                    swipeRefreshLayout.setRefreshing(false);
-
-                }
-            }
-        });
-    }
-
-    private void updateData(){
-
-    }
-
-    private void setNavBarHeadersWithUserDetails(){
-
-        String fullName = CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.FIRST_NAME) + " "
-                + CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.LAST_NAME);
-        String greeting = getString(R.string.welcome_user) + " " + CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.FIRST_NAME);
-
-        tvName.setText(fullName);
-        tvEmail.setText(CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.EMAIL));
-        tvUsername.setText(CredentialManager.getCredential(getApplicationContext(), BundleAndSharedPreferencesConstants.USERNAME));
-        getSupportActionBar().setTitle(greeting);
     }
 }

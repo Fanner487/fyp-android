@@ -43,16 +43,6 @@ public class ViewGroupsActivity extends AppCompatActivity {
         db = new DBManager(this).open();
         recyclerView = findViewById(R.id.recyclerView);
 
-
-
-
-        setAdapterWithData();
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         setAdapterWithData();
     }
 
@@ -80,6 +70,7 @@ public class ViewGroupsActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.home) {
+            //TODO: doesn't go back
             Log.d(TAG, "Home pressed");
             finish();
             return true;
@@ -88,6 +79,9 @@ public class ViewGroupsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setAdapterWithData();
+    }
 }
