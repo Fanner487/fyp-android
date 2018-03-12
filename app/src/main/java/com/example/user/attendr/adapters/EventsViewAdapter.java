@@ -69,7 +69,7 @@ public class EventsViewAdapter extends RecyclerView.Adapter<EventsViewAdapter.Ev
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(view.getContext(), currentEvent.getEventName(), Toast.LENGTH_SHORT).show();
+                    
                     Log.d(TAG, currentEvent.toString());
 
                     Intent intent = new Intent(view.getContext(), ViewEventActivity.class);
