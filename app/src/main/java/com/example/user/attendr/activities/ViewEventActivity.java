@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.example.user.attendr.callbacks.DataChangedCallback;
 import com.example.user.attendr.credentials.CredentialManager;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.enums.TimeType;
@@ -58,7 +59,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
     protected void onResume() {
         super.onResume();
 
-        updateData();
+//        updateDataFromNetwork();
     }
 
     @Override
@@ -191,7 +192,15 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        AttendeesViewAdapter attendeesViewAdapter = new AttendeesViewAdapter(ViewEventActivity.this, event, eventType);
+        AttendeesViewAdapter attendeesViewAdapter = new AttendeesViewAdapter(ViewEventActivity.this, event, eventType, new DataChangedCallback() {
+            @Override
+            public void onDataChanged() {
+                Toast.makeText(ViewEventActivity.this, "onDataChanged Called", Toast.LENGTH_SHORT).show();
+//                updateData();
+                updateDataFromNetwork();
+            }
+
+        });
 
         recyclerView.setAdapter(attendeesViewAdapter);
 
@@ -222,6 +231,8 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
 //                    }
 //                });
 //
+//                updateDataFromNetwork();
+
                 if(NetworkCheck.alertIfNotConnectedToInternet(ViewEventActivity.this, swipeRefreshLayout)){
 
                     NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
@@ -290,5 +301,24 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
         Intent intent = new Intent(getApplicationContext(), cls);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    private void updateDataFromNetwork(){
+        if(NetworkCheck.alertIfNotConnectedToInternet(ViewEventActivity.this, swipeRefreshLayout)){
+
+            NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
+                @Override
+                public void onSuccess() {
+                    Toast.makeText(getApplicationContext(), getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
+                    updateData();
+                }
+
+                @Override
+                public void onFailure() {
+                    populateAdapter();
+                    Toast.makeText(getApplicationContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 }

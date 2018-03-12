@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.androidnetworking.error.ANError;
 import com.example.user.attendr.R;
 import com.example.user.attendr.activities.UserStatsActivity;
+import com.example.user.attendr.callbacks.DataChangedCallback;
 import com.example.user.attendr.callbacks.EventApiCallback;
 import com.example.user.attendr.callbacks.EventCreateUpdateCallback;
 import com.example.user.attendr.constants.DbConstants;
@@ -51,8 +52,9 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
     private Event currentEvent;
     private AlertDialog choiceDialog;
     private EventType eventType;
+    private DataChangedCallback dataChangedCallback;
 
-    public AttendeesViewAdapter(Context context, Event event, EventType eventType) {
+    public AttendeesViewAdapter(Context context, Event event, EventType eventType, DataChangedCallback dataChangedCallback) {
 
         ArrayList<String> listOfAttending = sortAttendees(event.getAttendees(), event.getAttending());
         this.context = context;
@@ -60,6 +62,7 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
         this.attending = event.getAttending();
         this.currentEvent = event;
         this.eventType = eventType;
+        this.dataChangedCallback = dataChangedCallback;
 
     }
 
@@ -250,6 +253,8 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
                 @Override
                 public void onSuccess(JSONObject response) {
                     Toast.makeText(context, context.getString(R.string.removed_user_from_attending), Toast.LENGTH_SHORT).show();
+
+                    dataChangedCallback.onDataChanged();
                 }
 
                 @Override
@@ -267,6 +272,7 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
                 @Override
                 public void onSuccess(JSONObject response) {
                     Toast.makeText(context, context.getString(R.string.user_removed_from_event), Toast.LENGTH_SHORT).show();
+                    dataChangedCallback.onDataChanged();
                 }
 
                 @Override
@@ -287,6 +293,7 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
                         public void onSuccess(JSONObject response) {
                             Log.d(TAG, response.toString());
                             Toast.makeText(context, context.getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
+                            dataChangedCallback.onDataChanged();
                         }
 
                         @Override

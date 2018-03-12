@@ -165,6 +165,7 @@
             android:layout_marginTop="8dp"
             android:textStyle="bold"
             android:text="@string/start_time_display"
+            android:textColor="@color/primary_text"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/tvLocation" />
 
@@ -175,6 +176,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:textStyle="bold"
+            android:textColor="@color/primary_text"
             android:text="@string/finish_time_display"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/tvStartDisplay" />
@@ -186,6 +188,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:textStyle="bold"
+            android:textColor="@color/primary_text"
             android:text="@string/sign_in_time_display"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/tvFinishDisplay" />
