@@ -132,7 +132,7 @@ public class NetworkInterface {
 
     public void getTokenForUser(String username, String password, final TokenCallback tokenCallback){
 
-        AndroidNetworking.post("http://46.101.13.145:8000/api/api-token-auth/")
+        AndroidNetworking.post(ApiUrls.OBTAIN_TOKEN)
                 .setPriority(Priority.MEDIUM)
                 .addBodyParameter(NetworkConstants.USERNAME, username)
                 .addBodyParameter(NetworkConstants.PASSWORD, password)
@@ -155,67 +155,6 @@ public class NetworkInterface {
                         tokenCallback.onFailure();
                     }
                 });
-
-
-
-    }
-
-    public void getEvents(final EventType type) {
-
-        String typeString = "";
-
-        if(type == EventType.ATTEND){
-            typeString = "attending";
-        }
-        else if(type == EventType.ORGANISE){
-            typeString = "organising";
-        }
-
-        AndroidNetworking.get(ApiUrls.PROFILE)
-                .addPathParameter("username", getLoggedInUser())
-                .addPathParameter("type", typeString)
-                .addPathParameter("time", "all")
-                .addHeaders(BundleAndSharedPreferencesConstants.AUTHORIZATION_HEADER, getAuthorizationHeaderToken())
-                .setPriority(Priority.MEDIUM)
-                .build()
-                .getAsObjectList(Event.class, new ParsedRequestListener<List<Event>>() {
-                    @Override
-                    public void onResponse(List<Event> events) {
-                        // do anything with response
-                        Log.d(TAG, "Events size : " + events.size());
-
-                        for (Event event : events) {
-                            Log.d(TAG, event.toString());
-                        }
-
-                        /*
-                        * Adding to DB
-                        * */
-
-                        db = new DBManager(context.getApplicationContext()).open();
-                        ArrayList<Event> newEvents = new ArrayList<>(events);
-
-                        db.deleteAllEvents();
-                        db.insertEvents(newEvents);
-
-                        ArrayList<Event> dbList = db.getAllEvents();
-
-                        for(Event eventDb: dbList){
-                            Log.d(TAG, eventDb.toString());
-                        }
-
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        // handle error
-                        Log.d(TAG, anError.getErrorDetail());
-                        Log.d(TAG, anError.getMessage());
-                        Log.d(TAG, Integer.toString(anError.getErrorCode()));
-                    }
-                });
-
-
     }
 
     public void login(final String username, final String password, final LoginCallback callback) {
@@ -317,7 +256,6 @@ public class NetworkInterface {
                         Log.d(TAG, "in onError");
                         Log.d(TAG, Integer.toString(anError.getErrorCode()));
                         Log.d(TAG, anError.getErrorBody());
-                        Log.d(TAG, anError.getErrorDetail());
                         eventCreateUpdateCallback.onFailure(anError);
                     }
                 });
@@ -344,76 +282,15 @@ public class NetworkInterface {
 
                     @Override
                     public void onError(ANError anError) {
-
                         tokenVerifyCallback.onFailure();
                     }
                 });
     }
 
-    public void removeUserFromAttendees(final Event event, String user, final EventCreateUpdateCallback eventCreateUpdateCallback){
-
-        Log.d(TAG, "Old attendees");
-        for(String name : event.getAttendees()){
-            Log.d(TAG, name);
-        }
-        ArrayList<String> newAttendees = new ArrayList<>();
-
-        for(String name : event.getAttendees()){
-            if(!name.equals(user)){
-                newAttendees.add(name);
-            }
-        }
-
-        Log.d(TAG, "New attendees");
-        for(String name : newAttendees){
-            Log.d(TAG, name);
-        }
-
-        event.setAttendees(newAttendees);
-
-        Log.d(TAG, "event to update with removing member");
-        Log.d(TAG, event.toString());
-
-        updateEvent(event, new EventCreateUpdateCallback() {
-            @Override
-            public void onSuccess(JSONObject response) {
-                eventCreateUpdateCallback.onSuccess(response);
-            }
-
-            @Override
-            public void onFailure(ANError anError) {
-                eventCreateUpdateCallback.onFailure(anError);
-            }
-        });
-    }
-
     public void updateEvent(Event event, final EventCreateUpdateCallback eventCreateUpdateCallback){
-
-        Log.d(TAG, "in UpdateEvent");
-        Log.d(TAG, event.toString());
 
         // JSON object to append event fields into for the request body
         JSONObject eventAsJsonObject = eventAsJsonObject(event);
-
-
-        JSONArray jsonArrayAttending = new JSONArray();
-
-        Log.d(TAG, "Before get attending");
-
-        try{
-            if(event.getAttending() != null){
-
-                Log.d(TAG, "in get attending");
-                for (String name : event.getAttending()) {
-                    jsonArrayAttending.put(name);
-                }
-
-                eventAsJsonObject.put(NetworkConstants.ATTENDING, jsonArrayAttending);
-            }
-        }
-        catch (JSONException e){
-            e.printStackTrace();
-        }
 
         AndroidNetworking.patch(ApiUrls.EVENTS + Integer.toString(event.getEventId()) + "/")
                 .addJSONObjectBody(eventAsJsonObject)
@@ -437,7 +314,6 @@ public class NetworkInterface {
                         eventCreateUpdateCallback.onFailure(anError);
                     }
                 });
-
     }
 
     public void deleteEvent(int eventId, final EventDeleteCallback eventDeleteCallback) {
@@ -460,12 +336,15 @@ public class NetworkInterface {
 
     }
 
+    /*
+    * Verifies all members in the list are acutal users on the server
+    * */
     public void verifyGroup(final UserGroup group, final String type, final UserGroupCreateCallback callback){
 
-        JSONObject jsonObject = new JSONObject();
-        JSONArray jsonArray = new JSONArray();
 
         db = new DBManager(context).open();
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
 
         try {
 
@@ -515,28 +394,8 @@ public class NetworkInterface {
     }
 
     /*
-    * Converts times into a ISO-8601 standard so server can correctly read it
+    * Manually signs in user into the event
     * */
-    private String parseToIsoTime(String time) {
-
-        Log.d(TAG, "in parseToIsoTime");
-        Log.d(TAG, time);
-
-        SimpleDateFormat sdf = new SimpleDateFormat(TimeFormats.DISPLAY_FORMAT, Locale.ENGLISH);
-
-        Date newTime = null;
-
-        try {
-            newTime = sdf.parse(time);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        SimpleDateFormat isoFormat = new SimpleDateFormat(TimeFormats.ISO_FORMAT, Locale.ENGLISH);
-
-        Log.d(TAG, isoFormat.format(newTime));
-        return isoFormat.format(newTime);
-    }
-
     public void manualSignInUser(String user, int eventId, final EventCreateUpdateCallback eventCreateUpdateCallback){
 
         JSONObject jsonObject = new JSONObject();
@@ -568,6 +427,9 @@ public class NetworkInterface {
 
     }
 
+    /*
+    * Removes user manually from the attending list in an event
+    * */
     public void removeUserFromAttending(String user, int eventId, final EventCreateUpdateCallback eventCreateUpdateCallback){
 
         JSONObject jsonObject = new JSONObject();
@@ -598,6 +460,46 @@ public class NetworkInterface {
                 });
     }
 
+    /*
+    * Removes user manually from the attendees list in an event including the attending list
+    * */
+    public void removeUserFromAttendees(final Event event, String user, final EventCreateUpdateCallback eventCreateUpdateCallback){
+
+        Log.d(TAG, "Old attendees");
+        for(String name : event.getAttendees()){
+            Log.d(TAG, name);
+        }
+        ArrayList<String> newAttendees = new ArrayList<>();
+
+        for(String name : event.getAttendees()){
+            if(!name.equals(user)){
+                newAttendees.add(name);
+            }
+        }
+
+        Log.d(TAG, "New attendees");
+        for(String name : newAttendees){
+            Log.d(TAG, name);
+        }
+
+        event.setAttendees(newAttendees);
+
+        Log.d(TAG, "event to update with removing member");
+        Log.d(TAG, event.toString());
+
+        updateEvent(event, new EventCreateUpdateCallback() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                eventCreateUpdateCallback.onSuccess(response);
+            }
+
+            @Override
+            public void onFailure(ANError anError) {
+                eventCreateUpdateCallback.onFailure(anError);
+            }
+        });
+    }
+
     // Returns logged in user from shared preferences
     private String getLoggedInUser(){
         SharedPreferences userDetails = context.getSharedPreferences("", MODE_PRIVATE);
@@ -610,6 +512,7 @@ public class NetworkInterface {
     }
 
     private JSONObject eventAsJsonObject(Event event){
+
         JSONObject create = new JSONObject();
 
         try{
@@ -628,6 +531,18 @@ public class NetworkInterface {
             }
 
             create.put(NetworkConstants.ATTENDEES, jsonArray);
+
+            JSONArray jsonArrayAttending = new JSONArray();
+
+            if(event.getAttending() != null){
+
+                Log.d(TAG, "in get attending");
+                for (String name : event.getAttending()) {
+                    jsonArrayAttending.put(name);
+                }
+
+                create.put(NetworkConstants.ATTENDING, jsonArrayAttending);
+            }
         }
         catch (JSONException e){
             e.printStackTrace();
