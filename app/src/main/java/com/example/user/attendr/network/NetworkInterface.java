@@ -24,6 +24,7 @@ import com.example.user.attendr.callbacks.TokenVerifyCallback;
 import com.example.user.attendr.callbacks.UserGroupCreateCallback;
 import com.example.user.attendr.constants.ApiUrls;
 import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
+import com.example.user.attendr.constants.NetworkConstants;
 import com.example.user.attendr.constants.TimeFormats;
 import com.example.user.attendr.credentials.CredentialManager;
 import com.example.user.attendr.database.DBManager;
@@ -220,8 +221,8 @@ public class NetworkInterface {
     public void login(final String username, final String password, final LoginCallback callback) {
 
         AndroidNetworking.post(ApiUrls.LOGIN)
-                .addBodyParameter("username", username)
-                .addBodyParameter("password", password)
+                .addBodyParameter(NetworkConstants.USERNAME, username)
+                .addBodyParameter(NetworkConstants.PASSWORD, password)
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsOkHttpResponseAndJSONObject(new OkHttpResponseAndJSONObjectRequestListener() {
@@ -243,14 +244,8 @@ public class NetworkInterface {
                                     String lastName = loginResponse.getString(BundleAndSharedPreferencesConstants.LAST_NAME);
                                     String email = loginResponse.getString(BundleAndSharedPreferencesConstants.EMAIL);
 
-
-
                                     CredentialManager.setCredentials(context, username, firstName, lastName, email, token);
-//
-//                                    SharedPreferences userDetails = context.getSharedPreferences("", MODE_PRIVATE);
-//                                    SharedPreferences.Editor edit = userDetails.edit();
-//                                    edit.putString(BundleAndSharedPreferencesConstants.TOKEN, token);
-//                                    edit.apply();
+
 
                                     callback.onSuccess();
 
