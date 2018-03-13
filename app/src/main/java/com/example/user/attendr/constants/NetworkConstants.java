@@ -20,6 +20,8 @@ public class NetworkConstants {
     public static final String START_TIME = "start_time";
     public static final String FINISH_TIME = "finish_time";
     public static final String SIGN_IN_TIME = "sign_in_time";
+    public static final String ATTENDEES = "attendees";
+    public static final String ATTENDING = "attending";
     public static final String ATTENDANCE_REQUIRED = "attendance_required";
     public static final String USERNAMES = "usernames";
     public static final String USER = "user";

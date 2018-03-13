@@ -84,7 +84,7 @@ public class NetworkInterface {
     public void getEventsForUser(final EventApiCallback eventApiCallback){
 
         AndroidNetworking.get(ApiUrls.EVENTS_FOR_USER)
-                .addPathParameter("username", getLoggedInUser())
+                .addPathParameter(NetworkConstants.USERNAME, getLoggedInUser())
                 .addHeaders(BundleAndSharedPreferencesConstants.AUTHORIZATION_HEADER, getAuthorizationHeaderToken())
                 .setPriority(Priority.MEDIUM)
                 .build()
@@ -246,7 +246,6 @@ public class NetworkInterface {
 
                                     CredentialManager.setCredentials(context, username, firstName, lastName, email, token);
 
-
                                     callback.onSuccess();
 
                                 } catch (JSONException e) {
@@ -298,32 +297,10 @@ public class NetworkInterface {
     public void createEvent(Event event, final EventCreateUpdateCallback eventCreateUpdateCallback) {
 
         // JSON object to append event fields into for the request body
-        JSONObject create = new JSONObject();
-
-        try {
-            create.put(NetworkConstants.ORGANISER, getLoggedInUser());
-            create.put(NetworkConstants.EVENT_NAME, event.getEventName());
-            create.put(NetworkConstants.LOCATION, event.getLocation());
-            create.put(NetworkConstants.START_TIME, event.getStartTime());
-            create.put(NetworkConstants.FINISH_TIME, event.getFinishTime());
-            create.put(NetworkConstants.SIGN_IN_TIME, event.getSignInTime());
-            create.put(NetworkConstants.ATTENDANCE_REQUIRED, Boolean.toString(event.isAttendanceRequired()));
-
-            JSONArray jsonArray = new JSONArray();
-
-            for (String name : event.getAttendees()) {
-                jsonArray.put(name);
-            }
-
-            create.put("attendees", jsonArray);
-            Log.d(TAG, create.toString());
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        JSONObject eventAsJsonObject = eventAsJsonObject(event);
 
         AndroidNetworking.post(ApiUrls.EVENTS)
-                .addJSONObjectBody(create)
+                .addJSONObjectBody(eventAsJsonObject)
                 .setPriority(Priority.MEDIUM)
                 .addHeaders(BundleAndSharedPreferencesConstants.AUTHORIZATION_HEADER, getAuthorizationHeaderToken())
                 .build()
@@ -410,46 +387,20 @@ public class NetworkInterface {
         });
     }
 
-    public void updateEvent(Event event, final EventCreateUpdateCallback eventCreateUpdateCallback) {
+    public void updateEvent(Event event, final EventCreateUpdateCallback eventCreateUpdateCallback){
 
         Log.d(TAG, "in UpdateEvent");
         Log.d(TAG, event.toString());
 
         // JSON object to append event fields into for the request body
-        JSONObject create = new JSONObject();
+        JSONObject eventAsJsonObject = eventAsJsonObject(event);
 
 
-        Log.d(TAG, "Attending members");
-        if(event.getAttending() != null){
+        JSONArray jsonArrayAttending = new JSONArray();
 
-            for(String name : event.getAttending()){
-                Log.d(TAG, name);
-            }
-        }
+        Log.d(TAG, "Before get attending");
 
-
-        try {
-            create.put(NetworkConstants.ORGANISER, getLoggedInUser());
-            create.put(NetworkConstants.EVENT_NAME, event.getEventName());
-            create.put(NetworkConstants.LOCATION, event.getLocation());
-            create.put(NetworkConstants.START_TIME, event.getStartTime());
-            create.put(NetworkConstants.FINISH_TIME, event.getFinishTime());
-            create.put(NetworkConstants.SIGN_IN_TIME, event.getSignInTime());
-            create.put(NetworkConstants.ATTENDANCE_REQUIRED, Boolean.toString(event.isAttendanceRequired()));
-            JSONArray jsonArray = new JSONArray();
-
-            for (String name : event.getAttendees()) {
-                jsonArray.put(name);
-            }
-
-            create.put("attendees", jsonArray);
-            Log.d(TAG, create.toString());
-
-
-            JSONArray jsonArrayAttending = new JSONArray();
-
-            Log.d(TAG, "Before get attending");
-
+        try{
             if(event.getAttending() != null){
 
                 Log.d(TAG, "in get attending");
@@ -457,17 +408,15 @@ public class NetworkInterface {
                     jsonArrayAttending.put(name);
                 }
 
-                create.put("attending", jsonArrayAttending);
+                eventAsJsonObject.put(NetworkConstants.ATTENDING, jsonArrayAttending);
             }
-
-            Log.d(TAG, create.toString());
-
-        } catch (JSONException e) {
+        }
+        catch (JSONException e){
             e.printStackTrace();
         }
 
         AndroidNetworking.patch(ApiUrls.EVENTS + Integer.toString(event.getEventId()) + "/")
-                .addJSONObjectBody(create)
+                .addJSONObjectBody(eventAsJsonObject)
                 .setPriority(Priority.MEDIUM)
                 .addHeaders(BundleAndSharedPreferencesConstants.AUTHORIZATION_HEADER, getAuthorizationHeaderToken())
                 .build()
@@ -659,4 +608,32 @@ public class NetworkInterface {
         SharedPreferences userDetails = context.getSharedPreferences("", MODE_PRIVATE);
         return BundleAndSharedPreferencesConstants.JWT + " " + userDetails.getString(BundleAndSharedPreferencesConstants.TOKEN, "");
     }
+
+    private JSONObject eventAsJsonObject(Event event){
+        JSONObject create = new JSONObject();
+
+        try{
+            create.put(NetworkConstants.ORGANISER, getLoggedInUser());
+            create.put(NetworkConstants.EVENT_NAME, event.getEventName());
+            create.put(NetworkConstants.LOCATION, event.getLocation());
+            create.put(NetworkConstants.START_TIME, event.getStartTime());
+            create.put(NetworkConstants.FINISH_TIME, event.getFinishTime());
+            create.put(NetworkConstants.SIGN_IN_TIME, event.getSignInTime());
+            create.put(NetworkConstants.ATTENDANCE_REQUIRED, Boolean.toString(event.isAttendanceRequired()));
+
+            JSONArray jsonArray = new JSONArray();
+
+            for (String name : event.getAttendees()) {
+                jsonArray.put(name);
+            }
+
+            create.put(NetworkConstants.ATTENDEES, jsonArray);
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        return create;
+    }
+
 }
