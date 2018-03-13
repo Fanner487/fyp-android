@@ -2,6 +2,9 @@ package com.example.user.attendr.constants;
 
 /**
  * Created by Eamon on 11/02/2018.
+ *
+ * Constants for DB table, row names
+ * Contains table creates for DB
  */
 
 public class DbConstants {

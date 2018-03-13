@@ -4,7 +4,6 @@ package com.example.user.attendr.adapters;
  * Created by Eamon on 13/02/2018.
  *
  * Pager adapter for tab layout for organised/attending events
- *
  */
 
 import android.os.Bundle;

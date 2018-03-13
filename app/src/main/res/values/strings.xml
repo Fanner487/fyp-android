@@ -83,6 +83,7 @@
     <string name="group_exists_with_same_name">Group already exists with same name</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="view_user_stats">View User Stats</string>
 
     <string-array name="user_options">
         <item>View User Attendance</item>

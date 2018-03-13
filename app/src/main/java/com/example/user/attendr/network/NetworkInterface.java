@@ -129,60 +129,6 @@ public class NetworkInterface {
                 });
     }
 
-//    public void getEventsForUser(View view, final EventApiCallback eventApiCallback){
-//
-//        if(NetworkCheck.alertIfNotConnectedToInternet(context, view)){
-//            AndroidNetworking.get(ApiUrls.EVENTS_FOR_USER)
-//                    .addPathParameter("username", getLoggedInUser())
-//                    .addHeaders(BundleAndSharedPreferencesConstants.AUTHORIZATION_HEADER, getAuthorizationHeaderToken())
-//                    .setPriority(Priority.MEDIUM)
-//                    .build()
-//                    .getAsObjectList(Event.class, new ParsedRequestListener<List<Event>>() {
-//                        @Override
-//                        public void onResponse(List<Event> events) {
-//                            // do anything with response
-//                            Log.d(TAG, "Events size : " + events.size());
-//
-//                            for (Event event : events) {
-//                                Log.d(TAG, event.toString());
-//                            }
-//
-//                        /*
-//                        * Adding to DB
-//                        * */
-//
-//                            db = new DBManager(context.getApplicationContext()).open();
-//                            ArrayList<Event> newEvents = new ArrayList<>(events);
-//
-//                            db.deleteAllEvents();
-//                            db.insertEvents(newEvents);
-//
-//                            ArrayList<Event> dbList = db.getAllEvents();
-//
-//                            for(Event eventDb: dbList){
-//                                Log.d(TAG, eventDb.toString());
-//                            }
-//
-//                            eventApiCallback.onSuccess();
-//
-//                        }
-//
-//                        @Override
-//                        public void onError(ANError anError) {
-//                            // handle error
-//                            Log.d(TAG, anError.getErrorDetail());
-//                            Log.d(TAG, anError.getMessage());
-//                            Log.d(TAG, Integer.toString(anError.getErrorCode()));
-//
-//                            eventApiCallback.onFailure();
-//                        }
-//                    });
-//        }
-//        else{
-//            eventApiCallback.onFailure();
-//        }
-//    }
-
     public void getTokenForUser(String username, String password, final TokenCallback tokenCallback){
 
         AndroidNetworking.post("http://46.101.13.145:8000/api/api-token-auth/")
@@ -195,46 +141,20 @@ public class NetworkInterface {
                     @Override
                     public void onResponse(Response okHttpResponse, JSONObject response) {
 
-                        Log.d(TAG, "Get token for user");
-                        Log.d(TAG, Integer.toString(okHttpResponse.code()));
-
                         if(okHttpResponse.code() == 200) {
                             tokenCallback.onSuccess(response);
                         }
                         else{
                             tokenCallback.onFailure();
                         }
-
-
                     }
 
                     @Override
                     public void onError(ANError anError) {
-
+                        tokenCallback.onFailure();
                     }
                 });
 
-
-
-    }
-
-    public void testToken(final RegisterCallback registerCallback){
-
-        AndroidNetworking.get("http://46.101.13.145:8000/api/jwt_login/")
-                .setPriority(Priority.MEDIUM)
-                .addHeaders(BundleAndSharedPreferencesConstants.AUTHORIZATION_HEADER, getAuthorizationHeaderToken())
-                .build()
-                .getAsOkHttpResponseAndString(new OkHttpResponseAndStringRequestListener() {
-                    @Override
-                    public void onResponse(Response okHttpResponse, String response) {
-                        registerCallback.onSuccess();
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                        registerCallback.onFailure(anError.getErrorBody());
-                    }
-                });
 
 
     }
@@ -249,8 +169,6 @@ public class NetworkInterface {
         else if(type == EventType.ORGANISE){
             typeString = "organising";
         }
-
-
 
         AndroidNetworking.get(ApiUrls.PROFILE)
                 .addPathParameter("username", getLoggedInUser())
@@ -353,56 +271,7 @@ public class NetworkInterface {
                         callback.onFailure();
                     }
                 });
-//                .getAsOkHttpResponse(new OkHttpResponseListener() {
-//                    @Override
-//                    public void onResponse(Response response) {
-//
-//                        Log.d(TAG, "login status: " + response.code());
-//
-//                        Log.d(TAG, response.body().toString());
-//                        if (response.code() == 200) {
-//
-//                            getTokenForUser(username, password, new TokenCallback() {
-//                                @Override
-//                                public void onSuccess(JSONObject response) {
-//
-//                                    String token;
-//                                    try{
-//                                        token = response.getString(BundleAndSharedPreferencesConstants.TOKEN);
-//
-//                                        Log.d(TAG, "login Token callback");
-//                                        Log.d(TAG, token);
-//
-//                                        SharedPreferences userDetails = context.getSharedPreferences("", MODE_PRIVATE);
-//                                        SharedPreferences.Editor edit = userDetails.edit();
-//                                        edit.putString(BundleAndSharedPreferencesConstants.TOKEN, token);
-//                                        edit.apply();
-//
-//                                        callback.onSuccess();
-//
-//                                    }
-//                                    catch (JSONException e){
-//                                        e.printStackTrace();
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void onFailure() {
-//                                    Log.d(TAG, "login Token callback failure");
-//                                }
-//                            });
-//
-////                            callback.onSuccess();
-//                        } else {
-//                            callback.onFailure();
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError(ANError anError) {
-//                        callback.onFailure();
-//                    }
-//                });
+
     }
 
     public void register(String username, String email, String password,

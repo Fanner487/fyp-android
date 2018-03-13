@@ -7,8 +7,6 @@
     card_view:cardUseCompatPadding="true"
     card_view:cardElevation="5dp">
 
-
-
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -35,6 +33,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="@string/location"
+            android:textColor="@color/secondary_text"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/tvEventName" />
 

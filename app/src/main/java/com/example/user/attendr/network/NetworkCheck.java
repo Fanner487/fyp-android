@@ -21,11 +21,15 @@ import static android.content.Context.MODE_PRIVATE;
 /**
  * Created by Eamon on 16/02/2018.
  *
- * Checks to see if phone has access to internet. If not, pop up a snackbar to give warning message
+ * Static class that checks to see if phone has access to internet.
+ * Shows AlertDialog if user JWT expired and SnackBar informing user not connected to the internet
  */
 
 public class NetworkCheck {
 
+    /*
+    * returns boolean from result of checking if phone is connected to the internet
+    * */
     public static boolean isConnectedToInternet(Context context){
         ConnectivityManager connectivityManager;
 
@@ -44,11 +48,12 @@ public class NetworkCheck {
         return connected;
     }
 
-    // Checks to see if user is online to get updates from server
+    /*
+    * Snackbar appears if user not connected to the internet
+    * */
     public static boolean alertIfNotConnectedToInternet(Context context, View view) {
 
         boolean connected = true;
-
 
         if(isConnectedToInternet(context)){
            redirectToLoginIfTokenExpired(context);
@@ -62,6 +67,9 @@ public class NetworkCheck {
         return connected;
     }
 
+    /*
+    * AlertDialog prompts user to sign in again if the JWT token expired
+    * */
     public static void redirectToLoginIfTokenExpired(final Context context) {
 
         if(NetworkCheck.isConnectedToInternet(context)){

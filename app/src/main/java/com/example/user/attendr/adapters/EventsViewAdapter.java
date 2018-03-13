@@ -25,6 +25,8 @@ import java.util.List;
 
 /**
  * Created by Eamon on 12/02/2018.
+ *
+ * RecyclerView adapter for viewing events
  */
 
 public class EventsViewAdapter extends RecyclerView.Adapter<EventsViewAdapter.EventsViewHolder> {
@@ -78,7 +80,6 @@ public class EventsViewAdapter extends RecyclerView.Adapter<EventsViewAdapter.Ev
                     intent.putExtras(extras);
 
                     view.getContext().startActivity(intent);
-
                 }
             });
         }

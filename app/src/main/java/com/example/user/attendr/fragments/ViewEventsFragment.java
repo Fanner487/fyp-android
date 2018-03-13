@@ -27,6 +27,13 @@ import com.example.user.attendr.network.NetworkInterface;
 
 import java.util.ArrayList;
 
+/**
+ * Created by Eamon on 13/02/2018.
+ *
+ * Fragment for viewing events.
+ * Bundle specifies if the events are organised/attending events
+ * and whether they're in the past/present/future
+ */
 
 public class ViewEventsFragment extends Fragment implements ListenerInterface{
     private static final String TAG = ViewEventsFragment.class.getSimpleName();
@@ -77,22 +84,6 @@ public class ViewEventsFragment extends Fragment implements ListenerInterface{
     @Override
     public void onResume() {
         super.onResume();
-
-//        if(NetworkCheck.isConnectedToInternet(getContext())){
-//            NetworkCheck.redirectToLoginIfTokenExpired(getContext());
-//        }
-
-        // Refreshes data from the server when events updated/deleted
-//        NetworkInterface.getInstance(getContext()).getEventsForUser(swipeRefreshLayout, new EventApiCallback() {
-//            @Override
-//            public void onSuccess() {
-//                setAdapterWithData();
-//            }
-//
-//            @Override
-//            public void onFailure() {}
-//        });
-
     }
 
     @Override
@@ -106,14 +97,11 @@ public class ViewEventsFragment extends Fragment implements ListenerInterface{
 
         swipeRefreshLayout = view.findViewById(R.id.swipe_container);
 
-
         setListeners();
 
         recyclerView = view.findViewById(R.id.recyclerView);
 
-
         setAdapterWithData();
-
 
         // Inflate the layout for this fragment
         return view;
@@ -122,12 +110,6 @@ public class ViewEventsFragment extends Fragment implements ListenerInterface{
     public void setAdapterWithData(){
 
         ArrayList<Event> events = getEventsWithParameters(bundle);
-
-        Log.d(TAG, "---------");
-        for(Event event : events){
-            Log.d(TAG, event.getEventName());
-        }
-        Log.d(TAG, "---------");
 
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -198,24 +180,14 @@ public class ViewEventsFragment extends Fragment implements ListenerInterface{
     }
 
     // Fetch events from DB according bundle parameters passed into fragment
+    // Organised/atteding events and in the past/present/future are returned
     private ArrayList<Event> getEventsWithParameters(Bundle bundle){
 
         return db.getEvents((EventType) bundle.getSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE),
                 (TimeType)bundle.getSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE));
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 

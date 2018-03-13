@@ -62,6 +62,7 @@ public class UserStatsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_stats);
         Log.d(TAG, "onCreate called");
 
+        getSupportActionBar().setTitle(R.string.view_user_stats);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -89,10 +90,11 @@ public class UserStatsActivity extends AppCompatActivity {
         scrollView.smoothScrollTo(0,0);
 
         runThread();
-
-
     }
 
+    /*
+    * increases the progress donut until the percentage
+    * */
     private void runThread(){
         timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -113,15 +115,14 @@ public class UserStatsActivity extends AppCompatActivity {
      * Sets and formats the text views of the activity
      */
     private void setTextViews() {
+
         tvUsername.setText(username);
 
         int totalEventsWithUser = getEventsWithUserInAttendees(db.getEvents(EventType.ORGANISE, TimeType.PAST), username).size();
         int eventsAttended = getEventsOrganisedWithUserInAttendees(username, AttendanceType.ATTENDING).size();
+        String displayText = Integer.toString(eventsAttended) + "/" + Integer.toString(totalEventsWithUser);
 
-
-
-        tvEventsAttended.setText(Integer.toString(eventsAttended) + "/" + Integer.toString(totalEventsWithUser));
-
+        tvEventsAttended.setText(displayText);
     }
 
     private void setAdaptersWithData() {

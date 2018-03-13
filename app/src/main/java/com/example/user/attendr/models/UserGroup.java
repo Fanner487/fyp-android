@@ -16,13 +16,6 @@ public class UserGroup {
     private ArrayList<String> users;
     private String description;
 
-//    public UserGroup(int id, String username, String groupName, ArrayList<String> users) {
-//        this.id = id;
-//        this.username = username;
-//        this.groupName = groupName;
-//        this.users = users;
-//    }
-
     public UserGroup(int id, String username, String groupName, ArrayList<String> users, String description) {
         this.id = id;
         this.username = username;
@@ -37,8 +30,6 @@ public class UserGroup {
         this.description = description;
         this.users = users;
     }
-
-
 
     public UserGroup(){}
 

@@ -70,9 +70,6 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
         TextView tvAttendee;
         ImageView imageView;
 
-        //Gets assigned to each view
-//        Event currentEvent;
-
         public AttendeesViewHolder(View view) {
             super(view);
             tvAttendee = view.findViewById(R.id.tvAttendee);

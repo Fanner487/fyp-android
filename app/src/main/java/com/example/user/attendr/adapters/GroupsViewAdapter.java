@@ -21,6 +21,8 @@ import java.util.List;
 
 /**
  * Created by Eamon on 17/02/2018.
+ *
+ * RecyclerView adapter for viewing user defined groups of members
  */
 
 public class GroupsViewAdapter extends RecyclerView.Adapter<GroupsViewAdapter.GroupsViewHolder>{

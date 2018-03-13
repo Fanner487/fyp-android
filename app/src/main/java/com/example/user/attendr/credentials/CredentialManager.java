@@ -9,6 +9,8 @@ import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Eamon on 06/03/2018.
+ *
+ * Static class for get/set credentials in SharedPreferences
  */
 
 public class CredentialManager {
