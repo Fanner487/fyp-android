@@ -134,8 +134,8 @@ public class NetworkInterface {
 
         AndroidNetworking.post("http://46.101.13.145:8000/api/api-token-auth/")
                 .setPriority(Priority.MEDIUM)
-                .addBodyParameter("username", username)
-                .addBodyParameter("password", password)
+                .addBodyParameter(NetworkConstants.USERNAME, username)
+                .addBodyParameter(NetworkConstants.PASSWORD, password)
                 .build()
                 .getAsOkHttpResponseAndJSONObject(new OkHttpResponseAndJSONObjectRequestListener() {
 
@@ -273,12 +273,12 @@ public class NetworkInterface {
                          String passwordConfirm, String firstName, String lastName, final RegisterCallback callback) {
 
         AndroidNetworking.post(ApiUrls.REGISTER)
-                .addBodyParameter("username", username)
-                .addBodyParameter("email", email)
-                .addBodyParameter("password", password)
-                .addBodyParameter("password_confirm", passwordConfirm)
-                .addBodyParameter("first_name", firstName)
-                .addBodyParameter("last_name", lastName)
+                .addBodyParameter(NetworkConstants.USERNAME, username)
+                .addBodyParameter(NetworkConstants.EMAIL, email)
+                .addBodyParameter(NetworkConstants.PASSWORD, password)
+                .addBodyParameter(NetworkConstants.PASSWORD_CONFIRM, passwordConfirm)
+                .addBodyParameter(NetworkConstants.FIRST_NAME, firstName)
+                .addBodyParameter(NetworkConstants.LAST_NAME, lastName)
                 .setPriority(Priority.MEDIUM)
                 .build()
                 .getAsJSONObject(new JSONObjectRequestListener() {
@@ -301,13 +301,13 @@ public class NetworkInterface {
         JSONObject create = new JSONObject();
 
         try {
-            create.put("organiser", getLoggedInUser());
-            create.put("event_name", event.getEventName());
-            create.put("location", event.getLocation());
-            create.put("start_time", event.getStartTime());
-            create.put("finish_time", event.getFinishTime());
-            create.put("sign_in_time", event.getSignInTime());
-            create.put("attendance_required", Boolean.toString(event.isAttendanceRequired()));
+            create.put(NetworkConstants.ORGANISER, getLoggedInUser());
+            create.put(NetworkConstants.EVENT_NAME, event.getEventName());
+            create.put(NetworkConstants.LOCATION, event.getLocation());
+            create.put(NetworkConstants.START_TIME, event.getStartTime());
+            create.put(NetworkConstants.FINISH_TIME, event.getFinishTime());
+            create.put(NetworkConstants.SIGN_IN_TIME, event.getSignInTime());
+            create.put(NetworkConstants.ATTENDANCE_REQUIRED, Boolean.toString(event.isAttendanceRequired()));
 
             JSONArray jsonArray = new JSONArray();
 
@@ -324,7 +324,6 @@ public class NetworkInterface {
 
         AndroidNetworking.post(ApiUrls.EVENTS)
                 .addJSONObjectBody(create)
-
                 .setPriority(Priority.MEDIUM)
                 .addHeaders(BundleAndSharedPreferencesConstants.AUTHORIZATION_HEADER, getAuthorizationHeaderToken())
                 .build()
@@ -430,13 +429,13 @@ public class NetworkInterface {
 
 
         try {
-            create.put("organiser", getLoggedInUser());
-            create.put("event_name", event.getEventName());
-            create.put("location", event.getLocation());
-            create.put("start_time", event.getStartTime());
-            create.put("finish_time", event.getFinishTime());
-            create.put("sign_in_time", event.getSignInTime());
-            create.put("attendance_required", Boolean.toString(event.isAttendanceRequired()));
+            create.put(NetworkConstants.ORGANISER, getLoggedInUser());
+            create.put(NetworkConstants.EVENT_NAME, event.getEventName());
+            create.put(NetworkConstants.LOCATION, event.getLocation());
+            create.put(NetworkConstants.START_TIME, event.getStartTime());
+            create.put(NetworkConstants.FINISH_TIME, event.getFinishTime());
+            create.put(NetworkConstants.SIGN_IN_TIME, event.getSignInTime());
+            create.put(NetworkConstants.ATTENDANCE_REQUIRED, Boolean.toString(event.isAttendanceRequired()));
             JSONArray jsonArray = new JSONArray();
 
             for (String name : event.getAttendees()) {
@@ -460,8 +459,6 @@ public class NetworkInterface {
 
                 create.put("attending", jsonArrayAttending);
             }
-
-
 
             Log.d(TAG, create.toString());
 
@@ -528,7 +525,7 @@ public class NetworkInterface {
                 jsonArray.put(username);
             }
 
-            jsonObject.put("usernames", jsonArray);
+            jsonObject.put(NetworkConstants.USERNAMES, jsonArray);
         }
         catch(JSONException e){
             e.printStackTrace();
@@ -597,8 +594,8 @@ public class NetworkInterface {
 
         try{
 
-            jsonObject.put("user", user);
-            jsonObject.put("event_id", eventId);
+            jsonObject.put(NetworkConstants.USER, user);
+            jsonObject.put(NetworkConstants.EVENT_ID, eventId);
         }
         catch(JSONException e){
             e.printStackTrace();
@@ -628,8 +625,8 @@ public class NetworkInterface {
 
         try{
 
-            jsonObject.put("user", user);
-            jsonObject.put("event_id", eventId);
+            jsonObject.put(NetworkConstants.USER, user);
+            jsonObject.put(NetworkConstants.EVENT_ID, eventId);
         }
         catch(JSONException e){
             e.printStackTrace();
