@@ -2,6 +2,7 @@ package com.example.user.attendr.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -118,7 +119,9 @@ public class RegisterActivity extends AppCompatActivity implements ListenerInter
                             });
         }
         else{
-            Toast.makeText(RegisterActivity.this, getString(R.string.not_connected_to_internet), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(RegisterActivity.this, getString(R.string.not_connected_to_internet), Toast.LENGTH_SHORT).show();
+            Snackbar snackbar = Snackbar.make(btnSubmit, getString(R.string.not_connected_to_internet), Snackbar.LENGTH_SHORT);
+            snackbar.show();
         }
     }
 }

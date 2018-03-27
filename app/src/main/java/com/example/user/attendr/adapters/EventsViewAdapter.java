@@ -1,9 +1,17 @@
 package com.example.user.attendr.adapters;
 
+import android.Manifest;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,13 +23,13 @@ import android.widget.Toast;
 
 import com.example.user.attendr.R;
 import com.example.user.attendr.activities.ViewEventActivity;
+import com.example.user.attendr.constants.ApiUrls;
 import com.example.user.attendr.constants.BundleAndSharedPreferencesConstants;
 import com.example.user.attendr.constants.DbConstants;
-import com.example.user.attendr.credentials.CredentialManager;
-import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.models.Event;
 
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Created by Eamon on 12/02/2018.
@@ -82,8 +90,76 @@ public class EventsViewAdapter extends RecyclerView.Adapter<EventsViewAdapter.Ev
                     view.getContext().startActivity(intent);
                 }
             });
+
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle(context.getString(R.string.add_calendar_event_alert));
+                    builder.setMessage(context.getString(R.string.create_calendar_event_message));
+                    builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                            createEventReminder(currentEvent);
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+
+
+
+                    return true;
+                }
+            });
         }
 
+    }
+
+    private void createEventReminder(Event event){
+
+        long calID = 3;
+        long startTime = Event.toMilliseconds(event.getStartTime());
+        long endTime = Event.toMilliseconds(event.getFinishTime());
+
+        ContentResolver cr = context.getContentResolver();
+        ContentValues values = new ContentValues();
+        values.put(CalendarContract.Events.DTSTART, startTime);
+        values.put(CalendarContract.Events.DTEND, endTime);
+        values.put(CalendarContract.Events.TITLE, event.getEventName());
+        values.put(CalendarContract.Events.EVENT_LOCATION, event.getLocation());
+        values.put(CalendarContract.Events.CALENDAR_ID, calID);
+
+        TimeZone tz = TimeZone.getDefault();
+        values.put(CalendarContract.Events.EVENT_TIMEZONE, tz.getID());
+
+        Uri uri = null;
+
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALENDAR)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            Toast.makeText(context, R.string.permission_not_granted, Toast.LENGTH_SHORT).show();
+        }
+        else{
+            uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
+            // get the event ID that is the last element in the Uri
+            long eventID = Long.parseLong(uri.getLastPathSegment());
+
+            Intent intent = new Intent(Intent.ACTION_EDIT);
+            intent.setData(Uri.parse(ApiUrls.CALENDAR_APP_URL + String.valueOf(eventID)));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+
+            String displayText = event.getEventName() + " added to your calendar";
+            Toast.makeText(context, displayText, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public EventsViewAdapter(Context context, List<Event> eventList, Bundle bundle) {

@@ -1,6 +1,7 @@
 package com.example.user.attendr.activities;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -63,7 +64,6 @@ public class LoginActivity extends AppCompatActivity implements ListenerInterfac
                                 public void onSuccess() {
                                     Toast.makeText(LoginActivity.this, getString(R.string.successful_login), Toast.LENGTH_SHORT).show();
 
-
                                     // Redirect to MainActivity screen
                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                     getApplicationContext().startActivity(intent);
@@ -79,7 +79,9 @@ public class LoginActivity extends AppCompatActivity implements ListenerInterfac
                             });
                 }
                 else {
-                    Toast.makeText(LoginActivity.this, getString(R.string.not_connected_to_internet), Toast.LENGTH_SHORT).show();
+                    Snackbar snackbar = Snackbar.make(btnSubmit, getString(R.string.not_connected_to_internet), Snackbar.LENGTH_SHORT);
+                    snackbar.show();
+
                 }
 
             }

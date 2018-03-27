@@ -14,6 +14,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -283,6 +284,13 @@ public class Event {
         df.setTimeZone(tz);
 
         return df.format(newDate);
+    }
+
+    public static long toMilliseconds(String date){
+        Date dateField = parseDateTimeField(date);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(dateField);
+        return calendar.getTimeInMillis();
     }
 
     public static Date parseDateTimeField(String date) {

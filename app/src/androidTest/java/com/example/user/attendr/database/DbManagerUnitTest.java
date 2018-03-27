@@ -1,4 +1,4 @@
-package com.example.user.attendr;
+package com.example.user.attendr.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -44,11 +44,6 @@ public class DbManagerUnitTest {
     @After
     public void finish(){
         db.close();
-    }
-
-    @Test
-    public void testPreConditions(){
-        assertNotNull(db);
     }
 
     @Test

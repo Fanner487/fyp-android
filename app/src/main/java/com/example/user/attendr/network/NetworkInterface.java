@@ -98,24 +98,13 @@ public class NetworkInterface {
                             Log.d(TAG, event.toString());
                         }
 
-                        /*
-                        * Adding to DB
-                        * */
-
                         db = new DBManager(context.getApplicationContext()).open();
                         ArrayList<Event> newEvents = new ArrayList<>(events);
 
                         db.deleteAllEvents();
                         db.insertEvents(newEvents);
 
-                        ArrayList<Event> dbList = db.getAllEvents();
-
-                        for(Event eventDb: dbList){
-                            Log.d(TAG, eventDb.toString());
-                        }
-
                         eventApiCallback.onSuccess();
-
                     }
 
                     @Override
@@ -124,6 +113,7 @@ public class NetworkInterface {
                         Log.d(TAG, anError.getErrorDetail());
                         Log.d(TAG, anError.getMessage());
                         Log.d(TAG, Integer.toString(anError.getErrorCode()));
+
 
                         eventApiCallback.onFailure();
                     }

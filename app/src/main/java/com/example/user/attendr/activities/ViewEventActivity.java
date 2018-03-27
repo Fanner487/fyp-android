@@ -1,6 +1,7 @@
 package com.example.user.attendr.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.user.attendr.callbacks.DataChangedCallback;
+import com.example.user.attendr.constants.ApiUrls;
 import com.example.user.attendr.credentials.CredentialManager;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.enums.TimeType;
@@ -42,6 +44,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
     TextView tvPercentage;
     TextView tvAttended;
     Button btnUpdateOrSignIn;
+    Button btnViewOnMap;
 
     int eventId;
     Event event;
@@ -86,6 +89,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
         tvPercentage = findViewById(R.id.tvPercentage);
         tvAttended = findViewById(R.id.tvAttended);
         btnUpdateOrSignIn = findViewById(R.id.btnUpdateOrSignIn);
+        btnViewOnMap = findViewById(R.id.btnViewOnMap);
         swipeRefreshLayout = findViewById(R.id.swipe_container);
 
         timeType = (TimeType) bundle.getSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE);
@@ -213,29 +217,22 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
 
     @Override
     public void setListeners() {
+
+        btnViewOnMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri map = Uri.parse(ApiUrls.MAPS_ADDRESS_URL + tvLocation.getText().toString());
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(map);
+                i.setPackage(ApiUrls.MAPS_APP_URL);
+                startActivity(i);
+
+            }
+        });
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
             @Override
             public void onRefresh() {
-
-//                NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(swipeRefreshLayout, new EventApiCallback() {
-//                    @Override
-//                    public void onSuccess() {
-//                        updateData();
-//                        Toast.makeText(getApplicationContext(), getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
-//                        updateData();
-//                        swipeRefreshLayout.setRefreshing(false);
-//                    }
-//
-//                    @Override
-//                    public void onFailure() {
-//                        populateAdapter();
-//                        Toast.makeText(getApplicationContext(), getString(R.string.network_error), Toast.LENGTH_SHORT).show();
-//                        swipeRefreshLayout.setRefreshing(false);
-//                    }
-//                });
-//
-//                updateDataFromNetwork();
 
                 if(NetworkCheck.alertIfNotConnectedToInternet(ViewEventActivity.this, swipeRefreshLayout)){
 
@@ -269,6 +266,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
             @Override
             public void onClick(View view) {
 
+                // Change function of button between update and sign into event
                 if(eventType.equals(EventType.ORGANISE)){
                     Log.d(TAG, "In update event");
 

@@ -17,6 +17,9 @@ public class ApiUrls {
     public static final String MANUAL_SIGN_IN = BASE_URL + "manual_sign_in/";
     public static final String REMOVE_USER_FROM_ATTENDING = BASE_URL + "remove_user_from_attending/";
     public static final String OBTAIN_TOKEN = BASE_URL + "api-token-auth/";
+    public static final String CALENDAR_APP_URL = "content://com.android.calendar/events/";
+    public static final String MAPS_APP_URL = "com.google.android.apps.maps";
+    public static final String MAPS_ADDRESS_URL ="http://maps.google.co.in/maps?q=";
 
 
 }

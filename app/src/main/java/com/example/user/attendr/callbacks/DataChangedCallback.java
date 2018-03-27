@@ -8,6 +8,5 @@ package com.example.user.attendr.callbacks;
  */
 
 public interface DataChangedCallback {
-
     void onDataChanged();
 }

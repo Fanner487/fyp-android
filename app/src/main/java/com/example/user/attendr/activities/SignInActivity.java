@@ -8,6 +8,7 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.WindowManager;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextClock;
 import android.widget.TextView;
@@ -33,6 +34,7 @@ public class SignInActivity extends AppCompatActivity {
     ImageView qrCodeView;
     TextView tvDate;
     Bundle bundle;
+    ImageView circle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +47,6 @@ public class SignInActivity extends AppCompatActivity {
         }
         catch (NullPointerException e){e.fillInStackTrace();}
 
-
         setContentView(R.layout.activity_sign_in);
 
         bundle = getIntent().getExtras();
@@ -53,6 +54,16 @@ public class SignInActivity extends AppCompatActivity {
         tClock = findViewById(R.id.textClock1);
         qrCodeView = findViewById(R.id.qrCodeView);
         tvDate = findViewById(R.id.tvDate);
+//        circle = findViewById(R.id.imageView3);
+
+//        TranslateAnimation animation = new TranslateAnimation(0.0f, 400.0f,
+//                0.0f, 0.0f);          //  new TranslateAnimation(xFrom,xTo, yFrom,yTo)
+//        animation.setDuration(5000);  // animation duration
+//        animation.setRepeatCount(5);  // animation repeat count
+//        animation.setRepeatMode(2);   // repeat animation (left to right, right to left )
+//        //animation.setFillAfter(true);
+
+//        circle.startAnimation(animation);
 
         Date date = new Date();
         SimpleDateFormat format = new SimpleDateFormat(TimeFormats.DATE_DISPLAY_FORMAT, Locale.ENGLISH);

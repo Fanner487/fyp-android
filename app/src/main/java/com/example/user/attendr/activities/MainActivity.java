@@ -1,7 +1,12 @@
 package com.example.user.attendr.activities;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.CalendarContract;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -104,6 +109,21 @@ public class MainActivity extends AppCompatActivity
         setListeners();
 
         setAdaptersWithData();
+
+        checkCalendarPermissions();
+
+
+    }
+
+    private void checkCalendarPermissions(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            Toast.makeText(this, R.string.permission_not_granted, Toast.LENGTH_SHORT).show();
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_CALENDAR},
+                    999);
+        }
     }
 
     private void setAdaptersWithData(){
@@ -267,8 +287,9 @@ public class MainActivity extends AppCompatActivity
 
             Intent i = new Intent(getApplicationContext(), LoginActivity.class);
 
-            // Clear all activities and credentials from SharedPreferences before going back to login screen
+            // Clear all activities and credentials from SharedPreferences and eventsbefore going back to login screen
             CredentialManager.clearCredentials(getApplicationContext());
+            db.deleteAllEvents();
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
         }
