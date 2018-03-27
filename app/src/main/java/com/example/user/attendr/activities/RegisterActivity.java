@@ -2,6 +2,7 @@ package com.example.user.attendr.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -134,37 +135,33 @@ public class RegisterActivity extends AppCompatActivity implements ListenerInter
         }
     }
 
+    // Parses server errors from JSON to a human-readable string
     private String parseErrors(String response){
         JSONObject jsonObject;
 
-        String result = "";
         StringBuilder builder = new StringBuilder();
         try{
             jsonObject = new JSONObject(response);
             Iterator<String> keys = jsonObject.keys();
 
             while(keys.hasNext()){
-                String key = keys.next().replace("_", " ");
+                String key = keys.next();
                 String val = jsonObject.getString(key).replace("[", "").replace("\"", "").replace("]", "");;
 
-                Log.d(TAG, "key: " + key);
-                Log.d(TAG, "val: " + String.valueOf(val));
+                // Capitalises first letter of key
+                String capitalKey = key.substring(0, 1).toUpperCase() + key.substring(1);
 
-//                StringBuilder builderCapital = new StringBuilder();
-                String cap = key.substring(0, 1).toUpperCase() + key.substring(1);
-
-                builder.append(cap);
+                builder.append(capitalKey);
                 builder.append(": ");
                 builder.append(val);
                 builder.append("\n");
-
-
 
             }
         }
         catch (JSONException e){
             e.printStackTrace();
         }
+
         return builder.toString();
     }
 
