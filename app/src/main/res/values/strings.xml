@@ -88,6 +88,7 @@
     <string name="view_location_on_map">View location on map</string>
     <string name="add_calendar_event_alert">Add Event to Calendar</string>
     <string name="create_calendar_event_message">Do you want to put this event in your calendar?</string>
+    <string name="error">Error</string>
 
     <string-array name="user_options">
         <item>View User Attendance</item>
