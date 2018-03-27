@@ -76,16 +76,20 @@ public class MainActivity extends AppCompatActivity
         rvOngoing = findViewById(R.id.rvOngoing);
         rvUpcoming = findViewById(R.id.rvUpcoming);
 
-//        NetworkInterface.getInstance(this).getEventsForUser(toolbar, new EventApiCallback() {
-//            @Override
-//            public void onSuccess() {
+        NetworkInterface.getInstance(this).getEventsForUser( new EventApiCallback() {
+            @Override
+            public void onSuccess() {
+                setAdaptersWithData();
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        });
+
+//        NetworkInterface.getInstance(this).getEventsForUser(toolbar, new EventApiCallback(){
 //
-//            }
-//
-//            @Override
-//            public void onFailure() {
-//
-//            }
 //        });
 
         db = new DBManager(this).open();

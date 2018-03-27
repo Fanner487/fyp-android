@@ -146,7 +146,7 @@ public class UserStatsActivity extends AppCompatActivity {
         rvNotAttended.setLayoutManager(linearLayoutManagerNotAttended);
 
         Bundle extras = new Bundle();
-        extras.putSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE, bundle.getSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE));
+//        extras.putSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE, bundle.getSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE));
         extras.putSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE, bundle.getSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE));
 
         EventsViewAdapter eventsViewAdapterAttended = new EventsViewAdapter(UserStatsActivity.this, eventsAttended, extras);
