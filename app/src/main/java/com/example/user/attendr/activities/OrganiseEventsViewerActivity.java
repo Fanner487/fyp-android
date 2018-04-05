@@ -33,6 +33,7 @@ public class OrganiseEventsViewerActivity extends AppCompatActivity
     FloatingActionMenu fam;
     FloatingActionButton fabCreateEvent, fabCreateGroup;
     String number;
+    String something;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
