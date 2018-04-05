@@ -82,6 +82,8 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
                 @Override
                 public boolean onLongClick(final View view) {
 
+                    // Organisers of events can manually sign in/out users
+                    // Or remove completely from event.
                     if(eventType == EventType.ORGANISE){
                         organiseEventListener(view);
                     }
@@ -296,7 +298,7 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
                         @Override
                         public void onFailure(ANError anError) {
                             Log.d(TAG, anError.toString());
-                            Toast.makeText(context, context.getString(R.string.error_removing_user_from_event), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, context.getString(R.string.user_already_attending), Toast.LENGTH_SHORT).show();
                         }
                     });
         }

@@ -62,6 +62,7 @@
     <string name="token_expired">Token expired</string>
     <string name="sign_in_again">You must sign in again to perform network functions</string>
     <string name="ok">OK</string>
+    <string name="user_already_attending">User is already attending</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="user_removed_from_event">User removed from event</string>
     <string name="error_removing_user_from_event">Error removing user from event</string>
