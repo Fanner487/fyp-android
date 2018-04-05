@@ -291,7 +291,6 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
                         @Override
                         public void onSuccess(JSONObject response) {
                             Log.d(TAG, response.toString());
-                            Toast.makeText(context, context.getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
                             dataChangedCallback.onDataChanged();
                         }
 

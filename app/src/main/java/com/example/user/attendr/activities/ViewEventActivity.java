@@ -203,8 +203,6 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
         AttendeesViewAdapter attendeesViewAdapter = new AttendeesViewAdapter(ViewEventActivity.this, event, eventType, new DataChangedCallback() {
             @Override
             public void onDataChanged() {
-                Toast.makeText(ViewEventActivity.this, "onDataChanged Called", Toast.LENGTH_SHORT).show();
-//                updateData();
                 updateDataFromNetwork();
             }
 

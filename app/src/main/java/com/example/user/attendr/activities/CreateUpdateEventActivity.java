@@ -9,6 +9,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -101,11 +102,14 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
 
         bundle = getIntent().getExtras();
 
-        Log.d(TAG, "Bundle Extras");
-        Log.d(TAG, "Create or update: " + bundle.getString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE));
-        Log.d(TAG, "Event ID: " + Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID)));
-
         createOrUpdate = bundle.getString(BundleAndSharedPreferencesConstants.CREATE_OR_UPDATE);
+
+        if(createOrUpdate.equals(BundleAndSharedPreferencesConstants.CREATE)){
+            getSupportActionBar().setTitle(R.string.create_event);
+        }
+        else{
+            getSupportActionBar().setTitle(R.string.update_event);
+        }
 
         prepareGroups();
 
@@ -290,19 +294,7 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
 
     private void populateWithExistingData(){
 
-        Log.d(TAG, "populate existing data");
-        Log.d(TAG, "Event ID: " + Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID)));
-
-
         existingEvent = db.getEventWithEventId(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID));
-
-        Log.d(TAG, "Attending");
-
-        if(existingEvent.getAttending() != null){
-            for(String name : existingEvent.getAttending()){
-                Log.d(TAG, name);
-            }
-        }
 
         etEventName.setText(existingEvent.getEventName());
         etLocation.setText(existingEvent.getLocation());
