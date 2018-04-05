@@ -21,13 +21,6 @@ android {
     }
 }
 
-
-
-
-
-
-
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.github.lzyzsd:circleprogress:1.2.1'
