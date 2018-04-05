@@ -32,8 +32,6 @@ public class OrganiseEventsViewerActivity extends AppCompatActivity
     TabLayout tabLayout;
     FloatingActionMenu fam;
     FloatingActionButton fabCreateEvent, fabCreateGroup;
-    String number;
-    String something;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
