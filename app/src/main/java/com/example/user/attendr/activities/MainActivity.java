@@ -88,9 +88,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-//        NetworkInterface.getInstance(this).getEventsForUser(toolbar, new EventApiCallback(){
-//
-//        });
 
         db = new DBManager(this).open();
 
@@ -115,15 +112,16 @@ public class MainActivity extends AppCompatActivity
         setAdaptersWithData();
 
         checkCalendarPermissions();
-
-
     }
 
+    //Prompts user to grant calendar permissions
     private void checkCalendarPermissions(){
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
             Toast.makeText(this, R.string.permission_not_granted, Toast.LENGTH_SHORT).show();
+
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_CALENDAR},
                     999);
@@ -270,7 +268,7 @@ public class MainActivity extends AppCompatActivity
 
             Intent i = new Intent(getApplicationContext(), LoginActivity.class);
 
-            // Clear all activities and credentials from SharedPreferences and eventsbefore going back to login screen
+            // Clear all activities and credentials from SharedPreferences and events before going back to login screen
             CredentialManager.clearCredentials(getApplicationContext());
             db.deleteAllEvents();
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

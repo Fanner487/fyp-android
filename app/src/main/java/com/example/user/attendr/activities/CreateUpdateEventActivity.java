@@ -59,7 +59,6 @@ import java.util.Locale;
  *
  * Activity for creating and updating Events
  *
- * todo: update whole database after update or create
  */
 
 
@@ -174,7 +173,7 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
     }
 
     /*
-    * Pops up a DatePicker Dialog box and TimePicker Dialog box and gathers time/date gathered
+    * DatePicker Dialog box and TimePicker Dialog box and gathers time/date gathered
     * from user input to set the text view time for start/finish/sign in times
     * Callbacks are implemented for asynchronous setting of the time variables from the user input
     * */
@@ -212,7 +211,6 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
         }, Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DATE));
 
         datePickerDialog.show();
-
     }
 
     private void getTimeFromDialog(final TimeSetCallback callback) {
@@ -259,6 +257,7 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
     }
 
     private boolean allFieldsFilled() {
+
         if (etEventName.getText().toString().length() > 0 && etLocation.getText().toString().length() > 0
                 && etAttendees.getText().toString().length() > 0 && !tvStartTime.getText().equals(getString(R.string.start_time))
                 && !tvSignInTime.getText().equals(getString(R.string.sign_in_time))
@@ -271,6 +270,7 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
     }
 
     private void prepareGroups(){
+
         // Separate lists for
         groups = db.getGroups();
         groupNames = new ArrayList<>();
@@ -295,7 +295,6 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
     private void populateWithExistingData(){
 
         existingEvent = db.getEventWithEventId(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID));
-
         etEventName.setText(existingEvent.getEventName());
         etLocation.setText(existingEvent.getLocation());
         tvStartTime.setText(Event.parseDateToDisplayTime(existingEvent.getStartTime()));
@@ -308,6 +307,7 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
 
 
     private void setTimeListeners(){
+
         // Opens date and time alert dialogs for the user to pick the times
         btnStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -366,18 +366,6 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
                         String signInTime = Event.parseToIsoTime(tvSignInTime.getText().toString().trim());
                         boolean attendanceRequired = switchAttendanceRequired.isChecked();
 
-//                        Log.d(TAG, eventName);
-//                        Log.d(TAG, location);
-//                        Log.d(TAG, startTime);
-//                        Log.d(TAG, finishTime);
-//                        Log.d(TAG, signInTime);
-//                        Log.d(TAG, Boolean.toString(attendanceRequired));
-//                        Log.d(TAG, "Attendees");
-//
-//                        for (String attendee : attendees) {
-//                            Log.d(TAG, attendee);
-//                        }
-
                         final Event event = new Event(eventName, location, startTime, finishTime, signInTime, attendees, attendanceRequired);
 
                         /*
@@ -422,7 +410,8 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
                                             Toast.makeText(CreateUpdateEventActivity.this, getString(R.string.event_deleted), Toast.LENGTH_SHORT).show();
 
                                             Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-                                            // set the new task and clear flags
+
+                                            // Clears all existing activities
                                             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                             startActivity(i);
 
@@ -444,6 +433,7 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
                         dialog.dismiss();
                     }
                 });
+
                 AlertDialog dialog = builder.create();
                 dialog.show();
             }
@@ -456,7 +446,7 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
             @Override
             public void onSuccess(final JSONObject response) {
                 try {
-                    Toast.makeText(CreateUpdateEventActivity.this, getString(R.string.created_event) + response.get("event_name"), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateUpdateEventActivity.this, getString(R.string.created_event) + " " + response.get("event_name"), Toast.LENGTH_SHORT).show();
 
                     Log.d(TAG, "New event ID: " + Integer.toString(response.getInt("id")));
 
@@ -490,7 +480,7 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
 
             @Override
             public void onFailure(ANError anError) {
-//                            Toast.makeText(CreateUpdateEventActivity.this, anError.getErrorBody(), Toast.LENGTH_SHORT).show();
+
                 final StringBuilder errorMessage = new StringBuilder();
                 try{
 
@@ -500,7 +490,6 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
 
                     Log.d(TAG, error.getString("non_field_errors"));
                     JSONArray jsonArray= error.getJSONArray("non_field_errors");
-
 
 
                     for(int i = 0; i < jsonArray.length(); i++){

@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.example.user.attendr.callbacks.DataChangedCallback;
 import com.example.user.attendr.constants.ApiUrls;
@@ -30,6 +29,13 @@ import com.example.user.attendr.database.DBManager;
 import com.example.user.attendr.models.Event;
 import com.example.user.attendr.network.NetworkCheck;
 import com.example.user.attendr.network.NetworkInterface;
+
+/*
+ * Created by Eamon on 26/02/2018
+ *
+ * Views an event with attendees. Users can view the event on Google Maps.
+ * */
+
 
 public class ViewEventActivity extends AppCompatActivity implements ListenerInterface{
 
@@ -63,7 +69,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
     protected void onResume() {
         super.onResume();
 
-//        updateDataFromNetwork();
+        updateDataFromNetwork();
     }
 
     @Override
@@ -216,9 +222,11 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
     @Override
     public void setListeners() {
 
+        // Redirects to Google Maps with location in address bar
         btnViewOnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Uri map = Uri.parse(ApiUrls.MAPS_ADDRESS_URL + tvLocation.getText().toString());
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(map);
@@ -227,6 +235,7 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
 
             }
         });
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
             @Override
@@ -285,19 +294,11 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
             }
         });
 
-//        btnSignIn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.d(TAG, "Event ID: " + Integer.toString(bundle.getInt(DbConstants.EVENT_KEY_EVENT_ID)));
-//                Bundle bundle = new Bundle();
-//                bundle.putInt(DbConstants.EVENT_KEY_EVENT_ID, eventId);
-//
-//                startNewActivity(SignInActivity.class, bundle);
-//            }
-//        });
+
     }
 
     public void startNewActivity(Class<?> cls, Bundle bundle){
+
         Intent intent = new Intent(getApplicationContext(), cls);
         intent.putExtras(bundle);
         startActivity(intent);

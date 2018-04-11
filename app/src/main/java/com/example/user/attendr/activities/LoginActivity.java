@@ -19,7 +19,6 @@ import com.example.user.attendr.network.NetworkInterface;
 
 /**
  * Created by Eamon on 06/02/2018.
- * <p>
  * Activity for Login
  */
 
@@ -47,7 +46,6 @@ public class LoginActivity extends AppCompatActivity implements ListenerInterfac
         btnRegister = findViewById(R.id.btnRegister);
 
         setListeners();
-
     }
 
     @Override
@@ -79,9 +77,9 @@ public class LoginActivity extends AppCompatActivity implements ListenerInterfac
                             });
                 }
                 else {
+
                     Snackbar snackbar = Snackbar.make(btnSubmit, getString(R.string.not_connected_to_internet), Snackbar.LENGTH_SHORT);
                     snackbar.show();
-
                 }
 
             }
@@ -91,11 +89,6 @@ public class LoginActivity extends AppCompatActivity implements ListenerInterfac
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                SharedPreferences userDetails = getApplicationContext().getSharedPreferences("", MODE_PRIVATE);
-//                SharedPreferences.Editor edit = userDetails.edit();
-//                edit.putString(BundleAndSharedPreferencesConstants.USERNAME, "");
-//                edit.putBoolean(BundleAndSharedPreferencesConstants.LOGGED_IN, false);
-//                edit.apply();
 
                 Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
                 getApplicationContext().startActivity(intent);
@@ -106,8 +99,7 @@ public class LoginActivity extends AppCompatActivity implements ListenerInterfac
     }
 
     private void redirectUserIfLoggedIn() {
-//        SharedPreferences userDetails = getSharedPreferences("", Context.MODE_PRIVATE);
-//        boolean loggedIn = userDetails.getBoolean(BundleAndSharedPreferencesConstants.LOGGED_IN, false);
+
         boolean loggedIn = CredentialManager.getLoggedInCredential(getApplicationContext());
 
         if (loggedIn) {

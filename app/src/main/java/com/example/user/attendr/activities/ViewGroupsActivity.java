@@ -70,7 +70,6 @@ public class ViewGroupsActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.home) {
-            //TODO: doesn't go back
             Log.d(TAG, "Home pressed");
             finish();
             return true;

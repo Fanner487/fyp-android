@@ -18,7 +18,7 @@
 
         <EditText
             android:id="@+id/tvEventName"
-            android:layout_width="368dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
@@ -32,7 +32,7 @@
 
         <EditText
             android:id="@+id/etLocation"
-            android:layout_width="368dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
@@ -46,7 +46,7 @@
 
         <EditText
             android:id="@+id/etAttendees"
-            android:layout_width="368dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
@@ -84,7 +84,7 @@
 
         <Button
             android:id="@+id/btnSubmit"
-            android:layout_width="368dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
@@ -286,22 +286,6 @@
             </android.support.constraint.ConstraintLayout>
         </android.support.v7.widget.CardView>
 
-        <!--<Button-->
-            <!--android:id="@+id/btnSignInTime"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginEnd="32dp"-->
-            <!--android:layout_marginStart="32dp"-->
-            <!--android:layout_marginTop="8dp"-->
-            <!--android:background="@color/button_colour"-->
-            <!--android:text="@string/choose_sign_in_time"-->
-            <!--android:textAllCaps="false"-->
-            <!--android:textColor="@color/white"-->
-            <!--android:textSize="20sp"-->
-            <!--app:layout_constraintEnd_toEndOf="parent"-->
-            <!--app:layout_constraintStart_toStartOf="parent"-->
-            <!--app:layout_constraintTop_toBottomOf="@+id/tvSignInDisplay" />-->
-
         <Spinner
             android:id="@+id/spinner"
             android:layout_width="368dp"
@@ -315,7 +299,7 @@
 
         <Button
             android:id="@+id/btnDelete"
-            android:layout_width="368dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
@@ -328,18 +312,6 @@
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="20sp"/>
-
-        <!--<TextView-->
-            <!--android:id="@+id/tvSignInDisplay"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginStart="24dp"-->
-            <!--android:layout_marginTop="16dp"-->
-            <!--android:textSize="20sp"-->
-            <!--android:textColor="@color/primary_text"-->
-            <!--android:text="@string/sign_in_time_display"-->
-            <!--app:layout_constraintStart_toStartOf="parent"-->
-            <!--app:layout_constraintTop_toBottomOf="@id/cvFinishTime"/>-->
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

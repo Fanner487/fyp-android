@@ -100,9 +100,6 @@ public class RegisterActivity extends AppCompatActivity implements ListenerInter
                                 @Override
                                 public void onFailure(String response) {
 
-                                    Log.d(TAG, response);
-//                                    Toast.makeText(RegisterActivity.this, R.string.error_making_account, Toast.LENGTH_SHORT).show();
-
                                     String error = parseErrors(response);
                                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RegisterActivity.this);
                                     alertDialogBuilder.setTitle(getString(R.string.error));
@@ -116,12 +113,6 @@ public class RegisterActivity extends AppCompatActivity implements ListenerInter
                                                 }
                                             });
 
-//                                    alertDialogBuilder.setNegativeButton(R.string.no,new DialogInterface.OnClickListener() {
-//                                        @Override
-//                                        public void onClick(DialogInterface dialog, int which) {
-//                                            finish();
-//                                        }
-//                                    });
 
                                     AlertDialog alertDialog = alertDialogBuilder.create();
                                     alertDialog.show();

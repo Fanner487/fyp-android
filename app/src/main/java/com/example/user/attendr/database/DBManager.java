@@ -2,7 +2,6 @@ package com.example.user.attendr.database;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -16,7 +15,6 @@ import com.example.user.attendr.enums.TimeType;
 import com.example.user.attendr.models.Event;
 import com.example.user.attendr.models.UserGroup;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -81,7 +79,7 @@ public class DBManager {
 
         ArrayList<Event> eventsOfType = getEventsOfType(getAllEvents(), eventType);
 
-        ArrayList<Event> eventsOfTime = getEventsOfTime(eventsOfType, timeType);
+        ArrayList<Event> eventsOfTime = filterEventsByTime(eventsOfType, timeType);
 
         for (Event event : eventsOfTime) {
             Log.d(TAG, event.toString());
@@ -93,7 +91,7 @@ public class DBManager {
     public ArrayList<Event> getEvents(TimeType timeType) {
 
 
-        ArrayList<Event> eventsOfTime = getEventsOfTime(getAllEvents(), timeType);
+        ArrayList<Event> eventsOfTime = filterEventsByTime(getAllEvents(), timeType);
 
         for (Event event : eventsOfTime) {
             Log.d(TAG, event.toString());
@@ -102,13 +100,14 @@ public class DBManager {
         return eventsOfTime;
     }
 
-    private ArrayList<Event> getEventsOfTime(ArrayList<Event> events, TimeType timeType) {
+    private ArrayList<Event> filterEventsByTime(ArrayList<Event> events, TimeType timeType) {
 
         ArrayList<Event> filteredEvents = new ArrayList<>();
 
         Date now = new Date();
 
         for (Event event : events) {
+
             if (timeType == TimeType.PAST) {
                 Log.d(TAG, "Adding past event");
                 Date eventFinishTime = Event.parseDateTimeField(event.getFinishTime());
@@ -246,7 +245,6 @@ public class DBManager {
     /*
     * UserGroup DB operations
     * */
-
     public ArrayList<UserGroup> getGroups() {
         Cursor c = db.query(
                 false,

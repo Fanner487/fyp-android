@@ -1,14 +1,11 @@
 package com.example.user.attendr.activities;
 
-import android.animation.ObjectAnimator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -21,11 +18,10 @@ import com.example.user.attendr.enums.AttendanceType;
 import com.example.user.attendr.enums.EventType;
 import com.example.user.attendr.enums.TimeType;
 import com.example.user.attendr.models.Event;
-import com.github.lzyzsd.circleprogress.DonutProgress;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
+
+import at.grabner.circleprogress.CircleProgressView;
 
 /*
 * Created by Eamon on 26/02/2018
@@ -47,14 +43,13 @@ public class UserStatsActivity extends AppCompatActivity {
     TextView tvNotAttended;
     RecyclerView rvAttended;
     RecyclerView rvNotAttended;
-    DonutProgress donutProgress;
-    int percentage;
+    CircleProgressView circleProgressView;
+    int percentageEventsAttended;
 
     LinearLayoutManager linearLayoutManagerAttended;
     LinearLayoutManager linearLayoutManagerNotAttended;
 
     ScrollView scrollView;
-    Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,38 +72,25 @@ public class UserStatsActivity extends AppCompatActivity {
         tvNotAttended = findViewById(R.id.tvNotAttended);
         rvAttended = findViewById(R.id.rvAttended);
         rvNotAttended = findViewById(R.id.rvNotAttended);
-        donutProgress = findViewById(R.id.donut_progress);
         scrollView = findViewById(R.id.scrollView);
+        circleProgressView = findViewById(R.id.circleProgressView);
 
-
-        percentage = getPercentageAttendanceForUser(username);
-
+        percentageEventsAttended = getPercentageAttendanceForUser(username);
 
         setAdaptersWithData();
         setTextViews();
 
         scrollView.smoothScrollTo(0,0);
 
-        runThread();
+        setCircleProgress();
     }
 
-    /*
-    * increases the progress donut until the percentage
-    * */
-    private void runThread(){
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if(donutProgress.getProgress() < percentage){
-                    donutProgress.setProgress(donutProgress.getProgress() + 0.5f);
-                }
-                else{
-                    cancel();
-                }
+    private void setCircleProgress(){
 
-            }
-        }, 100, 5);
+        circleProgressView.setValueAnimated(percentageEventsAttended);
+        circleProgressView.setUnitVisible(true);
+        circleProgressView.setUnit("%");
+        circleProgressView.setUnitSize(60);
     }
 
     /**
@@ -139,14 +121,14 @@ public class UserStatsActivity extends AppCompatActivity {
             Log.d(TAG, event.toString());
         }
 
-        linearLayoutManagerAttended = new LinearLayoutManager(UserStatsActivity.this);
+        linearLayoutManagerAttended = new LinearLayoutManager(UserStatsActivity.this, LinearLayoutManager.VERTICAL, false);
         linearLayoutManagerNotAttended = new LinearLayoutManager(UserStatsActivity.this);
 
         rvAttended.setLayoutManager(linearLayoutManagerAttended);
         rvNotAttended.setLayoutManager(linearLayoutManagerNotAttended);
 
         Bundle extras = new Bundle();
-//        extras.putSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE, bundle.getSerializable(BundleAndSharedPreferencesConstants.EVENT_TYPE));
+
         extras.putSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE, bundle.getSerializable(BundleAndSharedPreferencesConstants.TIME_TYPE));
 
         EventsViewAdapter eventsViewAdapterAttended = new EventsViewAdapter(UserStatsActivity.this, eventsAttended, extras);

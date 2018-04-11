@@ -76,7 +76,7 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
             imageView = view.findViewById(R.id.imageView);
 
             /**
-             * Creates alert dialog for organiser to choose between
+             * Creates alert dialog with separate menus for organisers and attendees
              */
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -97,7 +97,9 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
 
         }
 
+        // the list of user acitons for organiser
         boolean attendingEventListener(View view){
+
             final String[] choices = context.getResources().getStringArray(R.array.user_options_attending);
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle(tvAttendee.getText().toString());
@@ -122,6 +124,7 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
             return true;
         }
 
+        // the list of user acitons for organiser
         boolean organiseEventListener(final View view){
             final String[] choices = context.getResources().getStringArray(R.array.user_options);
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -248,6 +251,7 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
     private void removeUserFromAttending(int eventId, String user, View view) {
 
         if(NetworkCheck.alertIfNotConnectedToInternet(context, view)){
+
             NetworkInterface.getInstance(context).removeUserFromAttending(user, eventId, new EventCreateUpdateCallback() {
                 @Override
                 public void onSuccess(JSONObject response) {
@@ -303,6 +307,4 @@ public class AttendeesViewAdapter extends RecyclerView.Adapter<AttendeesViewAdap
         }
 
     }
-
-
 }

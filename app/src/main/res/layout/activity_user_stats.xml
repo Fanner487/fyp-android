@@ -13,6 +13,17 @@
         tools:context="com.example.user.attendr.activities.UserStatsActivity">
 
 
+        <at.grabner.circleprogress.CircleProgressView
+            android:id="@+id/circleProgressView"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:cpv_textSize="40dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvUsername" />
         <TextView
             android:id="@+id/tvUsername"
             android:layout_width="wrap_content"
@@ -34,13 +45,13 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="24dp"
-            android:textSize="25sp"
-            android:textColor="@color/primary_text"
             android:text="@string/events_attended"
+            android:textColor="@color/primary_text"
+            android:textSize="25sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.501"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/donut_progress" />
+            app:layout_constraintTop_toBottomOf="@+id/circleProgressView" />
 
         <TextView
             android:id="@+id/tvAttended"
@@ -48,10 +59,10 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="56dp"
-            android:textSize="25sp"
-            android:textColor="@color/primary_text"
+            android:layout_marginTop="24dp"
             android:text="@string/attended"
+            android:textColor="@color/primary_text"
+            android:textSize="25sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvEventsAttended" />
@@ -96,19 +107,6 @@
             app:layout_constraintTop_toBottomOf="@+id/tvAttended">
 
         </android.support.v7.widget.RecyclerView>
-
-        <com.github.lzyzsd.circleprogress.DonutProgress
-            android:id="@+id/donut_progress"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvUsername"
-            custom:donut_progress="0"
-            custom:donut_text_size="50dp" />
 
     </android.support.constraint.ConstraintLayout>
 

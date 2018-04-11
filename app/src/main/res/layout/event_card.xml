@@ -18,8 +18,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:textColor="@color/primary_text"
-            android:textSize="20sp"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="25sp"
             android:textStyle="bold"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toTopOf="parent"
@@ -35,7 +35,7 @@
             android:text="@string/location"
             android:textColor="@color/primary_text"
             card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@+id/tvEventName" />
+            card_view:layout_constraintTop_toBottomOf="@+id/tvOrganiser" />
 
         <TextView
             android:id="@+id/tvStartTime"
@@ -45,6 +45,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
+            android:textColor="@color/primary_text"
             card_view:layout_constraintStart_toEndOf="@+id/tvStartDisplay"
             card_view:layout_constraintTop_toBottomOf="@+id/tvLocation"
             tools:text="@string/start_time" />
@@ -58,6 +59,7 @@
             android:layout_below="@id/tvStartTime"
             android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
+            android:textColor="@color/primary_text"
             card_view:layout_constraintStart_toEndOf="@+id/tvFinishDisplay"
             card_view:layout_constraintTop_toBottomOf="@+id/tvStartDisplay"
             tools:text="@string/finish_time" />
@@ -155,6 +157,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
+            android:textColor="@color/primary_text"
             android:text="@string/sign_in_time"
             card_view:layout_constraintStart_toEndOf="@+id/tvSignInDisplay"
             card_view:layout_constraintTop_toBottomOf="@+id/tvFinishDisplay" />
@@ -194,6 +197,17 @@
             android:text="@string/sign_in_time_display"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/tvFinishDisplay" />
+
+        <TextView
+            android:id="@+id/tvOrganiser"
+            android:layout_width="wrap_content"
+            android:layout_height="21dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/organiser"
+            android:textColor="@color/primary_text"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toBottomOf="@+id/tvEventName" />
 
     </android.support.constraint.ConstraintLayout>
 

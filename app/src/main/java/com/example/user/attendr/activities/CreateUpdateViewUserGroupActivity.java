@@ -43,6 +43,7 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_update_view_user_group);
 

@@ -48,6 +48,7 @@ public class EventsViewAdapter extends RecyclerView.Adapter<EventsViewAdapter.Ev
 
     public class EventsViewHolder extends RecyclerView.ViewHolder {
         TextView tvEventName;
+        TextView tvOrganiser;
         TextView tvLocation;
         TextView tvStartTime;
         TextView tvFinishTime;
@@ -65,6 +66,7 @@ public class EventsViewAdapter extends RecyclerView.Adapter<EventsViewAdapter.Ev
         public EventsViewHolder(View view) {
             super(view);
             tvEventName = view.findViewById(R.id.tvEventName);
+            tvOrganiser = view.findViewById(R.id.tvOrganiser);
             tvLocation = view.findViewById(R.id.tvLocation);
             tvStartTime = view.findViewById(R.id.tvStartTime);
             tvFinishTime = view.findViewById(R.id.tvFinishTime);
@@ -76,6 +78,7 @@ public class EventsViewAdapter extends RecyclerView.Adapter<EventsViewAdapter.Ev
             ivNotAttending = view.findViewById(R.id.ivNotAttending);
             ivAttendanceRequired = view.findViewById(R.id.ivAttendanceRequired);
 
+            // opens event
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -91,6 +94,7 @@ public class EventsViewAdapter extends RecyclerView.Adapter<EventsViewAdapter.Ev
                 }
             });
 
+            // prompts user if they want to add event to Google Calendar
             view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
@@ -182,6 +186,7 @@ public class EventsViewAdapter extends RecyclerView.Adapter<EventsViewAdapter.Ev
         // Populate the text view fields
         Log.d(TAG, "onBindViewHolder called");
         holder.tvEventName.setText(eventList.get(position).getEventName());
+        holder.tvOrganiser.setText(eventList.get(position).getOrganiser());
         holder.tvLocation.setText(eventList.get(position).getLocation());
         holder.tvStartTime.setText(Event.parseDateToDisplayTime(eventList.get(position).getStartTime()));
         holder.tvFinishTime.setText(Event.parseDateToDisplayTime(eventList.get(position).getFinishTime()));
