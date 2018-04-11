@@ -269,7 +269,7 @@ public class Event {
     public static String parseDateToString(Date date) {
 
         TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'H:mm:ss'Z'", Locale.ENGLISH);
+        DateFormat df = new SimpleDateFormat(TimeFormats.ISO_FORMAT, Locale.ENGLISH);
         df.setTimeZone(tz);
 
         return df.format(date);

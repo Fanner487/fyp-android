@@ -91,8 +91,6 @@ public class NetworkInterface {
                 .getAsObjectList(Event.class, new ParsedRequestListener<List<Event>>() {
                     @Override
                     public void onResponse(List<Event> events) {
-                        // do anything with response
-                        Log.d(TAG, "Events size : " + events.size());
 
                         for (Event event : events) {
                             Log.d(TAG, event.toString());
@@ -501,6 +499,7 @@ public class NetworkInterface {
         return BundleAndSharedPreferencesConstants.JWT + " " + userDetails.getString(BundleAndSharedPreferencesConstants.TOKEN, "");
     }
 
+    //Converts event object to JSON
     private JSONObject eventAsJsonObject(Event event){
 
         JSONObject create = new JSONObject();

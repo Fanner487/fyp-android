@@ -55,6 +55,9 @@ public class DBManager {
         DBHelper.close();
     }
 
+    /**
+     * DB Operations on DB
+     */
     public Event getEventWithEventId(int eventId){
 
         Cursor c = db.query(
@@ -90,7 +93,6 @@ public class DBManager {
 
     public ArrayList<Event> getEvents(TimeType timeType) {
 
-
         ArrayList<Event> eventsOfTime = filterEventsByTime(getAllEvents(), timeType);
 
         for (Event event : eventsOfTime) {
@@ -109,6 +111,7 @@ public class DBManager {
         for (Event event : events) {
 
             if (timeType == TimeType.PAST) {
+
                 Log.d(TAG, "Adding past event");
                 Date eventFinishTime = Event.parseDateTimeField(event.getFinishTime());
 
@@ -116,6 +119,7 @@ public class DBManager {
                     filteredEvents.add(event);
                 }
             } else if (timeType == TimeType.ONGOING) {
+
                 Date eventSignInTime = Event.parseDateTimeField(event.getSignInTime());
                 Date eventFinishTime = Event.parseDateTimeField(event.getFinishTime());
 
@@ -124,6 +128,7 @@ public class DBManager {
                     filteredEvents.add(event);
                 }
             } else {
+
                 Date eventSignInTime = Event.parseDateTimeField(event.getSignInTime());
 
                 if (now.before(eventSignInTime)) {
@@ -132,6 +137,7 @@ public class DBManager {
                 }
             }
         }
+
         return filteredEvents;
     }
 
@@ -408,6 +414,10 @@ public class DBManager {
         return result;
     }
 
+
+    /*
+    converts booleans to int and vice versa since SQLite doesn't support booleans
+     */
     private boolean intToBoolean(int input) {
 
         boolean result = false;
