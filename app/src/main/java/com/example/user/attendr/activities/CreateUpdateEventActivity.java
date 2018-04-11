@@ -52,6 +52,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.Locale;
 
 /**
@@ -481,30 +482,11 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
             @Override
             public void onFailure(ANError anError) {
 
-                final StringBuilder errorMessage = new StringBuilder();
-                try{
-
-                    //TODO: change this
-                    String jsonString = anError.getErrorBody();
-                    JSONObject error = new JSONObject(jsonString);
-
-                    Log.d(TAG, error.getString("non_field_errors"));
-                    JSONArray jsonArray= error.getJSONArray("non_field_errors");
-
-
-                    for(int i = 0; i < jsonArray.length(); i++){
-                        errorMessage.append(jsonArray.get(i));
-                    }
-                    Log.d(TAG, errorMessage.toString());
-
-                }
-                catch(JSONException e){
-                    e.printStackTrace();
-                }
+                String errorMessage = parseErrors(anError.getErrorBody());
 
                 AlertDialog alertDialog = new AlertDialog.Builder(CreateUpdateEventActivity.this).create();
                 alertDialog.setTitle(getString(R.string.alert));
-                alertDialog.setMessage(errorMessage.toString());
+                alertDialog.setMessage(errorMessage);
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -552,6 +534,35 @@ public class CreateUpdateEventActivity extends AppCompatActivity implements List
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // Parses server errors from JSON to a human-readable string
+    private String parseErrors(String response){
+        JSONObject jsonObject;
+
+        StringBuilder builder = new StringBuilder();
+        try{
+            jsonObject = new JSONObject(response);
+            Iterator<String> keys = jsonObject.keys();
+
+            while(keys.hasNext()){
+                String key = keys.next();
+                String val = jsonObject.getString(key).replace("[", "").replace("\"", "").replace("]", "");;
+
+                // Capitalises first letter of key
+                String capitalKey = key.substring(0, 1).toUpperCase() + key.substring(1);
+
+                builder.append(capitalKey);
+                builder.append(": ");
+                builder.append(val);
+                builder.append("\n");
+            }
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        return builder.toString();
     }
 
 }

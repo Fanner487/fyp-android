@@ -24,8 +24,12 @@ import com.example.user.attendr.models.UserGroup;
 import com.example.user.attendr.network.NetworkCheck;
 import com.example.user.attendr.network.NetworkInterface;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 
 public class CreateUpdateViewUserGroupActivity extends AppCompatActivity implements ListenerInterface{
     private static final String TAG = CreateUpdateViewUserGroupActivity.class.getSimpleName();
@@ -166,7 +170,6 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
         });
     }
 
-
     // Converts an Arraylist of strings into a newline deliminated string
     // For adding a group of members into a
     private String listToString(ArrayList<String> list) {
@@ -205,7 +208,18 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
             @Override
             public void onFailure(String response) {
 
-                Toast.makeText(CreateUpdateViewUserGroupActivity.this, response, Toast.LENGTH_SHORT).show();
+                String errorMessage = parseErrors(response);
+//                Toast.makeText(CreateUpdateViewUserGroupActivity.this, response, Toast.LENGTH_SHORT).show();
+                AlertDialog alertDialog = new AlertDialog.Builder(CreateUpdateViewUserGroupActivity.this).create();
+                alertDialog.setTitle(getString(R.string.alert));
+                alertDialog.setMessage(errorMessage);
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
             }
         });
     }
@@ -231,6 +245,35 @@ public class CreateUpdateViewUserGroupActivity extends AppCompatActivity impleme
                 Toast.makeText(CreateUpdateViewUserGroupActivity.this, response, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    // Parses server errors from JSON to a human-readable string
+    private String parseErrors(String response){
+        JSONObject jsonObject;
+
+        StringBuilder builder = new StringBuilder();
+        try{
+            jsonObject = new JSONObject(response);
+            Iterator<String> keys = jsonObject.keys();
+
+            while(keys.hasNext()){
+                String key = keys.next();
+                String val = jsonObject.getString(key).replace("[", "").replace("\"", "").replace("]", "");;
+
+                // Capitalises first letter of key
+                String capitalKey = key.substring(0, 1).toUpperCase() + key.substring(1);
+
+                builder.append(capitalKey);
+                builder.append(": ");
+                builder.append(val);
+                builder.append("\n");
+            }
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        return builder.toString();
     }
 
 }

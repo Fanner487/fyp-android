@@ -247,8 +247,6 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
                         @Override
                         public void onSuccess() {
                             updateData();
-                            Toast.makeText(getApplicationContext(), getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
-                            updateData();
                             swipeRefreshLayout.setRefreshing(false);
                         }
 
@@ -289,12 +287,8 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
 
                     startNewActivity(SignInActivity.class, bundle);
                 }
-
-
             }
         });
-
-
     }
 
     public void startNewActivity(Class<?> cls, Bundle bundle){
@@ -310,7 +304,6 @@ public class ViewEventActivity extends AppCompatActivity implements ListenerInte
             NetworkInterface.getInstance(getApplicationContext()).getEventsForUser(new EventApiCallback() {
                 @Override
                 public void onSuccess() {
-                    Toast.makeText(getApplicationContext(), getString(R.string.data_updated), Toast.LENGTH_SHORT).show();
                     updateData();
                 }
 
